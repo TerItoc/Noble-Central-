@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class FileUploadService {
     
   // API url
@@ -12,7 +13,7 @@ export class FileUploadService {
   constructor(private http:HttpClient) { }
   
   // Returns an observable
-  upload(file):Observable<any> {
+  upload(file:any):Observable<any> {
   
       // Create form data
       const formData = new FormData(); 

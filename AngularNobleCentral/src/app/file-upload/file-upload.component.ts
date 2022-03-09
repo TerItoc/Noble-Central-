@@ -6,6 +6,7 @@ import { FileUploadService } from './file-upload.service';
     templateUrl: './file-upload.component.html',
     styleUrls: ['./file-upload.component.css']
 })
+
 export class FileUploadComponent implements OnInit {
   
     // Variable to store shortLink from api response
@@ -28,6 +29,7 @@ export class FileUploadComponent implements OnInit {
     onUpload() {
         this.loading = !this.loading;
         console.log(this.file);
+        
         this.fileUploadService.upload(this.file).subscribe(
             (event: any) => {
                 if (typeof (event) === 'object') {

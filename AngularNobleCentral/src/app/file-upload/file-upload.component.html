@@ -1,21 +1,18 @@
+<h2>Prueba FP</h2>
+
 <div class="text-center">
-    <input class="form-control" type="file" 
-            (change)="onChange($event)">
+    <input class="form-control" type="file" (change)="onChange($event)">
   
-    <button (click)="onUpload()" 
-        class="btn btn-success">
+    <button (click)="onUpload()" class="btn btn-success">
         Upload
     </button>
 </div>
-  
-<!-- Shareable short link of  uoloaded file -->
-<div class="container text-center jumbotron"
-    *ngIf="shortLink">
+
+<div class="container text-center jumbotron" *ngIf="shortLink">
     <h2> Visit Here</h2>
     <a href="{{shortLink}}">{{shortLink}}</a>
 </div>
   
-<!--Flag variable is used here-->
 <div class="container" *ngIf="loading">
     <h3>Loading ...</h3>
 </div>
