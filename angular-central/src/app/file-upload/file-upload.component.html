@@ -1,0 +1,18 @@
+<div class="wrapper">
+    <h2>Angular Image Upload Demo</h2>
+    <div class="file-upload">
+      
+      <input
+        type="file"
+        name="file"
+        ng2FileSelect
+        [uploader]="uploader"
+        accept=".xlsx"
+      />
+
+      <button type="button" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+        Upload
+      </button>
+      
+    </div>
+  </div>
