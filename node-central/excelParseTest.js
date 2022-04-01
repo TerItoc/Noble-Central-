@@ -2,76 +2,83 @@ const dfd = require("danfojs-node")
 const path = require("path")
 var fs = require('fs');
 
-const folder = path.join(process.cwd() , "./node-central");
+const db = require("./dboperations");
 
+const folder = path.join(process.cwd() , "./node-central");
 let local_xcel = folder + "/equipos.xlsx";
 
-class Relationship {
-    constructor(evaluador_,tipo_){
-        this.evaluador = evaluador_;
-        this.tipo = tipo_;
-    }
-}
+mn = {
+    projectColumnExcel: 1,
+    startingRowExcel : 2,
+    employeeColumnExcel: 3,
+    startColumnHoursExcel: 4,
+    endColumnHoursExcel: 7,
+    columnNameEmployees: "Sum(BillHrs)_2",
+    jsonDataAttribute: '$data',
+    totalsName: "Totals",
 
-class Empleado {
-    constructor(nombre_){
-        this.nombre = nombre_;
-        this.evaluadores = [];
-    }
 }
 
 function sumHours(arr) {
     return arr.filter((element) => typeof element == "number").reduce((a, b) => a+b,0)
 }
 
-function projectLeadsToJson(projectLeads){
-    pLs = {}
-
-    for(var i = 0; i < projectLeads.values.length; i++){
-        //NombreProyecto:Lider
-        pLs[projectLeads.values[i][0]] = projectLeads.values[i][1];
-    }
-
-    return pLs
-}
-
 function getProjectLead(arr){
-    if(arr[0] != arr[1] && arr[1] != "Totals"){
+    if(arr[0] != arr[1]){
         return arr
     }
     return [null,null]
 }
 
+function getArrEmpleados(arr){
+    resArr = []
+
+    for(var i = 0; i<arr.length;i++){
+        let entry = arr[i][mn.columnNameEmployees];
+        if(entry != mn.totalsName){
+            resArr.push(entry.replace("'", ""));
+        }
+    };
+
+    return resArr;
+}
+
+
+
+function getMatrixProyectos(arr){
+    return [...new Set(arr[mn.jsonDataAttribute])];
+}
+
 async function loadExcelData() {
-    let df = await dfd.readExcel(local_xcel)
-    //console.log(df.values)
+    let df = await dfd.readExcel(local_xcel);
 
-    let sdfteams = df.iloc({columns: [1,3], rows:["2:"], index:["projectname","projectlead","username"]})
-    console.log(sdfteams.values)
 
-    let hours = df.iloc({columns: ["4:7"], rows:["2:"], index:["hours"]}).apply(sumHours,{axis:1})
+    let projectAndEmployee = df.iloc({columns: [mn.projectColumnExcel,mn.employeeColumnExcel], rows:[mn['startingRowExcel']+":"], index:["projectname","projectlead","username"]})
+    //console.log(projectAndEmployee)
+    //dfd.toExcel(df, { filePath: "node-central/testOut.xlsx"});
+
+    let empleados = df.iloc({columns: [mn.employeeColumnExcel], rows:[mn.startingRowExcel+":"]}).toJSON();
+    //console.log(getArrEmpleados(empleados))
+
+    //POST EMPLOYEES DISABLED FOR NOW
+    //await db.postEmployees(getArrEmpleados(empleados));
+    //db.getEmployees().then(result => {console.log(result)})    
+
+
+    let hours = df.iloc({columns: [mn.startColumnHoursExcel+":"+mn.endColumnHoursExcel], rows:[mn.startingRowExcel+":"], index:["hours"]}).apply(sumHours,{axis:1})
     //hours.print()
 
-
     //Get the table for projectLeads
-    let projectLeads = df.iloc({columns: ["1:3"], rows:["2:"], index:["projectname","projectlead"]})
-                                                                        .apply(getProjectLead,{axis:1})
-                                                                        .dropNa({ axis: 1 })
-                                                                        .rename({"Sum(BillHrs)":"NombreProyecto","Sum(BillHrs)_1":"NombreLider"})
-    
+    let projectLeads = df.iloc({columns: [mn.projectColumnExcel+":"+mn.employeeColumnExcel], rows:[mn.startingRowExcel+":"], index:["projectname","projectlead"]}).apply(getProjectLead,{axis:1}).dropNa({ axis: 1 })
     //projectLeads.print()
-    
-    //Turn the table into JSON for easier access
-    let pLs = projectLeadsToJson(projectLeads);
 
-    fs.writeFile((folder + "/pLs.json"), JSON.stringify(pLs), function(err) {
-        if (err) {
-            console.log(err);
-        }
-    });
+    //POST PROJECT+EMPLOYEE DISABLE FOR NOW
+    //console.log(getMatrixProyectos(projectLeads);
+    
+    await db.postProjects(getMatrixProyectos(projectLeads));
 
     //Join the table of hours with the employees
-    teams = dfd.concat({ dfList: [hours,sdfteams], axis: 1 }).rename({ "0":"Horas","Sum(BillHrs)_2":"Nombre", "Sum(BillHrs)": "Proyecto" })
+    teams = dfd.concat({ dfList: [hours,projectAndEmployee], axis: 1 }).rename({ "0":"Horas","Sum(BillHrs)_2":"Nombre", "Sum(BillHrs)": "Proyecto" })
     //teams.print()
     
     //Save the teams dataframe
@@ -79,55 +86,8 @@ async function loadExcelData() {
     //projectLeads.toJSON({ filePath: path.join(process.cwd(), "./node-central/lideres.json") });
 }
 
-async function getLeaders() {
-    var jsonEntries = require(folder + "/horas.json");
-    var jsonLeaders = require(folder + "/pLs.json");
 
-    //console.log(jsonLeaders);
-
-    let allTeams = {};
-
-    //Para todos los proyecto recorremos los horas y agregamos el lider correspondiente
-    for (var i = 0; i < jsonEntries.length; i++){
-        let entry = jsonEntries[i];
-        
-        if(entry["Nombre"] == "Totals"){
-            continue
-        }
-
-        if(entry["Horas"] < 50){
-            continue
-        }
-        
-        for (var j = 0; j < jsonEntries.length; j++){
-            let entryChecking = jsonEntries[j];
-
-            if(entryChecking == entry){
-                continue;
-            }
-
-            if(entryChecking["Nombre"] == "Totals"){
-                continue;
-            }
-
-            let liderProyecto = jsonLeaders[entryChecking["Proyecto"]]
-
-            if(entryChecking["Horas"] >= 50 && entryChecking["Proyecto"] == entry["Proyecto"]){
-
-                if(entry["Nombre"] in allTeams){
-                    allTeams[entry["Nombre"]].push(entryChecking["Nombre"]);
-                }
-                else{
-                    allTeams[entry["Nombre"]] = [entryChecking["Nombre"]];
-                }
-            }
-           
-        }
-    }
-
-    //console.log(allTeams)
-    console.log(jsonEntries)
-}
 
 loadExcelData()
-//getLeaders()
+
+
