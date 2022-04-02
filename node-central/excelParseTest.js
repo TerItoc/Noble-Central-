@@ -7,21 +7,9 @@ const db = require("./dboperations");
 const folder = path.join(process.cwd() , "./node-central");
 let local_xcel = folder + "/equipos.xlsx";
 
-mn = {
-    projectColumnExcel: 1,
-    startingRowExcel : 2,
-    employeeColumnExcel: 3,
-    startColumnHoursExcel: 4,
-    endColumnHoursExcel: 7,
-    columnNameEmployees: "Sum(BillHrs)_2",
-    jsonDataAttribute: '$data',
-    totalsName: "Totals",
 
-}
 
-function sumHours(arr) {
-    return arr.filter((element) => typeof element == "number").reduce((a, b) => a+b,0)
-}
+
 
 function getProjectLead(arr){
     if(arr[0] != arr[1]){
@@ -62,7 +50,7 @@ async function loadExcelData() {
 
     //POST EMPLOYEES DISABLED FOR NOW
     //await db.postEmployees(getArrEmpleados(empleados));
-    //db.getEmployees().then(result => {console.log(result)})    
+    db.getEmployees().then(result => {console.log(result)})    
 
 
     let hours = df.iloc({columns: [mn.startColumnHoursExcel+":"+mn.endColumnHoursExcel], rows:[mn.startingRowExcel+":"], index:["hours"]}).apply(sumHours,{axis:1})
@@ -75,7 +63,7 @@ async function loadExcelData() {
     //POST PROJECT+EMPLOYEE DISABLE FOR NOW
     //console.log(getMatrixProyectos(projectLeads);
     
-    await db.postProjects(getMatrixProyectos(projectLeads));
+    //await db.postProjects(getMatrixProyectos(projectLeads));
 
     //Join the table of hours with the employees
     teams = dfd.concat({ dfList: [hours,projectAndEmployee], axis: 1 }).rename({ "0":"Horas","Sum(BillHrs)_2":"Nombre", "Sum(BillHrs)": "Proyecto" })
