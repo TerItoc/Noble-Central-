@@ -1,0 +1,11 @@
+footer {
+    position: absolute !important;
+    bottom: 0px;
+    width: 100%;
+    padding: 1em;
+    background-color: #FF7C31;
+}
+
+#logo {
+    width: 15%;
+}

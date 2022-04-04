@@ -8,13 +8,22 @@ import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileUploadComponent } from './file-upload/file-upload.component';
+import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { FooterComponent } from './layout/footer/footer.component';
+import { HeaderComponent } from './layout/header/header.component';
+import { AppRoutingModule } from './app-routing.module';
 
 
 @NgModule({ 
   
   declarations: [
     AppComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    LoginComponent,
+    DashboardComponent,
+    FooterComponent,
+    HeaderComponent,
   ],
 
   imports: [
@@ -25,6 +34,7 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
     ToastrModule.forRoot(),
     FormsModule,
     FileUploadModule,
+    AppRoutingModule
   ],
 
   providers: [],
