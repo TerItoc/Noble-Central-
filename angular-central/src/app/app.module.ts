@@ -13,6 +13,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AdminEvComponent } from './admin-ev/admin-ev.component';
+import { EmpleadoTEAMLESSComponent } from './empleado-teamless/empleado-teamless.component';
 
 
 @NgModule({ 
@@ -24,6 +26,8 @@ import { AppRoutingModule } from './app-routing.module';
     DashboardComponent,
     FooterComponent,
     HeaderComponent,
+    AdminEvComponent,
+    EmpleadoTEAMLESSComponent,
   ],
 
   imports: [
