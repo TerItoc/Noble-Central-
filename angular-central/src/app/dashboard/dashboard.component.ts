@@ -8,8 +8,11 @@ import { DashboardSqlService } from '../dashboard-sql.service';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private dsqls : DashboardSqlService) { }
+  constructor(private dsqls : DashboardSqlService) {};
+
   equipos = [];
+  counter: number = 0;
+  
 
   ngOnInit(): void {
 
@@ -20,6 +23,10 @@ export class DashboardComponent implements OnInit {
 
     
 
+  }
+
+  getID() : string {
+    return "id";
   }
 
 }

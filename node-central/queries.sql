@@ -39,7 +39,7 @@ select * from EvaluaA
 select DISTINCT Nombre,EvaluacionNombre from EvaluaA 
 JOIN Empleado ON EvaluaA.EmpleadoB  = Empleado.EmpleadoID
 JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-where EmpleadoA = (select EmpleadoID from Empleado where Nombre = 'Alfredo Martinez')
+where EmpleadoA = 0
 
 
 
@@ -67,6 +67,12 @@ SELECT Empleado.Nombre
 FROM Proyecto 
 JOIN Empleado ON Proyecto.Lider = Empleado.EmpleadoID
 WHERE Proyecto.Nombre = 'ACP - Coursetune'
+
+            
+SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
+            JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+            JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+            JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
 
 
 If Not Exists(select * from Trabaja_En where ProyectoID= 0 and EmpleadoID = 2 and Horas = 569)

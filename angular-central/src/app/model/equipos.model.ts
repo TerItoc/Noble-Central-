@@ -8,6 +8,6 @@ export interface Equipo {
 }
 
 export interface Evaluacion {
-    nombreEvaluador: string;
-    tipoRelacion: string;
+    NombreEvaluador: string;
+    TipoRelacion: string;
 }

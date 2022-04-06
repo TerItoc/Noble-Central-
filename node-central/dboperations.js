@@ -19,7 +19,7 @@ function processTeams(recordset){
         
     }
 
-    
+    //console.log(teams);
     equipos = []
     for(const [key, value] of Object.entries(teams)){
         let newEntry = {}
@@ -36,7 +36,7 @@ async function getTeams(){
     try{
         let pool = await sql.connect(config);
         let teams = await pool.request().query(`
-            SELECT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
+            SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
             JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
             JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
             JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
