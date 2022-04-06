@@ -2,6 +2,57 @@ var config = require("./dbconfig");
 const sql = require("mssql");
 
 
+function processTeams(recordset){
+    teams = {};
+
+    for (let i = 0; i < recordset.length; i++) {
+        let row = recordset[i];
+
+        let relation = {NombreEvaluador: row.Nombre, TipoRelacion: row.EvaluacionNombre};
+
+        if(teams[row.nombre]){
+            teams[row.nombre].push(relation);
+        }
+        else{
+            teams[row.nombre] = [relation];
+        }
+        
+    }
+
+    
+    equipos = []
+    for(const [key, value] of Object.entries(teams)){
+        let newEntry = {}
+        newEntry.nombre = key;
+        newEntry.evaluadores = value;
+        equipos.push(newEntry);
+    }
+
+    return {equipos:equipos};
+
+}
+
+async function getTeams(){
+    try{
+        let pool = await sql.connect(config);
+        let teams = await pool.request().query(`
+            SELECT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
+            JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+            JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+            JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        `)
+        //console.log(processTeams(teams.recordset));
+        return processTeams(teams.recordset);
+    } 
+    catch(error){
+        console.log(error);
+    }
+}
+
+
+//getTeams().then((res) => {console.log(res)})
+
+
 async function getEmployees(){
     try{
         let pool = await sql.connect(config);
@@ -302,7 +353,7 @@ async function getLeader(projectName){
 }
 
 
-getEmployeeTeamByName('Alfredo Martinez').then(result => {console.log(result)}) 
+//getEmployeeTeamByName('Alfredo Martinez').then(result => {console.log(result)}) 
 
 module.exports = {
     getEmployees : getEmployees,
@@ -321,4 +372,5 @@ module.exports = {
     postQuery: postQuery,
     getEmployeeTeamByName: getEmployeeTeamByName,
     getEmployeeTeamByID: getEmployeeTeamByID,
+    getTeams : getTeams,
 }

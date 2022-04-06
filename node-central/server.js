@@ -1,10 +1,12 @@
 //IMPORTS
-const express = require('express'),
-path = require('path'),
-cors = require('cors'),
-multer = require('multer'),
-bodyParser = require('body-parser');
-const readXlsxFile = require("read-excel-file/node");
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const multer = require('multer');
+const createError = require('http-errors');
+
+const db = require("./dboperations");
+
 
 
 const excelFilter = (req, file, cb) => {
@@ -17,7 +19,6 @@ const excelFilter = (req, file, cb) => {
     cb("Please upload only excel file.", false);
   }
 };
-
 
 
 const PATH = './storage';
@@ -35,24 +36,24 @@ let upload = multer({
   fileFilter: excelFilter
 });
 
-const uploaddd = async (req, res) => {
-  
-};
-
 
 // Express settings
 const app = express();
+app.use(express.urlencoded({ extended : true}));
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
 
 
 //Endpoints
 app.get('/api', function (req, res) {
   res.end('File catcher');
 });
+
+app.get('/getTeams', async (req,res) => {
+    return res.send(await db.getTeams());
+});
+
+
 // POST File
 app.post('/api/upload', upload.single('file'), function (req, res) {
   
@@ -100,6 +101,7 @@ app.post('/api/upload', upload.single('file'), function (req, res) {
 
   }
 });
+
 // Create PORT
 const PORT = 3000;
 const server = app.listen(PORT, () => {

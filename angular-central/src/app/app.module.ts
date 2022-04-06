@@ -19,9 +19,9 @@ import { EmpleadoTEAMLESSComponent } from './empleado-teamless/empleado-teamless
 
 import { MsalModule, MsalInterceptor } from '@azure/msal-angular';
 import { PublicClientApplication } from '@azure/msal-browser';
+import { DropdownPersonaComponent } from './dropdown-persona/dropdown-persona.component';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
-
 
 @NgModule({ 
   declarations: [
@@ -33,6 +33,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
     HeaderComponent,
     AdminEvComponent,
     EmpleadoTEAMLESSComponent,
+    DropdownPersonaComponent,
   ],
 
   imports: [
