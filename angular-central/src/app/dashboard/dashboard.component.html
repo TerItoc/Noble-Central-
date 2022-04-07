@@ -1,1 +1,7 @@
-<p>dashboard works!</p>
+{{loginDisplay}}
+<div *ngIf="!loginDisplay">
+    <p>Inicia sesion</p>
+</div>
+<div *ngIf="loginDisplay">
+    <p>Madre mia willy que haces aqui compañero</p>
+</div>
