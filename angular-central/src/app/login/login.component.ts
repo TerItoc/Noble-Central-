@@ -8,6 +8,7 @@ import { InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs';
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private broadcastService: MsalBroadcastService,
-    private authService: MsalService
+    private authService: MsalService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -60,5 +62,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroying$.next(undefined);
     this._destroying$.complete();
+  }
+
+  getProfile(){
+    this.http.get('https://graph.microsoft.com/v1.0/me')
+    .subscribe(profile =>{
+      console.log(profile);
+    })
   }
 }

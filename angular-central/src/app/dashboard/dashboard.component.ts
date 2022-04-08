@@ -26,11 +26,23 @@ export class DashboardComponent implements OnInit {
         filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
       )
       .subscribe((result: EventMessage) => {
-        this.setLoginDisplay();
+        console.log(result);
       });
+
+    this.msalBroadcastService.inProgress$
+    .pipe(
+      filter((status: InteractionStatus) => status === InteractionStatus.None)
+    )
+    .subscribe(() => {
+      this.setLoginDisplay();
+    })
+
+    console.log(this.loginDisplay);
+
   }
 
   setLoginDisplay() {
+    console.log(this.authService.instance.getAllAccounts().length);
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
   }
 }
