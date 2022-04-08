@@ -33,28 +33,46 @@ create table EvaluaA(
     EmpleadoB int FOREIGN KEY REFERENCES empleado,
 )
 
-select * from EvaluaA
+SELECT CASE WHEN EXISTS (
+    SELECT *
+    FROM EvaluaA
+)
+THEN CAST(1 AS BIT)
+ELSE CAST(0 AS BIT) END
+
+
+
+
+SELECT Empleado.Nombre, Proyecto.Nombre
+FROM Trabaja_En
+JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
+JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
+where Empleado.Nombre in (SELECT distinct nombre FROM Empleado
+WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
+            JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
+
 
 
 select DISTINCT Nombre,EvaluacionNombre from EvaluaA 
 JOIN Empleado ON EvaluaA.EmpleadoB  = Empleado.EmpleadoID
 JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-where EmpleadoA = 0
+where EmpleadoA = (select EmpleadoID from Empleado where Nombre = 'Alfredo Martinez')
 
 
 
+SELECT * from  Evaluacion
 
+select * from EvaluaA
 
-SELECT Empleado.Nombre, Proyecto.Nombre, Horas
-FROM Trabaja_En
-JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
-JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
 
 SELECT Empleado.Nombre,Proyecto.Nombre,Horas
 FROM Trabaja_En
 JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
 JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
 WHERE Proyecto.Nombre = 'ACP - Coursetune' and Horas > 50
+
+
+
 
 SELECT Proyecto.Nombre
 FROM Trabaja_En
@@ -68,12 +86,6 @@ FROM Proyecto
 JOIN Empleado ON Proyecto.Lider = Empleado.EmpleadoID
 WHERE Proyecto.Nombre = 'ACP - Coursetune'
 
-            
-SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
-            JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
-            JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
-            JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-
 
 If Not Exists(select * from Trabaja_En where ProyectoID= 0 and EmpleadoID = 2 and Horas = 569)
             Begin
@@ -84,11 +96,15 @@ select * from trabaja_en
 
 insert into proyecto(Nombre,Lider) values ('NombreEquis',1)
 
+select empleadoid from empleado where nombre = 'Castro Estrada, Alberto'
+select * from Empleado
 
 select * from evaluacion
 
 
 select * from Proyecto 
+
+
 
 
 select ProyectoID from Proyecto where Nombre = 'ACP - Coursetune'
@@ -110,39 +126,33 @@ If Not Exists(select * from EvaluaA where Empleado='${empleadoa}' or Lider = 7 )
             insert into proyecto (nombre,Lider) values ('Proyecto1',7)
             End
 
-insert into EvaluaA values 
-('Karla Suarez',0,'Arquieta Leal, Diego Alberto'),
-('Karla Suarez',0,'Jara Diaz de Leon , Erendira Citlalli'),
-('Karla Suarez',2,'Raul Aguilera'),
-('Karla Suarez',2,'Aaron Hernandez'),
-('Karla Suarez',0,'Alan Vera'),
-('Karla Suarez',0,'Castulo Vela'),
-('Karla Suarez',0,'Muñiz Reyes, Daniel Alejandro'),
-('Karla Suarez',0,'Osorio Plazas, Francisco Javier'),
-('Karla Suarez',0,'Zaldivar Estrada, Paulina'),
-('Campos Martinez, Ricardo Ismael',0,'Balderas Medina, Gerardo Alberto'),
-('Campos Martinez, Ricardo Ismael',0,'Eduardo Muñoz'),
-('Campos Martinez, Ricardo Ismael',2,'Jorge Escamilla'),
-('Campos Martinez, Ricardo Ismael',0,'Luis Quintero'),
-('Karla Suarez',0,'Arquieta Leal, Diego Alberto'),
-('Karla Suarez',0,'Jara Diaz de Leon , Erendira Citlalli'),
-('Karla Suarez',2,'Raul Aguilera');
 
---reset db
-delete Trabaja_En
 
---reset db
-delete Evaluacion
+SELECT CASE WHEN EXISTS (
+            SELECT *
+            FROM EvaluaA
+        )
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END
 
---reset db
-delete Proyecto
-DBCC CHECKIDENT ('Proyecto', RESEED, 0);
-GO
 
---reset db
-delete Empleado
-DBCC CHECKIDENT ('Empleado', RESEED, 0);
-GO
-insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
+delete EvaluaA 
+delete Trabaja_En 
+delete Proyecto 
+DBCC CHECKIDENT ('Proyecto', RESEED, 0); 
+GO 
+delete Empleado 
+DBCC CHECKIDENT ('Empleado', RESEED, 0); 
+GO 
+Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
+
+
+delete EvaluaA
+        delete Trabaja_En
+        delete Proyecto
+        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
+        delete Empleado
+        DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 
 

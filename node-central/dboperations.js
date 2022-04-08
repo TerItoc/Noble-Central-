@@ -2,6 +2,95 @@ var config = require("./dbconfig");
 const sql = require("mssql");
 
 
+async function ifTeam(){
+    try{
+        let pool = await sql.connect(config);
+        let res = await pool.request().query(
+        `
+        SELECT CASE WHEN EXISTS (
+            SELECT *
+            FROM EvaluaA
+        )
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END
+        `)
+        return res.recordset[0][''];
+    } 
+    catch(error){
+        console.log(error);
+    }
+}
+
+function getRelacionID(relacion){
+    if(relacion == "Peer to Peer"){
+        return 0;
+    }
+    
+    if(relacion == "Lider a Equipo"){
+        return 1;
+    }
+
+    if(relacion == "Equipo a Lider"){
+        return 2;
+    }
+}
+
+async function deleteEvaluation(empA,relacion,empB){
+    try{
+
+        let relacionID = getRelacionID(relacion);
+
+        let idEmpA = null;
+        getEmployeeIdByName(empA).then((res) => {idEmpA = res});
+        let idEmpB = null;
+        getEmployeeIdByName(empB).then((res) => {idEmpB = res});
+
+
+        let pool = await sql.connect(config);
+        await pool.request().query(`
+            DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
+        `)
+        console.log("Deleted");
+    } 
+    catch(error){
+        console.log(error);
+    }
+}
+
+function processOrphans(recordset){
+    huerfanos = []
+
+    //console.log(recordset);
+    for (let i = 0; i < recordset.length; i++) {
+        let row = recordset[i];
+
+        let huerfano = {NombreHuerfano: row.Nombre[0], ProyectoDondeTrabajo: row.Nombre[1]};
+        huerfanos.push(huerfano);
+        
+    }
+
+    return {huerfanos: huerfanos};
+
+}
+async function getOrphans(){
+    try{
+        let pool = await sql.connect(config);
+        let orphans = await pool.request().query(`
+            SELECT Empleado.Nombre, Proyecto.Nombre
+            FROM Trabaja_En
+            JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
+            JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
+            where Empleado.Nombre in (SELECT distinct nombre FROM Empleado
+            WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
+                                    JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
+        `)
+        //console.log(processTeams(teams.recordset));
+        return processOrphans(orphans.recordset);
+    } 
+    catch(error){
+        console.log(error);
+    }
+}
 function processTeams(recordset){
     teams = {};
 
@@ -87,14 +176,11 @@ async function postEmployees(arrEmpleados){
                 continue;
             }
             correo = nombre.toString()+"@hotmail.com";
-            console.log(nombre,correo);
+            //console.log(nombre,correo);
             await pool.query(`
-            
-            If Not Exists(select * from empleado where nombre='${nombre}' or correo ='${correo}')
-            Begin
             insert into empleado (nombre,correo) values ('${nombre}','${correo}')
-            End
             `);
+            console.log(nombre);
         };
         console.log("Inserted Employees");
     }
@@ -352,6 +438,29 @@ async function getLeader(projectName){
 
 }
 
+async function deleteCurrentTeams(){
+    try{
+        let pool = await sql.connect(config);
+
+        await pool.request().query(`
+        delete EvaluaA
+        delete Trabaja_En
+        delete Proyecto
+        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
+        delete Empleado
+        DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`);
+
+        console.log("Deleted current teams")
+    }
+    catch(error){
+        console.log(error);
+    }
+
+}
+
+
+
 
 //getEmployeeTeamByName('Alfredo Martinez').then(result => {console.log(result)}) 
 
@@ -373,4 +482,7 @@ module.exports = {
     getEmployeeTeamByName: getEmployeeTeamByName,
     getEmployeeTeamByID: getEmployeeTeamByID,
     getTeams : getTeams,
+    getOrphans: getOrphans,
+    deleteEvaluation: deleteEvaluation,
+    deleteCurrentTeams: deleteCurrentTeams,
 }

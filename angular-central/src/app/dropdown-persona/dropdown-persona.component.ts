@@ -1,19 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Evaluacion } from '../model/equipos.model';
 
 @Component({
   selector: 'app-dropdown-persona',
   templateUrl: './dropdown-persona.component.html',
   styleUrls: ['./dropdown-persona.component.css']
 })
+
 export class DropdownPersonaComponent implements OnInit {
 
-  nombreEmpleado : string = "Cargando Nombre Empleado";
-  evaluadores : [];
+  @Input() nombre : string;
+  @Input() evaluadores : Evaluacion[];
+  @Input() id : number;
 
-  constructor () {};
+  constructor () {
+    
+  };
 
   ngOnInit(): void {
-
+    
   }
 
 }

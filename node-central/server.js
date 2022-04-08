@@ -6,6 +6,7 @@ const multer = require('multer');
 const createError = require('http-errors');
 
 const db = require("./dboperations");
+const mt = require("./parseExcel");
 
 
 
@@ -51,6 +52,18 @@ app.get('/api', function (req, res) {
 
 app.get('/getTeams', async (req,res) => {
     return res.send(await db.getTeams());
+});
+
+app.get('/getOrphans', async (req,res) => {
+  return res.send(await db.getOrphans());
+});
+
+app.get('/ifTeam', async (req,res) => {
+  return res.send(await db.ifTeam());
+});
+
+app.get('/makeTeams', async (req,res) => {
+  return res.send(await mt.makeTeams());
 });
 
 

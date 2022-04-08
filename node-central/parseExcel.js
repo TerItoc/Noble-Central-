@@ -29,7 +29,7 @@ mn = {
 }
 
 function loadExcel(filePath){
-    const folder = path.join(process.cwd() , "./node-central");
+    const folder = path.join(process.cwd());
     let local_xcel = folder + "/equipos.xlsx";
     outputFilename = folder + "/equipos.csv"
     
@@ -176,89 +176,105 @@ function term(str, char) {
 
 async function makeTeams(){
 
-    //Parse
-    let rawExcelData = loadExcel();
 
-    //Sums hours and removes totals
-    let excelData = reduceMatrix(rawExcelData);
-    
-    //Gets employees;
-    let allEmployees = getEmployeeNames(excelData);
-    
-    //Leaders needs raws for totals
-    let leaderWithProject = getProjectsAndLeaders(rawExcelData);
-    
-    //Entries
-    let hoursPerEmployee = getHoursPerEmployeePerProject(excelData);
+    try{
+        //Parse
+        let rawExcelData = loadExcel();
 
-    //console.log(excelData);
-    //console.log(allEmployees);
-    //console.log(leaderWithProject);
-    //console.log(getLeaderForProject(leaderWithProject,"IPS - Cierre de Evaluacion"));
-    //console.log(getEmployeesThatWorkedOnProject(hoursPerEmployee,"ACP - Coursetune",mn.horasMinimas))
-    //console.log(getEmployeeWorkedOn(hoursPerEmployee,"Alfredo Martinez",mn.horasMinimas))
-    //console.log(hoursPerEmployee);
-    //db.postHorasPorEmpleado(hoursPerEmployee);
-    //db.postEmployees(employees).then(result => {});
-    //db.getEmployees().then(result => {console.log(result)})   
-    //db.postProjects(leaderWithProject).then(result => {});
+        //Sums hours and removes totals
+        let excelData = reduceMatrix(rawExcelData);
 
+        //Gets employees;
+        let allEmployees = getEmployeeNames(excelData);
 
-    //Ya que posteamos los empleados extraemos para saber el ID de cada uno
-    
-    empIds = null;
-    await db.getEmployees().then((res) => {empIds = turnSQLtoJsonEmpIds(res);});
-    //console.log(empIds);
+        //Leaders needs raws for totals
+        let leaderWithProject = getProjectsAndLeaders(rawExcelData);
 
-    let sqlQuery = `
-        Insert Into EvaluaA values
+        //Entries
+        let hoursPerEmployee = getHoursPerEmployeePerProject(excelData);
 
-    `
-    let currQuery = ``
-    let rowCounter  = 0;
-    for (let idx = 0; idx < allEmployees.length; idx++) {
+        //console.log(excelData);
+        //console.log(allEmployees);
+        //console.log(leaderWithProject);
+        //console.log(getLeaderForProject(leaderWithProject,"IPS - Cierre de Evaluacion"));
+        //console.log(hoursPerEmployee);
 
-        let empleado = allEmployees[idx];
+        await db.deleteCurrentTeams();
+        await db.postEmployees(allEmployees);
+        await db.postProjects(leaderWithProject);
+        await db.postHorasPorEmpleado(hoursPerEmployee);
 
-        arrProjectsWorkedOn = getProjectsEmployeeWorkedOn(hoursPerEmployee,empleado,mn.horasMinimas);
+        //console.log(getEmployeeWorkedOn(hoursPerEmployee,"Alfredo Martinez",mn.horasMinimas))
+        //db.getEmployees().then(result => {console.log(result)})   
+        //console.log(getEmployeesThatWorkedOnProject(hoursPerEmployee,"ACP - Coursetune",mn.horasMinimas))
 
-        for (let i = 0; i < arrProjectsWorkedOn.length; i++) {
+        //Ya que posteamos los empleados extraemos para saber el ID de cada uno
 
-            let currProj = arrProjectsWorkedOn[i];
-            //console.log(empleado,currProj);
+        empIds = null;
+        await db.getEmployees().then((res) => {empIds = turnSQLtoJsonEmpIds(res);});
+        console.log(empIds);
 
-            let lider = getLeaderForProject(leaderWithProject,currProj);
-            
-            let peerEmployees = getEmployeesThatWorkedOnProject(hoursPerEmployee,currProj,mn.horasMinimas);
+        let sqlQuery = `
+            Insert Into EvaluaA values
 
-            for (let j = 0; j < peerEmployees.length; j++) {
+        `
 
-                let empleadoB = peerEmployees[j]
+        let currQuery = ``
+        let rowCounter  = 0;
+
+        for (let idx = 0; idx < allEmployees.length; idx++) {
+
+            let empleado = allEmployees[idx];
+
+            arrProjectsWorkedOn = getProjectsEmployeeWorkedOn(hoursPerEmployee,empleado,mn.horasMinimas);
+
+            for (let i = 0; i < arrProjectsWorkedOn.length; i++) {
+
+                let currProj = arrProjectsWorkedOn[i];
+                //console.log(empleado,currProj);
+
+                let lider = getLeaderForProject(leaderWithProject,currProj);
                 
-                //Get type of relationship
-                let rel = getEvaluationType(lider,empleado,empleadoB) 
-                
-                if(rel == -1){
-                    continue
-                }               
-                
-                currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+"),";
-                rowCounter++;
+                let peerEmployees = getEmployeesThatWorkedOnProject(hoursPerEmployee,currProj,mn.horasMinimas);
 
-                if(rowCounter > 990){
-                    console.log(term((sqlQuery + currQuery),';'))
-                    await db.postQuery(term((sqlQuery + currQuery),';'));
-                    rowCounter = 0;
-                    currQuery = ``;
+                for (let j = 0; j < peerEmployees.length; j++) {
+
+                    let empleadoB = peerEmployees[j]
+                    
+                    //Get type of relationship
+                    let rel = getEvaluationType(lider,empleado,empleadoB) 
+                    
+                    if(rel == -1){
+                        continue
+                    }               
+                    
+                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+"),";
+                    rowCounter++;
+
+                    if(rowCounter > 990){
+                        console.log(term((sqlQuery + currQuery),';'))
+                        await db.postQuery(term((sqlQuery + currQuery),';'));
+                        rowCounter = 0;
+                        currQuery = ``;
+                    }
                 }
-            }
-            
-        }   
+                
+            }   
 
+        }
+        await db.postQuery(term((sqlQuery + currQuery),';'));
+
+        return {success: true};
     }
-    await db.postQuery(term((sqlQuery + currQuery),';'));    
-
+    catch(error){
+        
+        return {success: false,
+                error : error};
+    }
+    
 }
 
-makeTeams();
+module.exports = {
+    makeTeams : makeTeams,
+}
 

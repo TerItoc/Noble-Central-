@@ -1,0 +1,14 @@
+#Teams {
+    width: 60%
+}
+
+.fa-x{
+    color: black;
+}
+
+
+@media screen and (max-width: 650px){
+    #Teams {
+        width: 100%;
+    }
+}

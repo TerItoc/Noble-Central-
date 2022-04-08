@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 
 @Component({
@@ -10,18 +10,22 @@ export class DashboardComponent implements OnInit {
 
   constructor(private dsqls : DashboardSqlService) {};
 
+  huerfanos = [];
   equipos = [];
   counter: number = 0;
-  
+  loading: boolean = true;
 
   ngOnInit(): void {
+    this.loading=true;
 
     this.dsqls.getTeams().subscribe(res => {
       this.equipos = res;
-      console.log(res);
     });
 
-    
+    this.dsqls.getOrphans().subscribe(res => {
+      this.huerfanos = res;
+      this.loading = false;
+    });
 
   }
 
