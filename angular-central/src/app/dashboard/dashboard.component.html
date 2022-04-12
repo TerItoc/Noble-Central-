@@ -1,7 +1,6 @@
-{{loginDisplay}}
-<div *ngIf="!loginDisplay">
-    <p>Inicia sesion</p>
+<div *ngIf="loginDisplay ;else elseBlock">
+    <p>Hola como te encuentras {{profile?.givenName}}</p>
 </div>
-<div *ngIf="loginDisplay">
-    <p>Madre mia willy que haces aqui compañero</p>
-</div>
+<ng-template #elseBlock>
+    <p>Esepra... tu no eres Erick</p>
+</ng-template>

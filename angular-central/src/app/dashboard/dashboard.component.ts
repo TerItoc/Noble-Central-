@@ -6,6 +6,16 @@ import {
   InteractionStatus,
 } from '@azure/msal-browser';
 import { filter } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
+const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
+
+type profileType = {
+  givenName?: string
+  surname?: string
+  userPrincipalName?: string
+  id?: string
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -14,10 +24,12 @@ import { filter } from 'rxjs/operators';
 })
 export class DashboardComponent implements OnInit {
   loginDisplay = false;
+  profile!: profileType;
 
   constructor(
     private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService
+    private msalBroadcastService: MsalBroadcastService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -35,14 +47,17 @@ export class DashboardComponent implements OnInit {
     )
     .subscribe(() => {
       this.setLoginDisplay();
+      this.getProfile();
     })
-
-    console.log(this.loginDisplay);
-
   }
 
   setLoginDisplay() {
-    console.log(this.authService.instance.getAllAccounts().length);
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+  }
+
+  getProfile() {
+    this.http.get(GRAPH_POINT).subscribe(profile => {
+      this.profile = profile;
+    })
   }
 }

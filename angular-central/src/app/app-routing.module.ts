@@ -5,8 +5,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
+  //{ path: '', pathMatch: 'full', redirectTo: 'login' }, //TODO: Verificar una mejor forma de redireccionar
   { path: 'login', component: LoginComponent},
   { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard]},
+  { path: '**', pathMatch: 'full', redirectTo: 'dashboard' },
 ];
 
 const isIframe = window !== window.parent && !window.opener;

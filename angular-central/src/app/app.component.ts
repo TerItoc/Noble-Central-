@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginComponent } from './login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +10,7 @@ export class AppComponent implements OnInit{
   isIframe = false;
 
   ngOnInit(): void {
-      this.isIframe = window !== window.parent && !window.opener;
+    this.isIframe = window !== window.parent && !window.opener;
   }
 
 }
