@@ -24,9 +24,7 @@
                           <td scope="row">{{evaluador.NombreEvaluador}}</td>
                           <td>{{evaluador.TipoRelacion}}</td>
                             <td>
-                            <button type="button" class="btn btn-light"><i class="fa-solid fa-x"></i></button>
-                              
-                            
+                            <button type="button" (click)="delEval(nombre,evaluador.TipoRelacion,evaluador.NombreEvaluador)" class="btn btn-light"><i class="fa-solid fa-x"></i></button>    
                             </td>
                           </tr>
                           

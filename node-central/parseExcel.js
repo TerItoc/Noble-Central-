@@ -159,15 +159,6 @@ function getEvaluationType(lider,empleadoA,empleadoB){
     return mn.dbIndexForPeerToPeer
 }
 
-function turnSQLtoJsonEmpIds(sqlRes){
-    let res = {};
-    for (let i = 0; i < sqlRes.length; i++) {
-        let row = sqlRes[i];
-        res[row[mn.sqlColumnaEmpleadoNombre]] = row[mn.sqlColumnaEmpleadoID]
-    }
-
-    return res;
-}
 
 function term(str, char) {
     var xStr = str.substring(0, str.length - 1);
@@ -200,6 +191,7 @@ async function makeTeams(){
         //console.log(hoursPerEmployee);
 
         await db.deleteCurrentTeams();
+
         await db.postEmployees(allEmployees);
         await db.postProjects(leaderWithProject);
         await db.postHorasPorEmpleado(hoursPerEmployee);
@@ -211,8 +203,7 @@ async function makeTeams(){
         //Ya que posteamos los empleados extraemos para saber el ID de cada uno
 
         empIds = null;
-        await db.getEmployees().then((res) => {empIds = turnSQLtoJsonEmpIds(res);});
-        console.log(empIds);
+        await db.getEmployeeIDs().then((res) => {empIds = res;});
 
         let sqlQuery = `
             Insert Into EvaluaA values
@@ -252,7 +243,7 @@ async function makeTeams(){
                     rowCounter++;
 
                     if(rowCounter > 990){
-                        console.log(term((sqlQuery + currQuery),';'))
+                        //console.log(term((sqlQuery + currQuery),';'))
                         await db.postQuery(term((sqlQuery + currQuery),';'));
                         rowCounter = 0;
                         currQuery = ``;
@@ -262,7 +253,10 @@ async function makeTeams(){
             }   
 
         }
+
         await db.postQuery(term((sqlQuery + currQuery),';'));
+        
+        console.log("Finished Teams")
 
         return {success: true};
     }

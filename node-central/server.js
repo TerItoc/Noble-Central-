@@ -9,6 +9,7 @@ const db = require("./dboperations");
 const mt = require("./parseExcel");
 
 
+db.startConnection();
 
 const excelFilter = (req, file, cb) => {
   if (
@@ -51,7 +52,7 @@ app.get('/api', function (req, res) {
 });
 
 app.get('/getTeams', async (req,res) => {
-    return res.send(await db.getTeams());
+  return res.send(await db.getTeams());
 });
 
 app.get('/getOrphans', async (req,res) => {
@@ -65,6 +66,18 @@ app.get('/ifTeam', async (req,res) => {
 app.get('/makeTeams', async (req,res) => {
   return res.send(await mt.makeTeams());
 });
+
+app.post('/deleteEvaluation', async (req,res) => {
+  const {empA,relacion,empB} = req.body;
+
+  await db.deleteEvaluation(empA,relacion,empB);
+
+  res.send({success:true});
+
+});
+
+
+
 
 
 // POST File
