@@ -8,7 +8,7 @@
 
     <h3><b>Equipos</b></h3>
     <div class="accordion" id="accordionTeams">
-        <app-dropdown-persona *ngFor="let equipo of equipos ; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre"></app-dropdown-persona>
+        <app-dropdown-persona *ngFor="let equipo of equipos ; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre" [arrEmpleados]="arrEmpleados"></app-dropdown-persona>
     </div>
 
     <h3><b>Huerfanos</b></h3>

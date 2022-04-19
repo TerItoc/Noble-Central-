@@ -67,6 +67,19 @@ app.get('/makeTeams', async (req,res) => {
   return res.send(await mt.makeTeams());
 });
 
+app.get('/getEmployees', async (req,res) => {
+  return res.send(await db.getEmployees());
+});
+
+app.post('/addEvaluation', async (req,res) => {
+  const {empA,relacion,empB} = req.body;
+
+  await db.addEvaluation(empA,relacion,empB);
+
+  res.send({success:true});
+
+});
+
 app.post('/deleteEvaluation', async (req,res) => {
   const {empA,relacion,empB} = req.body;
 

@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   equipos = [];
   counter: number = 0;
   loading: boolean = true;
+  arrEmpleados: string[];
 
   ngOnInit(): void {
     this.loading=true;
@@ -21,6 +22,10 @@ export class DashboardComponent implements OnInit {
     this.dsqls.getTeams().subscribe(res => {
       this.equipos = res;
     });
+
+    this.dsqls.getEmployees().subscribe(res => {
+      this.arrEmpleados = res;
+    })
 
     this.dsqls.getOrphans().subscribe(res => {
       this.huerfanos = res;

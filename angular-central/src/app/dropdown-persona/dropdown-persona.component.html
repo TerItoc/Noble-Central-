@@ -8,7 +8,7 @@
       </h2>
 
       <div id='{{"collapse"+id}}' class="accordion-collapse collapse" attr.aria-labelledby='{{"heading"+id}}' data-bs-parent="#accordionTeams">
-              <div class="accordion-body d-flex justify-content-center">
+            <div class="accordion-body d-flex justify-content-center">
 
 
                   <table class="table" id="Teams">
@@ -24,14 +24,87 @@
                           <td scope="row">{{evaluador.NombreEvaluador}}</td>
                           <td>{{evaluador.TipoRelacion}}</td>
                             <td>
-                            <button type="button" (click)="delEval(nombre,evaluador.TipoRelacion,evaluador.NombreEvaluador)" class="btn btn-light"><i class="fa-solid fa-x"></i></button>    
+                            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalRemover" (click)="setDelete(nombre,evaluador.TipoRelacion,evaluador.NombreEvaluador)"><i class="fa-solid fa-x"></i></button>
+
+                            
                             </td>
                           </tr>
                           
                       </tbody>
-                      </table>                    
-              </div>
+                      </table>
+                      
+                    
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button id="botonModalAgregar" type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalAgregar" (click)="setNombreAgregar(nombre)"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+
+            
+            
+            
       </div>
-      
   </div>
+</div>
+
+<!-- Modal Remover Confirm -->
+<div class="modal fade" id="modalRemover" tabindex="-1" aria-labelledby="modalRemoverLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modalRemoverLabel"><b>{{nombreDelete}}</b> ya no evaluara a: </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <b>{{nombreEvaluadorDelete}}</b> de manera "<b>{{tipoRelacionDelete}}</b>"<br>
+            <span class="greytext">Nota: Tambien se eliminara la evaluacion de {{nombreEvaluadorDelete}} a {{nombreDelete}} en viceversa</span>
+            
+
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="delEval(nombreDelete,tipoRelacionDelete,nombreEvaluadorDelete)">Confirmar</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal Agregar -->
+<div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarLabel">Agregar Evaluacion para: <b>{{nombreAgregar}}</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <form  (ngSubmit)="setRelacionAgregar(selectedRelacion) ; setEvaluadorAgregar(selectedEvaluador) ; saveEval()">
+                <select class="empleado-picker" [(ngModel)]="selectedEvaluador" [ngModelOptions]="{standalone: true}">
+                
+                    <option *ngFor="let empleado of arrEmpleados" value="{{empleado}}">{{empleado}}</option>
+    
+                </select>
+                
+                
+                <select class="relacion-picker" [(ngModel)]="selectedRelacion" [ngModelOptions]="{standalone: true}">
+                    
+                    <option *ngFor="let relacion of arrRelaciones" value="{{relacion}}">{{relacion}}</option>
+    
+                </select>
+
+                <div class="d-flex justify-content-center">
+                    <button id="saveButton" type="submit" class="btn btn-primary">Save</button>
+                </div>
+
+            </form>
+
+    </div>
 </div>

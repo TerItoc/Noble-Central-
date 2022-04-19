@@ -181,14 +181,58 @@ function turnSQLtoJsonEmpIds(sqlRes){
     return res;
 }
 
+async function addEvaluation(empA,TipoRelacion,empB){
+    let relacionID = getRelacionID(TipoRelacion);
+
+    let idEmpA = null;
+    await getEmployeeIdByName(empA).then((res) => {idEmpA = res});
+    let idEmpB = null;
+    await getEmployeeIdByName(empB).then((res) => {idEmpB = res});
+
+    //console.log(idEmpA,relacionID,idEmpB);
+    var query;
+
+    switch(relacionID){
+        case 0:
+            query = `
+                INSERT INTO EvaluaA Values (${idEmpA},0,${idEmpB}),(${idEmpB},0,${idEmpA});
+            `
+            break;
+
+        case 1:
+            query = `
+                INSERT INTO EvaluaA Values (${idEmpA},1,${idEmpB}),(${idEmpB},2,${idEmpA});
+            `
+            break;
+
+
+        case 2:
+            query = `
+                INSERT INTO EvaluaA Values (${idEmpA},2,${idEmpB}),(${idEmpB},1,${idEmpA});
+            `
+            break;
+
+        default:
+            -1
+    }
+
+    console.log("Added Evaluation" ,empA,relacionID,empB, "y su viceversa");
+    await postQuery(query);
+
+}
+
 async function getEmployeeIDs(){
     let res = await getQuery("SELECT * FROM Empleado");
     return turnSQLtoJsonEmpIds(res.recordset);
 }
 
 async function getEmployees(){
-    let employees = await getQuery("SELECT * FROM Empleado")
-    return employees.recordset;
+    let employees = await getQuery("SELECT Nombre FROM Empleado");
+    //console.log(employees);
+    let res = employees.recordset.map(x=> x.Nombre);
+    //Quita el primer elemento "EmpleadoNoRegistrado"
+    res.shift()
+    return res;
 }
 
 async function getEmployeeNames(){
@@ -511,6 +555,7 @@ module.exports = {
     getTeams : getTeams,
     getOrphans: getOrphans,
     deleteEvaluation: deleteEvaluation,
+    addEvaluation: addEvaluation,
     deleteCurrentTeams: deleteCurrentTeams,
     startConnection: startConnection,
     getEmployeeIDs: getEmployeeIDs,

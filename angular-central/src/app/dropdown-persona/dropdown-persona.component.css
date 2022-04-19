@@ -6,6 +6,35 @@
     color: black;
 }
 
+.fa-plus{
+    color: rgb(119, 119, 119);
+}
+
+#botonModalAgregar{
+    border-radius: 100%;
+    border:  1px solid gray;
+    margin-bottom: 20px;
+}
+
+.relacion-picker{
+    margin: 5px;
+}
+
+.empleado-picker{
+    margin: 5px;
+}
+
+#saveButton{
+    margin: 15px;
+    margin-right: 0;
+}
+
+.greytext{
+    color: gray;
+    font-style: italic;
+    font-size: small;
+}
+
 
 @media screen and (max-width: 650px){
     #Teams {

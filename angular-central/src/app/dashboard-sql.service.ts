@@ -24,7 +24,30 @@ export class DashboardSqlService {
   }
 
   getIfTeam(){
-      return this.http.get<ResultadoHuerfano>('http://localhost:3000/ifTeam');
+    return this.http.get<ResultadoHuerfano>('http://localhost:3000/ifTeam');
+  }
+
+  getEmployees(){
+    return this.http.get<string[]>('http://localhost:3000/getEmployees');
+  }
+
+  addEval(empA,relacion,empB){
+
+    const httpOptions = {headers : new HttpHeaders({
+      empA : empA,
+      relacion: relacion,
+      empB: empB,
+
+    })};
+
+    var relAAgregar : Relacion = {
+      empA : empA,
+      relacion: relacion,
+      empB: empB,
+    };
+
+
+    return this.http.post('http://localhost:3000/addEvaluation', relAAgregar);
   }
 
   delEval(empA,relacion,empB){
