@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
-import { FileUploadModule } from 'ng2-file-upload';
 
 import { AppComponent } from './app.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { AppRoutingModule } from './app-routing.module';
-
+import { AdminEvComponent } from './admin-ev/admin-ev.component';
+import { EmpleadoTEAMLESSComponent } from './empleado-teamless/empleado-teamless.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DropdownPersonaComponent } from './dropdown-persona/dropdown-persona.component';
 
 import {
   MsalModule,
@@ -17,6 +21,7 @@ import {
   MsalGuard,
   MsalInterceptor,
 } from '@azure/msal-angular';
+
 import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
 
 const isIE =
@@ -26,16 +31,23 @@ const isIE =
 @NgModule({
   declarations: [
     AppComponent,
-    FileUploadComponent,
     LoginComponent,
     DashboardComponent,
+    AdminEvComponent,
+    EmpleadoTEAMLESSComponent,
+    DropdownPersonaComponent,
+    FileUploadComponent,
   ],
 
   imports: [
     BrowserModule,
+    CommonModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    FileUploadModule,
+    ToastrModule.forRoot({
+      positionClass :'toast-bottom-right'
+    }),
     MsalModule.forRoot(
       new PublicClientApplication({
         auth: {

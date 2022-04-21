@@ -1,6 +1,17 @@
-<div class="wrapper">
-    <div class="file-upload input-group">
-        <input type="file" name="file" ng2FileSelect [uploader]="uploader" accept=".xlsx" class="form-control" />
-        <button type="button" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length"> Upload </button>
+<div class="d-flex justify-content-center">
+
+    <input id="inputFile" class="form-control"type="file" name="file" accept=".xlsx" (change)="handleFileInput($event)" />
+    
+    <button *ngIf="makingTeams; else elseBlock" class="btn btn-secondary" type="button" (click) = "upload()" disabled> Upload </button>
+
+    <ng-template #elseBlock>
+        <button  class="btn btn-success" type="button" (click) = "upload()"> Crear Equipos </button>
+    </ng-template>
+</div>
+
+<div *ngIf="makingTeams" style="padding: 50px;">
+    <h3>Se estan creando los equipos, por favor no salga de esta pagina</h3>
+    <div id="loading-div" class="d-flex justify-content-center align-items-center">
+        <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
     </div>
 </div>
