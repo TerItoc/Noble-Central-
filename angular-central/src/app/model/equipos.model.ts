@@ -10,4 +10,5 @@ export interface Equipo {
 export interface Evaluacion {
     NombreEvaluador: string;
     TipoRelacion: string;
+    estatus: number;
 }

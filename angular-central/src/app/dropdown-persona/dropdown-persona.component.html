@@ -16,17 +16,29 @@
                           <tr class="table-primary">
                           <th scope="col">Evaluador</th>
                           <th scope="col">Tipo de Evaluacion</th>
-                          <th scope="col" data-halign="center" data-align="center"></th>
+                          <th scope="col" data-halign="center" data-align="center">Estatus</th>
+                          <th scope="col" data-halign="center" data-align="center">Remover</th>
                           </tr>
                       </thead>
                       <tbody class="border">
                           <tr *ngFor="let evaluador of evaluadores">
                           <td scope="row">{{evaluador.NombreEvaluador}}</td>
                           <td>{{evaluador.TipoRelacion}}</td>
+                          <td>
+                            <span [ngSwitch]="evaluador.estatus">
+                                
+                                <button *ngSwitchCase="0" class="botonInvis" data-toggle="popover" title="Pending" data-content="La validacion esta pendiente"><i class="fa-solid fa-clock"></i></button>
+                                <button *ngSwitchCase="1" class="botonInvis" data-toggle="popover" title="Validado por Usuario" data-content="Esta relacion ya fue validada por esta persona"><i class="fa-solid fa-check"></i></button>
+                                <button *ngSwitchCase="2" class="botonInvis" data-toggle="popover" title="Existe un report y aqui va" data-content=""><i class="fa-solid fa-flag"></i></button>
+
+                                <i *ngSwitchDefault class="fa-solid fa-circle-exclamation"></i>
+                              </span>
+                          </td>
+                          
+                         
+
                             <td>
                             <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalRemover" (click)="setDelete(nombre,evaluador.TipoRelacion,evaluador.NombreEvaluador)"><i class="fa-solid fa-x"></i></button>
-
-                            
                             </td>
                           </tr>
                           
@@ -63,7 +75,7 @@
 
         </div>
         <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-danger" (click)="delEval(nombreDelete,tipoRelacionDelete,nombreEvaluadorDelete)">Confirmar</button>
         </div>
     </div>
@@ -101,7 +113,7 @@
                 </select>
 
                 <div class="d-flex justify-content-center">
-                    <button id="saveButton" type="submit" class="btn btn-primary">Save</button>
+                    <button id="saveButton" type="submit" class="btn btn-success">Save</button>
                 </div>
 
             </form>

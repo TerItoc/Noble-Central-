@@ -27,21 +27,54 @@ VALUES
 (1,'Lider a Equipo'),
 (2, 'Equipo a Lider');
 
+create table EstatusEvaluacion(
+    id int primary key,
+    estatusnombre varchar(255),
+)
+
+INSERT INTO EstatusEvaluacion(id, estatusnombre) 
+VALUES 
+(0,'Pendiente'),
+(1,'Validado'),
+(2, 'Reporte');
+
 create table EvaluaA(
     EmpleadoA int FOREIGN KEY REFERENCES empleado,
     TipoEvaluacion int FOREIGN KEY REFERENCES evaluacion,
     EmpleadoB int FOREIGN KEY REFERENCES empleado,
+    Estatus int FOREIGN KEY REFERENCES EstatusEvaluacion
 )
 
 SELECT CASE WHEN EXISTS (
     SELECT *
     FROM EvaluaA
 )
+
+
+
 THEN CAST(1 AS BIT)
 ELSE CAST(0 AS BIT) END
 
 
+        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre,estatus from EvaluaA
+        JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+        JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+        JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
 
+UPDATE EvaluaA
+SET estatus = 1
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 239;
+
+UPDATE EvaluaA
+SET estatus = 2
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 1 AND EmpleadoB = 239;
+
+SELECT CASE WHEN EXISTS (
+            SELECT *
+            FROM EvaluaA
+        )
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END
 
 SELECT Empleado.Nombre, Proyecto.Nombre
 FROM Trabaja_En
@@ -147,7 +180,9 @@ GO
 Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 
 
+
 delete EvaluaA
+delete Estatus
         delete Trabaja_En
         delete Proyecto
         DBCC CHECKIDENT ('Proyecto', RESEED, 0);

@@ -3,8 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ResultadoEquipos, Equipo } from './model/equipos.model';
 import { ResultadoHuerfano, Huerfano } from './model/orphan.model';
+import { ResultadoMakeTeams } from './model/response.model';
 import { Relacion } from './model/evaluacion.model';
 import { json } from 'body-parser';
+import { environment } from 'src/environments/environment';
+import { FormsModule } from '@angular/forms';
+import { RequestOptions } from 'https';
 
 
 @Injectable({
@@ -16,29 +20,34 @@ export class DashboardSqlService {
   constructor(private http: HttpClient) {};
 
   getTeams() {
-    return this.http.get<ResultadoEquipos>('http://localhost:3000/getTeams').pipe(map((res) => {return res.equipos}));
+    return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos}));
   }
 
   getOrphans() {
-    return this.http.get<ResultadoHuerfano>('http://localhost:3000/getOrphans').pipe(map((res) => {return res.huerfanos}));
+    return this.http.get<ResultadoHuerfano>(environment.backendUrl+'/getOrphans').pipe(map((res) => {return res.huerfanos}));
   }
 
   getIfTeam(){
-    return this.http.get<ResultadoHuerfano>('http://localhost:3000/ifTeam');
+    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();;
   }
 
   getEmployees(){
-    return this.http.get<string[]>('http://localhost:3000/getEmployees');
+    return this.http.get<string[]>(environment.backendUrl+'/getEmployees');
+  }
+
+  postFile(file : File){
+    let formData:FormData = new FormData();
+    formData.append('file', file, file.name);
+    
+    //const headers : Headers = new Headers();
+    //headers.append('Content-Type', 'text');
+    //let options : RequestOptions = new RequestOptions({ headers: headers });
+    //formData.append(headers);
+
+    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
   }
 
   addEval(empA,relacion,empB){
-
-    const httpOptions = {headers : new HttpHeaders({
-      empA : empA,
-      relacion: relacion,
-      empB: empB,
-
-    })};
 
     var relAAgregar : Relacion = {
       empA : empA,
@@ -47,17 +56,10 @@ export class DashboardSqlService {
     };
 
 
-    return this.http.post('http://localhost:3000/addEvaluation', relAAgregar);
+    return this.http.post(environment.backendUrl+'/addEvaluation', relAAgregar);
   }
 
   delEval(empA,relacion,empB){
-
-    const httpOptions = {headers : new HttpHeaders({
-      empA : empA,
-      relacion: relacion,
-      empB: empB,
-
-    })};
 
     var relABorrar : Relacion = {
       empA : empA,
@@ -66,7 +68,7 @@ export class DashboardSqlService {
     };
 
 
-    return this.http.post('http://localhost:3000/deleteEvaluation', relABorrar);
+    return this.http.post(environment.backendUrl+'/deleteEvaluation', relABorrar);
   }
 
 }

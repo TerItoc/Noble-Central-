@@ -1,9 +1,9 @@
 <div *ngIf="loading; else elseBlock">
     <div id="loading-div" class="d-flex justify-content-center align-items-center">
-
         <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
     </div>
 </div>
+
 <ng-template #elseBlock>
 
     <h3><b>Equipos</b></h3>
@@ -29,9 +29,18 @@
             </table> 
     </div>
 
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-danger" style="margin: 15px;" >Cargar Otro Archivo</button>
+
+        <!-- Aqui iria un ngif para checar is ya estan publicados los equipos y si no ya te manda a guardar equipos -->
+        <button class="btn btn-primary" style="margin: 15px;">Mandar Equipos A Validar</button>
+
+    </div>
+    <br><br><br><br><br>
+
+    <button (click)="goTop()" class="goUpBtn myBtn" title="Go to top"><i class="fa-solid fa-up-long"></i></button>
+    <button (click)="goBottom()" class="goDownBtn myBtn" title="Go to bottom"><i class="fa-solid fa-down-long"></i></button>
+
 
 </ng-template>
-
-                   
-
 

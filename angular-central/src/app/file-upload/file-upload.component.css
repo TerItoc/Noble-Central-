@@ -1,4 +1,7 @@
-.file-upload {
-    width: 50%;
-    margin-left: 25%;
+#inputFile{
+    width: 25%;
+}
+
+.wrapper{
+    display: inline;
 }

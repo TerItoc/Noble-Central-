@@ -2,7 +2,19 @@
     width: 60%
 }
 
+.fa-check{
+    color: limegreen;
+}
+
+.fa-flag{
+    color: red;
+}
+
 .fa-x{
+    color: black;
+}
+
+.fa-clock{
     color: black;
 }
 
@@ -16,6 +28,11 @@
     margin-bottom: 20px;
 }
 
+.botonInvis{
+    background:transparent; 
+    border:none; 
+    color:transparent;
+}
 .relacion-picker{
     margin: 5px;
 }

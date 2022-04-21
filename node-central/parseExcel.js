@@ -28,12 +28,20 @@ mn = {
     sqlColumnaEmpleadoNombre: "Nombre",
 }
 
-function loadExcel(filePath){
+function loadExcel(file){
     const folder = path.join(process.cwd());
-    let local_xcel = folder + "/equipos.xlsx";
+    saveExcelName = folder + "/equipos.xlsx"
+
+    fs.writeFileSync(saveExcelName, file.data, error => {
+        if(error){
+            console.log(error);
+        }
+    })
+
     outputFilename = folder + "/equipos.csv"
     
-    const workBook = XLSX.readFile(local_xcel);
+    const workBook = XLSX.readFile(saveExcelName);
+
     XLSX.writeFile(workBook,outputFilename , { bookType: "csv" });
     
     var content = fs.readFileSync(outputFilename, "utf8");
@@ -165,12 +173,13 @@ function term(str, char) {
     return xStr + char;
 }
 
-async function makeTeams(){
+async function makeTeams(file){
 
+    console.log("Making Teams");
 
     try{
         //Parse
-        let rawExcelData = loadExcel();
+        let rawExcelData = loadExcel(file);
 
         //Sums hours and removes totals
         let excelData = reduceMatrix(rawExcelData);
@@ -196,12 +205,9 @@ async function makeTeams(){
         await db.postProjects(leaderWithProject);
         await db.postHorasPorEmpleado(hoursPerEmployee);
 
-        //console.log(getEmployeeWorkedOn(hoursPerEmployee,"Alfredo Martinez",mn.horasMinimas))
-        //db.getEmployees().then(result => {console.log(result)})   
-        //console.log(getEmployeesThatWorkedOnProject(hoursPerEmployee,"ACP - Coursetune",mn.horasMinimas))
-
         //Ya que posteamos los empleados extraemos para saber el ID de cada uno
 
+        //Esto deberia estar en dbOperations
         empIds = null;
         await db.getEmployeeIDs().then((res) => {empIds = res;});
 
@@ -239,7 +245,7 @@ async function makeTeams(){
                         continue
                     }               
                     
-                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+"),";
+                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", 0),";
                     rowCounter++;
 
                     if(rowCounter > 990){
@@ -258,12 +264,12 @@ async function makeTeams(){
         
         console.log("Finished Teams")
 
-        return {success: true};
+        return {success: true, message : "Made Teams"};
     }
     catch(error){
-        
-        return {success: false,
-                error : error};
+        console.log(error);
+
+        return {success: false, message : "Error Parseando el Excel"};
     }
     
 }

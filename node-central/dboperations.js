@@ -3,6 +3,8 @@ const sql = require("mssql");
 
 var pool; 
 
+//SQL Injection protection en otro archivo
+
 async function startConnection(){
     pool = await sql.connect(config);
 }
@@ -14,6 +16,7 @@ async function getQuery(query){
     }
     catch(error){
         console.log("Error en:", query);
+        return error;
     }
 }
 
@@ -132,7 +135,7 @@ function processTeams(recordset){
     for (let i = 0; i < recordset.length; i++) {
         let row = recordset[i];
 
-        let relation = {NombreEvaluador: row.Nombre, TipoRelacion: row.EvaluacionNombre};
+        let relation = {NombreEvaluador: row.Nombre, TipoRelacion: row.EvaluacionNombre, estatus : row.estatus};
 
         if(teams[row.nombre]){
             teams[row.nombre].push(relation);
@@ -160,7 +163,7 @@ function processTeams(recordset){
 async function getTeams(){
 
     let teams = await getQuery(`
-        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre from EvaluaA
+        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus from EvaluaA
         JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
         JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
         JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
@@ -195,20 +198,20 @@ async function addEvaluation(empA,TipoRelacion,empB){
     switch(relacionID){
         case 0:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},0,${idEmpB}),(${idEmpB},0,${idEmpA});
+                INSERT INTO EvaluaA Values (${idEmpA},0,${idEmpB},0),(${idEmpB},0,${idEmpA},0);
             `
             break;
 
         case 1:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},1,${idEmpB}),(${idEmpB},2,${idEmpA});
+                INSERT INTO EvaluaA Values (${idEmpA},1,${idEmpB},0),(${idEmpB},2,${idEmpA},0);
             `
             break;
 
 
         case 2:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},2,${idEmpB}),(${idEmpB},1,${idEmpA});
+                INSERT INTO EvaluaA Values (${idEmpA},2,${idEmpB},0),(${idEmpB},1,${idEmpA},0);
             `
             break;
 
@@ -216,7 +219,7 @@ async function addEvaluation(empA,TipoRelacion,empB){
             -1
     }
 
-    console.log("Added Evaluation" ,empA,relacionID,empB, "y su viceversa");
+    console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
     await postQuery(query);
 
 }

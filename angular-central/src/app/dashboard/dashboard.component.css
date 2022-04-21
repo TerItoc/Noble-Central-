@@ -22,3 +22,38 @@ h3{
     top: 0; 
     left: 0;
 }
+
+.fa-up-to-line{
+color: black;
+}
+
+.fa-down-to-line{
+color: black;
+}
+
+.goDownBtn {
+    display: block;
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    padding: 5px;
+
+}
+
+.goUpBtn {
+    display: block;
+    position: fixed;
+    bottom: 90px;
+    right: 10px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    padding: 5px;
+}
+  
+.myBtn:hover {
+    background-color: gray;
+}
