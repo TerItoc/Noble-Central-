@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { AdminEvComponent } from './admin-ev/admin-ev.component';
+import { EmpleadoTEAMLESSComponent } from './empleado-teamless/empleado-teamless.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -12,6 +14,8 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [MsalGuard],
   },
+  { path: 'adminEV', component: AdminEvComponent },
+  { path: 'empleadoTEAMLESS', component: EmpleadoTEAMLESSComponent },
   { path: '**', redirectTo: 'login' },
 ];
 

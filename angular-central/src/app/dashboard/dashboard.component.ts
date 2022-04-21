@@ -58,9 +58,8 @@ export class DashboardComponent implements OnInit {
       filter((status: InteractionStatus) => status === InteractionStatus.None)
     )
     .subscribe(() => {
-      this.getProfile()
-      this.setLoginDisplay();
       this.getProfile();
+      this.setLoginDisplay();
     })
 
     this.dsqls.getIfTeam().then(res => {
@@ -82,7 +81,8 @@ export class DashboardComponent implements OnInit {
       }
   
       else{
-        this.router.navigateByUrl('adminEV')
+        console.log("going to adminev");
+        this.router.navigateByUrl('adminEV');
       }
     })
   }
