@@ -1,3 +1,11 @@
+<div *ngIf="loginDisplay">
+  que onda
+  <!-- <p>Nombre: {{profile.givenName}}</p>
+  <p>Apellido: {{profile.surname}}</p>
+  <p>Correo: {{profile.userPrincipalName}}</p>
+  <p>Id: {{profile.id}}</p> -->
+  <button (click)="logout()">cerrar sesion</button>
+</div>
 <div *ngIf="loading; else elseBlock">
     <div id="loading-div" class="d-flex justify-content-center align-items-center">
         <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
