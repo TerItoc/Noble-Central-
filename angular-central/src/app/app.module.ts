@@ -42,7 +42,7 @@ const isIE =
           clientId: 'bed5c4ff-8b0f-4770-bf78-53ba11750473',
           authority:
             'https://login.microsoftonline.com/c65a3ea6-0f7c-400b-8934-5a6dc1705645',
-          redirectUri: 'http://localhost:4200/dashboard',
+          redirectUri: 'http://localhost:4200',
         },
         cache: {
           cacheLocation: 'localStorage',
