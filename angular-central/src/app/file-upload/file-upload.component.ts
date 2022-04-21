@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
-import { ToastrService } from 'ngx-toastr';
 
 const URL = 'http://localhost:3000/api/upload';
 
@@ -17,7 +16,7 @@ export class FileUploadComponent implements OnInit {
       itemAlias: 'file',
     });
     
-    constructor(private toastr: ToastrService) {}
+    constructor() {}
     
     ngOnInit() {
       
@@ -27,7 +26,6 @@ export class FileUploadComponent implements OnInit {
       
       this.uploader.onCompleteItem = (item: any, status: any) => {
         console.log('Uploaded File Details:', item);
-        this.toastr.success('File successfully uploaded!');
       };
     }
 }
