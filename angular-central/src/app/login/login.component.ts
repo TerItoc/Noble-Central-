@@ -1,21 +1,16 @@
-import {
-  MsalService,
-  MsalBroadcastService,
-  MSAL_GUARD_CONFIG,
-  MsalGuardConfiguration,
-} from '@azure/msal-angular';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalService, MSAL_GUARD_CONFIG } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest } from '@azure/msal-browser';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs';
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit, OnDestroy {
+
   loginDisplay = false;
   private readonly _destroying$ = new Subject<void>();
 
@@ -23,8 +18,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private broadcastService: MsalBroadcastService,
     private authService: MsalService,
-    private http: HttpClient
-  ) {}
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.broadcastService.inProgress$
@@ -36,38 +31,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     )
     .subscribe(() => {
       this.setLoginDisplay();
+      if(this.loginDisplay) this.router.navigateByUrl('dashboard');
     })
   }
 
   login() {
-    if (this.msalGuardConfig.authRequest){
-      this.authService.loginRedirect({
-        ...this.msalGuardConfig.authRequest,
-      } as RedirectRequest);
+    if(this.msalGuardConfig.authRequest) {
+      this.authService.loginRedirect({...this.msalGuardConfig.authRequest} as RedirectRequest);
+    } else {
+      this.authService.loginRedirect();
     }
-    else this.authService.loginRedirect();
-  }
-
-  logout() {
-    this.authService.logoutRedirect({
-      postLogoutRedirectUri: 'http://localhost:4200',
-    });
   }
 
   setLoginDisplay() {
     this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
-    console.log(this.authService.instance.getAllAccounts().length)
   }
 
   ngOnDestroy(): void {
-    this._destroying$.next(undefined);
-    this._destroying$.complete();
-  }
-
-  getProfile(){
-    this.http.get('https://graph.microsoft.com/v1.0/me')
-    .subscribe(profile =>{
-      console.log(profile);
-    })
+      this._destroying$.next(undefined);
+      this._destroying$.complete();
   }
 }

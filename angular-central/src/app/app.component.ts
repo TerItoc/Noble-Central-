@@ -1,17 +1,61 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { LoginComponent } from './login/login.component';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+import { InteractionStatus } from '@azure/msal-browser';
+import { filter, Subject, takeUntil } from 'rxjs';
+
+type ProfileType = {
+  givenName?: string;
+  surname?: string;
+  userPrincipalName?: string;
+  id?: string;
+};
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit{
-  title="Hola"
+export class AppComponent implements OnInit {
+  title = 'IPScentral';
+
+  profile!: ProfileType;
+
+  loginDisplay = false;
   isIframe = false;
+  private _destroying$ = new Subject<void>();
+
+  constructor(
+    private broadcastService: MsalBroadcastService,
+    private authService: MsalService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
-      this.isIframe = window !== window.parent && !window.opener;
+    this.isIframe = window !== window.parent && !window.opener;
+
+    this.broadcastService.inProgress$
+      .pipe(
+        filter(
+          (status: InteractionStatus) => status === InteractionStatus.None
+        ),
+        takeUntil(this._destroying$)
+      )
+      .subscribe(() => {
+        this.setLoginDisplay();
+        if(this.loginDisplay) this.getProfile();
+      });
   }
 
+  setLoginDisplay() {
+    this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
+  }
+
+  getProfile() {
+    this.http
+      .get('https://graph.microsoft.com/v1.0/me')
+      .subscribe((profile) => {
+        this.profile = profile;
+      });
+  }
 }

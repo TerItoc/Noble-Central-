@@ -1,0 +1,15 @@
+footer {
+  position: absolute !important;
+  bottom: 0px;
+  width: 100%;
+  padding: 0.5em;
+  background-color: #ff7c31;
+}
+
+#logo {
+  width: 15%;
+}
+
+.nav-element {
+  color: white;
+}

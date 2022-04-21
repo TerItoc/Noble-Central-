@@ -6,11 +6,10 @@ import { FileUploadModule } from 'ng2-file-upload';
 
 import { AppComponent } from './app.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
+import { AppRoutingModule } from './app-routing.module';
+
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { FooterComponent } from './layout/footer/footer.component';
-import { HeaderComponent } from './layout/header/header.component';
-import { AppRoutingModule } from './app-routing.module';
 
 import {
   MsalModule,
@@ -30,8 +29,6 @@ const isIE =
     FileUploadComponent,
     LoginComponent,
     DashboardComponent,
-    FooterComponent,
-    HeaderComponent,
   ],
 
   imports: [

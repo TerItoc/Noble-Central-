@@ -1,7 +1,8 @@
-{{loginDisplay}}
-<div *ngIf="!loginDisplay">
-    <p>Inicia sesion</p>
-</div>
 <div *ngIf="loginDisplay">
-    <p>Madre mia willy que haces aqui compañero</p>
+  que onda
+  <!-- <p>Nombre: {{profile.givenName}}</p>
+  <p>Apellido: {{profile.surname}}</p>
+  <p>Correo: {{profile.userPrincipalName}}</p>
+  <p>Id: {{profile.id}}</p> -->
+  <button (click)="logout()">cerrar sesion</button>
 </div>
