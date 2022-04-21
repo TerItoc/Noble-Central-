@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit {
     .subscribe(() => {
       this.getProfile()
       this.setLoginDisplay();
+      this.getProfile();
     })
   }
 
