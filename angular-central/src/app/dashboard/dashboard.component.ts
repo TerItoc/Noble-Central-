@@ -58,6 +58,7 @@ export class DashboardComponent implements OnInit {
       filter((status: InteractionStatus) => status === InteractionStatus.None)
     )
     .subscribe(() => {
+      this.setLoginDisplay();
       this.getProfile();
       this.setLoginDisplay();
     })
