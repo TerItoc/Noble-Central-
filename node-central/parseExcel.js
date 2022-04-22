@@ -212,7 +212,7 @@ async function makeTeams(file){
         await db.getEmployeeIDs().then((res) => {empIds = res;});
 
         let sqlQuery = `
-            Insert Into EvaluaA values
+            Insert Into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values
 
         `
 

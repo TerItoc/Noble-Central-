@@ -198,20 +198,20 @@ async function addEvaluation(empA,TipoRelacion,empB){
     switch(relacionID){
         case 0:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},0,${idEmpB},0),(${idEmpB},0,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},0,${idEmpB},0),(${idEmpB},0,${idEmpA},0);
             `
             break;
 
         case 1:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},1,${idEmpB},0),(${idEmpB},2,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},1,${idEmpB},0),(${idEmpB},2,${idEmpA},0);
             `
             break;
 
 
         case 2:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},2,${idEmpB},0),(${idEmpB},1,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},2,${idEmpB},0),(${idEmpB},1,${idEmpA},0);
             `
             break;
 
@@ -524,9 +524,11 @@ async function deleteCurrentTeams(){
         delete EvaluaA
         delete Trabaja_En
         delete Proyecto
+        delete Reportes
         DBCC CHECKIDENT ('Proyecto', RESEED, 0);
         delete Empleado
         DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
         insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
     );
 

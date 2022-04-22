@@ -17,11 +17,12 @@ type ProfileType = {
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  version : string = "0.0.1";
   title = 'IPScentral';
 
   profile!: ProfileType;
-
   loginDisplay = false;
+
   isIframe = false;
   private _destroying$ = new Subject<void>();
 
@@ -57,5 +58,11 @@ export class AppComponent implements OnInit {
       .subscribe((profile) => {
         this.profile = profile;
       });
+  }
+
+  logout() {
+    this.authService.logoutRedirect({
+      postLogoutRedirectUri: 'http://localhost:4200/login'
+    })
   }
 }

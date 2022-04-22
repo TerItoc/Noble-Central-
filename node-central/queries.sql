@@ -39,19 +39,29 @@ VALUES
 (2, 'Reporte');
 
 create table EvaluaA(
+    EvaluacionID int identity(0,1) primary key,
     EmpleadoA int FOREIGN KEY REFERENCES empleado,
     TipoEvaluacion int FOREIGN KEY REFERENCES evaluacion,
     EmpleadoB int FOREIGN KEY REFERENCES empleado,
     Estatus int FOREIGN KEY REFERENCES EstatusEvaluacion
 )
 
-SELECT CASE WHEN EXISTS (
-    SELECT *
-    FROM EvaluaA
+create table Reportes(
+    EvaluacionID int FOREIGN KEY REFERENCES evaluaa,
+    Reporte VARCHAR(255),
+)
+
+create table Administradores(
+    Nombre VARCHAR(255),
+    Correo VARCHAR(255),
 )
 
 
 
+SELECT CASE WHEN EXISTS (
+    SELECT *
+    FROM EvaluaA
+)
 THEN CAST(1 AS BIT)
 ELSE CAST(0 AS BIT) END
 
@@ -63,11 +73,11 @@ ELSE CAST(0 AS BIT) END
 
 UPDATE EvaluaA
 SET estatus = 1
-WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 239;
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 199;
 
 UPDATE EvaluaA
 SET estatus = 2
-WHERE EmpleadoA = 182 AND TipoEvaluacion = 1 AND EmpleadoB = 239;
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 208;
 
 SELECT CASE WHEN EXISTS (
             SELECT *
@@ -105,7 +115,7 @@ JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
 WHERE Proyecto.Nombre = 'ACP - Coursetune' and Horas > 50
 
 
-
+select * from Trabaja_En
 
 SELECT Proyecto.Nombre
 FROM Trabaja_En
@@ -136,8 +146,6 @@ select * from evaluacion
 
 
 select * from Proyecto 
-
-
 
 
 select ProyectoID from Proyecto where Nombre = 'ACP - Coursetune'
@@ -172,22 +180,12 @@ SELECT CASE WHEN EXISTS (
 delete EvaluaA 
 delete Trabaja_En 
 delete Proyecto 
+delete Reportes
 DBCC CHECKIDENT ('Proyecto', RESEED, 0); 
 GO 
 delete Empleado 
 DBCC CHECKIDENT ('Empleado', RESEED, 0); 
 GO 
+DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
+GO 
 Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
-
-
-
-delete EvaluaA
-delete Estatus
-        delete Trabaja_En
-        delete Proyecto
-        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
-        delete Empleado
-        DBCC CHECKIDENT ('Empleado', RESEED, 0);
-        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
-
-
