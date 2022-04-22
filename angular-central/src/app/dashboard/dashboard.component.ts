@@ -20,7 +20,6 @@ type ProfileType = {
   styleUrls: ['./dashboard.component.css']
 })
 
-//TODO Modificar para que se despliegue la informacion por empleado
 export class DashboardComponent implements OnInit {
 
   loginDisplay = false;
@@ -60,7 +59,6 @@ export class DashboardComponent implements OnInit {
     .subscribe(() => {
       this.setLoginDisplay();
       this.getProfile();
-      this.setLoginDisplay();
     })
 
     this.dsqls.getIfTeam().then(res => {
@@ -82,7 +80,6 @@ export class DashboardComponent implements OnInit {
       }
   
       else{
-        console.log("going to adminev");
         this.router.navigateByUrl('adminEV');
       }
     })
