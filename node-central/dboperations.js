@@ -100,35 +100,67 @@ async function deleteEvaluation(empA,relacion,empB){
 }
 
 function processOrphans(recordset){
-    huerfanos = []
+    huerfanos = {}
 
     //console.log(recordset);
+
     for (let i = 0; i < recordset.length; i++) {
         let row = recordset[i];
 
-        let huerfano = {NombreHuerfano: row.Nombre[0], ProyectoDondeTrabajo: row.Nombre[1]};
-        huerfanos.push(huerfano);
-        
+        let currProject = {Proyecto: row.Proyecto, Lider: row.Lider}
+
+        if(huerfanos[row.Nombre]){
+            huerfanos[row.Nombre].push(currProject);
+        }
+        else{
+            huerfanos[row.Nombre] = [currProject];
+        }
     }
 
-    return {huerfanos: huerfanos};
+    //console.log(huerfanos);
+
+    let huerfanosParsed = [];
+    for(const [key, value] of Object.entries(huerfanos)){
+        let newEntry = {}
+        newEntry.nombreHuerfano = key;
+        newEntry.proyectos = value;
+        //console.log(newEntry);
+        huerfanosParsed.push(newEntry);
+    }
+
+    return {huerfanos: huerfanosParsed};
 
 }
 async function getOrphans(){
 
     let orphans = await getQuery(`
-        SELECT Empleado.Nombre, Proyecto.Nombre
+        SELECT EmpHuerfano.Nombre AS Nombre, Proyecto.Nombre AS Proyecto, EmpLider.Nombre AS Lider
         FROM Trabaja_En
         JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
-        JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
-        where Empleado.Nombre in (SELECT distinct nombre FROM Empleado
+        JOIN Empleado EmpHuerfano ON Trabaja_En.EmpleadoID = EmpHuerfano.EmpleadoID
+        join Empleado EmpLider ON Proyecto.Lider = EmpLider.EmpleadoID
+        where EmpHuerfano.Nombre in (SELECT distinct nombre FROM Empleado
         WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
                                 JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
     `)
     //console.log(processTeams(teams.recordset));
-    return processOrphans(orphans.recordset);
 
+    return processOrphans(orphans.recordset);
 }
+
+async function getEvaluationsForEmail(correo){
+
+    let evals = await getQuery(`
+        select EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
+        Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}')
+    `)
+
+    return evals.recordset;
+}
+
 function processTeams(recordset){
     let teams = {};
 
@@ -182,6 +214,22 @@ function turnSQLtoJsonEmpIds(sqlRes){
         res[row[mn.sqlColumnaEmpleadoNombre]] = row[mn.sqlColumnaEmpleadoID]
     }
     return res;
+}
+
+async function isAdmin(correo){
+    let q = await getQuery(`
+        select COUNT(*) from Administradores where Correo = '${correo}'
+    `)
+    let res = q.recordset[0][''];
+
+    if(res == 0){
+        return {isAdmin: "false"};
+    }
+
+    else{
+        return {isAdmin: "true"};
+    }
+
 }
 
 async function addEvaluation(empA,TipoRelacion,empB){
@@ -565,4 +613,6 @@ module.exports = {
     startConnection: startConnection,
     getEmployeeIDs: getEmployeeIDs,
     ifTeam: ifTeam,
+    isAdmin: isAdmin,
+    getEvaluationsForEmail: getEvaluationsForEmail,
 }

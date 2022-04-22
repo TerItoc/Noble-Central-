@@ -189,3 +189,52 @@ GO
 DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
 GO 
 Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
+
+--PARA INSERTAR DE EMPLEADO MI CORREO
+delete Empleado WHERE EmpleadoID = 242
+INSERT into Empleado(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
+Insert into EvaluaA values(241,0,4,0)
+Insert into EvaluaA values(241,1,5,0)
+Insert into EvaluaA values(241,2,7,0)
+Insert into EvaluaA values(241,0,9,0)
+Insert into EvaluaA values(241,0,11,0)
+
+INSERT INTO Administradores values('AA Nicolas Cardenas','A01114959@tec.mx')
+delete Administradores
+
+
+select COUNT(*) from Administradores where Correo = 'A01114959@tec.mx'
+
+        SELECT EmpHuerfano.Nombre AS Nombre, Proyecto.Nombre AS Proyecto, EmpLider.Nombre AS Lider
+        FROM Trabaja_En
+        JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
+        JOIN Empleado EmpHuerfano ON Trabaja_En.EmpleadoID = EmpHuerfano.EmpleadoID
+        join Empleado EmpLider ON Proyecto.Lider = EmpLider.EmpleadoID
+        where EmpHuerfano.Nombre in (SELECT distinct nombre FROM Empleado
+        WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
+                                JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
+
+select * from evalua where 
+
+select * from EvaluaA 
+Join Empleado EmpB on EvaluaA.EmpleadoB
+
+where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx')
+
+
+select * from Empleado
+
+
+
+select * from EvaluaA
+
+
+        delete EvaluaA
+        delete Trabaja_En
+        delete Proyecto
+        delete Reportes
+        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
+        delete Empleado
+        DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
+        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`

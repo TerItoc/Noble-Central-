@@ -77,6 +77,34 @@ let upload = multer({
   fileFilter: excelFilter
 });
 
+
+app.post('/getEmployeeEvals', async (req,res) => {
+
+  if(!req.body.correo){
+    res.send({success : false, info: undefined});
+  }
+
+  try{
+    res.send(await db.getEvaluationsForEmail(req.body.correo));
+  
+  }catch(error){
+    res.send({success : false, info: undefined});
+  }
+})
+
+app.post('/isAdmin', async (req,res) => {
+  if(!req.body.correo){
+    res.send({isAdmin : "No hay correo"});
+  }
+
+  try{
+    res.send(await db.isAdmin(req.body.correo));
+  }
+  catch ( error) {
+    res.send({isAdmin : "Error"});
+  }
+}) 
+
 // POST File
 app.post('/makeTeams', async (req, res) => {
   //console.log(req.file);

@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AdminEvComponent } from './admin-ev/admin-ev.component';
-import { EmpleadoTEAMLESSComponent } from './empleado-teamless/empleado-teamless.component';
+import { EmpleadoComponent } from './empleado/empleado.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DropdownPersonaComponent } from './dropdown-persona/dropdown-persona.component';
@@ -23,6 +23,7 @@ import {
 } from '@azure/msal-angular';
 
 import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
+import { DropdownHuerfanoComponent } from './dropdown-huerfano/dropdown-huerfano.component';
 
 const isIE =
   window.navigator.userAgent.indexOf('MSIE ') > -1 ||
@@ -34,9 +35,11 @@ const isIE =
     LoginComponent,
     DashboardComponent,
     AdminEvComponent,
-    EmpleadoTEAMLESSComponent,
+    EmpleadoComponent,
     DropdownPersonaComponent,
     FileUploadComponent,
+    DropdownHuerfanoComponent,
+    EmpleadoComponent,
   ],
 
   imports: [
