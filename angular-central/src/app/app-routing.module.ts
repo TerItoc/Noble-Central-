@@ -15,7 +15,7 @@ const routes: Routes = [
     canActivate: [MsalGuard],
   },
   { path: 'adminEV', component: AdminEvComponent },
-  { path: 'empleado', component: EmpleadoComponent },
+  { path: 'empleado', component: EmpleadoComponent},
   { path: '**', redirectTo: 'login' },
 ];
 
