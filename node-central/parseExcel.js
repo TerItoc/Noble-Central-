@@ -245,7 +245,7 @@ async function makeTeams(file){
                         continue
                     }               
                     
-                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", 0),";
+                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", -1),";
                     rowCounter++;
 
                     if(rowCounter > 990){

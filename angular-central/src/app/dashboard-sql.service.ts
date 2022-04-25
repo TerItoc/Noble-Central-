@@ -29,7 +29,15 @@ export class DashboardSqlService {
   }
 
   getIfTeam(){
-    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();;
+    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();
+  }
+
+  getValidando(){
+    return this.http.get<boolean>(environment.backendUrl+'/ifValidando').toPromise();
+  }
+
+  publishTeams(){
+    return this.http.get<Response>(environment.backendUrl+'/publishTeams');
   }
 
   getEmployeeEval(correo:string){

@@ -155,7 +155,7 @@ async function getEvaluationsForEmail(correo){
         Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}')
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') AND Estatus = 0
     `)
 
     return evals.recordset;
@@ -190,6 +190,36 @@ function processTeams(recordset){
 
     return {equipos:equipos};
 
+}
+
+async function ifValidando(){
+    let res = await getQuery(`
+        SELECT CASE
+        WHEN NOT EXISTS(SELECT *
+                        FROM   EvaluaA
+                        WHERE  Estatus <> -1) THEN 'false'
+        ELSE 'true'
+    END AS ress
+    `)
+
+    return res.recordset[0].ress
+
+}
+
+async function publishTeams(){
+
+    try{
+        let res = await getQuery(`
+            UPDATE EvaluaA
+            SET Estatus = 0
+        `)
+
+        return {success : true, message: "successful publish"}
+    }
+    catch(error){
+        return {success : false, message: "couldnt publish"}
+
+    }
 }
 
 async function getTeams(){
@@ -235,6 +265,21 @@ async function isAdmin(correo){
 async function addEvaluation(empA,TipoRelacion,empB){
     let relacionID = getRelacionID(TipoRelacion);
 
+    if(empA == empB){
+        return;
+    }
+
+    let validando = null;
+    await ifValidando().then((res) => { validando = res});
+
+    console.log(validando);
+    if(validando == "true"){
+        estatus = 0;
+    }
+    else{
+        estatus = -1;
+    }
+
     let idEmpA = null;
     await getEmployeeIdByName(empA).then((res) => {idEmpA = res});
     let idEmpB = null;
@@ -246,20 +291,20 @@ async function addEvaluation(empA,TipoRelacion,empB){
     switch(relacionID){
         case 0:
             query = `
-                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},0,${idEmpB},0),(${idEmpB},0,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},0,${idEmpB},${estatus}),(${idEmpB},0,${idEmpA},${estatus});
             `
             break;
 
         case 1:
             query = `
-                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},1,${idEmpB},0),(${idEmpB},2,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},1,${idEmpB},${estatus}),(${idEmpB},2,${idEmpA},${estatus});
             `
             break;
 
 
         case 2:
             query = `
-                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},2,${idEmpB},0),(${idEmpB},1,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},2,${idEmpB},${estatus}),(${idEmpB},1,${idEmpA},${estatus});
             `
             break;
 
@@ -267,7 +312,8 @@ async function addEvaluation(empA,TipoRelacion,empB){
             -1
     }
 
-    console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
+    //console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
+    console.log(query);
     await postQuery(query);
 
 }
@@ -615,4 +661,6 @@ module.exports = {
     ifTeam: ifTeam,
     isAdmin: isAdmin,
     getEvaluationsForEmail: getEvaluationsForEmail,
+    ifValidando: ifValidando,
+    publishTeams : publishTeams,
 }

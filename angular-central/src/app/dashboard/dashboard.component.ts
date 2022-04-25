@@ -25,6 +25,8 @@ export class DashboardComponent implements OnInit {
   loading: boolean = true;
   arrEmpleados: string[];
 
+  validando : boolean = true;
+
   ifTeam : boolean = false;
 
   constructor(
@@ -39,6 +41,10 @@ export class DashboardComponent implements OnInit {
       this.ifTeam = res;
 
       if(this.ifTeam){
+        this.dsqls.getValidando().then(res => {
+          this.validando = res;
+        });
+
         this.dsqls.getTeams().subscribe(res => {
           this.equipos = res;
         });
@@ -57,6 +63,22 @@ export class DashboardComponent implements OnInit {
         this.router.navigateByUrl('adminEV');
       }
     })
+  }
+
+  refresh(): void {
+    window.location.reload();
+  }
+
+  publishTeams(){
+    this.loading = true;
+    this.dsqls.publishTeams().subscribe(res => {
+      this.loading = false;
+      this.refresh();
+    });
+  }
+
+  saveTeams(){
+    
   }
 
   goBottom(){

@@ -34,6 +34,7 @@ create table EstatusEvaluacion(
 
 INSERT INTO EstatusEvaluacion(id, estatusnombre) 
 VALUES 
+(-1,'Sin Publicar'),
 (0,'Pendiente'),
 (1,'Validado'),
 (2, 'Reporte');
@@ -56,6 +57,18 @@ create table Administradores(
     Correo VARCHAR(255),
 )
 
+SELECT CASE
+    WHEN NOT EXISTS(SELECT *
+                    FROM   EvaluaA
+                    WHERE  Estatus <> -1) THEN 'false'
+    ELSE 'true'
+END AS ifValidando
+
+select * from EvaluaA
+
+
+UPDATE EvaluaA
+SET Estatus = -1
 
 
 SELECT CASE WHEN EXISTS (
@@ -192,6 +205,8 @@ Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 
 --PARA INSERTAR DE EMPLEADO MI CORREO
 delete Empleado WHERE EmpleadoID = 242
+
+
 INSERT into Empleado(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
 Insert into EvaluaA values(241,0,4,0)
 Insert into EvaluaA values(241,1,5,0)
@@ -237,4 +252,12 @@ select * from EvaluaA
         delete Empleado
         DBCC CHECKIDENT ('Empleado', RESEED, 0);
         DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
-        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
+        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
+
+
+
+        select EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
+        Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx') AND Estatus = 0

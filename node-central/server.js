@@ -8,6 +8,7 @@ const multer = require('multer');
 const db = require("./dboperations");
 const mt = require("./parseExcel");
 const { makeTeams } = require('./parseExcel');
+const { ifValidando } = require('./dboperations');
 
 db.startConnection();
 
@@ -62,19 +63,12 @@ app.post('/deleteEvaluation', async (req,res) => {
 
 });
 
-const excelFilter = (req, file, cb) => {
-  if (
-    file.mimetype.includes("excel") ||
-    file.mimetype.includes("spreadsheetml")
-  ) {
-    cb(null, true);
-  } else {
-    cb("Please upload only excel file.", false);
-  }
-};
+app.get('/ifValidando', async(req,res) =>{
+  res.send(await db.ifValidando());
+})
 
-let upload = multer({
-  fileFilter: excelFilter
+app.get('/publishTeams', async(req,res) => {
+  res.send(await db.publishTeams());
 });
 
 
