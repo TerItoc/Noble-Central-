@@ -9,6 +9,7 @@ import { json } from 'body-parser';
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { RequestOptions } from 'https';
+import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
 
 
 @Injectable({
@@ -28,7 +29,22 @@ export class DashboardSqlService {
   }
 
   getIfTeam(){
-    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();;
+    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();
+  }
+
+  getValidando(){
+    return this.http.get<boolean>(environment.backendUrl+'/ifValidando').toPromise();
+  }
+
+  publishTeams(){
+    return this.http.get<Response>(environment.backendUrl+'/publishTeams');
+  }
+
+  getEmployeeEval(correo:string){
+    let formData:FormData = new FormData();
+    formData.append('correo', correo);
+
+    return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
   }
 
   getEmployees(){

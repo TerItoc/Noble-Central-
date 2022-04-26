@@ -1,10 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import { EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
-import { filter } from 'rxjs';
 
 
 type ProfileType = {
@@ -20,10 +16,8 @@ type ProfileType = {
   styleUrls: ['./dashboard.component.css']
 })
 
+//TODO Modificar para que se despliegue la informacion por empleado
 export class DashboardComponent implements OnInit {
-
-  loginDisplay = false;
-  profile!: ProfileType;
 
   huerfanos = [];
   equipos = [];
@@ -31,12 +25,11 @@ export class DashboardComponent implements OnInit {
   loading: boolean = true;
   arrEmpleados: string[];
 
+  validando : boolean = true;
+
   ifTeam : boolean = false;
 
   constructor(
-    private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService,
-    private http: HttpClient,
     private dsqls : DashboardSqlService,
     private router:Router,
   ) { }
@@ -44,27 +37,14 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loading=true;
 
-    this.msalBroadcastService.msalSubject$
-    .pipe(
-      filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
-    )
-    .subscribe((result: EventMessage) => {
-      console.log(result);
-    });
-
-    this.msalBroadcastService.inProgress$
-    .pipe(
-      filter((status: InteractionStatus) => status === InteractionStatus.None)
-    )
-    .subscribe(() => {
-      this.setLoginDisplay();
-      this.getProfile();
-    })
-
     this.dsqls.getIfTeam().then(res => {
       this.ifTeam = res;
 
       if(this.ifTeam){
+        this.dsqls.getValidando().then(res => {
+          this.validando = res;
+        });
+
         this.dsqls.getTeams().subscribe(res => {
           this.equipos = res;
         });
@@ -85,6 +65,22 @@ export class DashboardComponent implements OnInit {
     })
   }
 
+  refresh(): void {
+    window.location.reload();
+  }
+
+  publishTeams(){
+    this.loading = true;
+    this.dsqls.publishTeams().subscribe(res => {
+      this.loading = false;
+      this.refresh();
+    });
+  }
+
+  saveTeams(){
+    
+  }
+
   goBottom(){
     window.scrollTo(0,document.body.scrollHeight);
   }
@@ -93,20 +89,4 @@ export class DashboardComponent implements OnInit {
     window.scrollTo(0,0);
   }
 
-  setLoginDisplay() {
-    this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
-  }
-
-  getProfile() {
-    this.http.get("https://graph.microsoft.com/v1.0/me")
-    .subscribe(profile => {
-      this.profile = profile;
-    });
-  }
-
-  logout() {
-    this.authService.logoutRedirect({
-      postLogoutRedirectUri: 'http://localhost:4200/login'
-    })
-  }
 }

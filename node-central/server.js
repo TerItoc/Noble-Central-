@@ -8,6 +8,7 @@ const multer = require('multer');
 const db = require("./dboperations");
 const mt = require("./parseExcel");
 const { makeTeams } = require('./parseExcel');
+const { ifValidando } = require('./dboperations');
 
 db.startConnection();
 
@@ -62,20 +63,41 @@ app.post('/deleteEvaluation', async (req,res) => {
 
 });
 
-const excelFilter = (req, file, cb) => {
-  if (
-    file.mimetype.includes("excel") ||
-    file.mimetype.includes("spreadsheetml")
-  ) {
-    cb(null, true);
-  } else {
-    cb("Please upload only excel file.", false);
-  }
-};
+app.get('/ifValidando', async(req,res) =>{
+  res.send(await db.ifValidando());
+})
 
-let upload = multer({
-  fileFilter: excelFilter
+app.get('/publishTeams', async(req,res) => {
+  res.send(await db.publishTeams());
 });
+
+
+app.post('/getEmployeeEvals', async (req,res) => {
+
+  if(!req.body.correo){
+    res.send({success : false, info: undefined});
+  }
+
+  try{
+    res.send(await db.getEvaluationsForEmail(req.body.correo));
+  
+  }catch(error){
+    res.send({success : false, info: undefined});
+  }
+})
+
+app.post('/isAdmin', async (req,res) => {
+  if(!req.body.correo){
+    res.send({isAdmin : "No hay correo"});
+  }
+
+  try{
+    res.send(await db.isAdmin(req.body.correo));
+  }
+  catch ( error) {
+    res.send({isAdmin : "Error"});
+  }
+}) 
 
 // POST File
 app.post('/makeTeams', async (req, res) => {

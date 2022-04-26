@@ -1,7 +1,4 @@
-<div *ngIf="loginDisplay">
-  que onda
-  <button (click)="logout()">cerrar sesion</button>
-</div>
+
 <div *ngIf="loading; else elseBlock">
     <div id="loading-div" class="d-flex justify-content-center align-items-center">
         <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
@@ -10,41 +7,43 @@
 
 <ng-template #elseBlock>
 
-    <h3><b>Equipos</b></h3>
+    <h3><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
     <div class="accordion" id="accordionTeams">
         <app-dropdown-persona *ngFor="let equipo of equipos ; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre" [arrEmpleados]="arrEmpleados"></app-dropdown-persona>
     </div>
 
-    <h3><b>Huerfanos</b></h3>
-    <div class="d-flex justify-content-center">
-        <table class="table" style="width: 50%;">
-            <thead>
-                <tr class="table-danger">
-                <th scope="col">Evaluador</th>
-                <th scope="col">Proyecto en el que trabajo</th>
-                </tr>
-            </thead>
-            <tbody class="border">
-                <tr *ngFor="let huerfano of huerfanos">
-                <td scope="row">{{huerfano.NombreHuerfano}}</td>
-                <td >{{huerfano.ProyectoDondeTrabajo}}</td>
-                </tr>
-            </tbody>
-            </table> 
+    <h3><b>Huerfanos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
+    <div class="accordion" id="accordionHuerfanos">
+        <app-dropdown-huerfano *ngFor="let huerfano of huerfanos ; let i = index" [id]="i" [nombreHuerfano]="huerfano.nombreHuerfano" [proyectos]="huerfano.proyectos"></app-dropdown-huerfano>
     </div>
 
     <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-danger" style="margin: 15px;" >Cargar Otro Archivo</button>
+        <a class="btn btn-danger" href="adminEV" role="button" style="margin: 15px;">Cargar Otro Archivo</a>
 
-        <!-- Aqui iria un ngif para checar is ya estan publicados los equipos y si no ya te manda a guardar equipos -->
-        <button class="btn btn-primary" style="margin: 15px;">Mandar Equipos A Validar</button>
+
+        <div *ngIf="validando; else elseBlock">
+            <a class="btn btn-success" (click)="saveTeams()" role="button" style="margin: 15px;">Guardar Equipos</a>
+        </div>
+
+        <ng-template #elseBlock>
+            <a class="btn btn-primary" (click)="publishTeams()" role="button" style="margin: 15px;">Mandar Equipos A Validar</a>
+        </ng-template>
 
     </div>
     <br><br><br><br><br>
 
-    <button (click)="goTop()" class="goUpBtn myBtn" title="Go to top"><i class="fa-solid fa-up-long"></i></button>
-    <button (click)="goBottom()" class="goDownBtn myBtn" title="Go to bottom"><i class="fa-solid fa-down-long"></i></button>
+
+    <div class="container" id="contButtons">
+        <div class="row">
+            <button (click)="refresh()" class="refreshBtn myBtn" title="Refresh"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+            <button (click)="goTop()" class="goUpBtn myBtn" title="Go to top"><i class="fa-solid fa-up-long"></i></button>
+            <button (click)="goBottom()" class="goDownBtn myBtn" title="Go to bottom"><i class="fa-solid fa-down-long"></i></button>
+        </div>
+    </div>
 
 
 </ng-template>
+
+
+
 

@@ -1,15 +1,56 @@
+body{
+  font-family: 'Open Sans', sans-serif !important;
+}
+
 footer {
   position: fixed !important;
   bottom: 0px;
   width: 100%;
-  padding: 0.5em;
-  background-color: #ff7c31;
+  padding: 0.1em;
+  background-color: whitesmoke;
+  box-shadow: 0px -5px 6px rgba(135, 135, 135, 0.15);
+  
 }
 
-#logo {
-  width: 15%;
+.dropdown-item:hover{
+  background-color: inherit;
+  color: black;
+}
+
+#cerrarSesion{
+  text-decoration: underline;
+  color: rgb(62, 104, 255);
+}
+
+footer p{
+  padding: 1ch;
+}
+
+.color-central{
+  color: rgb(110, 110, 110);
+}
+
+header{
+  box-shadow: 0px 0px 8px 0px rgba(135, 135, 135, 0.8);
+}
+
+.navbar{
+  background-color: whitesmoke;
+}
+
+.navbar-brand img{
+  padding-right: 10lm;
+  border: red 1px;
+}
+
+.fa-circle-user{
+  color: black;
+}
+
+#logoicon{
+  width: 4%;
 }
 
 .nav-element {
-  color: white;
+  color: black;
 }

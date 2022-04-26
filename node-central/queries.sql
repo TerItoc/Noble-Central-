@@ -34,24 +34,47 @@ create table EstatusEvaluacion(
 
 INSERT INTO EstatusEvaluacion(id, estatusnombre) 
 VALUES 
+(-1,'Sin Publicar'),
 (0,'Pendiente'),
 (1,'Validado'),
 (2, 'Reporte');
 
 create table EvaluaA(
+    EvaluacionID int identity(0,1) primary key,
     EmpleadoA int FOREIGN KEY REFERENCES empleado,
     TipoEvaluacion int FOREIGN KEY REFERENCES evaluacion,
     EmpleadoB int FOREIGN KEY REFERENCES empleado,
     Estatus int FOREIGN KEY REFERENCES EstatusEvaluacion
 )
 
+create table Reportes(
+    EvaluacionID int FOREIGN KEY REFERENCES evaluaa,
+    Reporte VARCHAR(255),
+)
+
+create table Administradores(
+    Nombre VARCHAR(255),
+    Correo VARCHAR(255),
+)
+
+SELECT CASE
+    WHEN NOT EXISTS(SELECT *
+                    FROM   EvaluaA
+                    WHERE  Estatus <> -1) THEN 'false'
+    ELSE 'true'
+END AS ifValidando
+
+select * from EvaluaA
+
+
+UPDATE EvaluaA
+SET Estatus = -1
+
+
 SELECT CASE WHEN EXISTS (
     SELECT *
     FROM EvaluaA
 )
-
-
-
 THEN CAST(1 AS BIT)
 ELSE CAST(0 AS BIT) END
 
@@ -63,11 +86,11 @@ ELSE CAST(0 AS BIT) END
 
 UPDATE EvaluaA
 SET estatus = 1
-WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 239;
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 199;
 
 UPDATE EvaluaA
 SET estatus = 2
-WHERE EmpleadoA = 182 AND TipoEvaluacion = 1 AND EmpleadoB = 239;
+WHERE EmpleadoA = 182 AND TipoEvaluacion = 0 AND EmpleadoB = 208;
 
 SELECT CASE WHEN EXISTS (
             SELECT *
@@ -105,7 +128,7 @@ JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
 WHERE Proyecto.Nombre = 'ACP - Coursetune' and Horas > 50
 
 
-
+select * from Trabaja_En
 
 SELECT Proyecto.Nombre
 FROM Trabaja_En
@@ -136,8 +159,6 @@ select * from evaluacion
 
 
 select * from Proyecto 
-
-
 
 
 select ProyectoID from Proyecto where Nombre = 'ACP - Coursetune'
@@ -172,22 +193,71 @@ SELECT CASE WHEN EXISTS (
 delete EvaluaA 
 delete Trabaja_En 
 delete Proyecto 
+delete Reportes
 DBCC CHECKIDENT ('Proyecto', RESEED, 0); 
 GO 
 delete Empleado 
 DBCC CHECKIDENT ('Empleado', RESEED, 0); 
 GO 
+DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
+GO 
 Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 
+--PARA INSERTAR DE EMPLEADO MI CORREO
+delete Empleado WHERE EmpleadoID = 242
 
 
-delete EvaluaA
-delete Estatus
+INSERT into Empleado(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
+Insert into EvaluaA values(241,0,4,0)
+Insert into EvaluaA values(241,1,5,0)
+Insert into EvaluaA values(241,2,7,0)
+Insert into EvaluaA values(241,0,9,0)
+Insert into EvaluaA values(241,0,11,0)
+
+INSERT INTO Administradores values('AA Nicolas Cardenas','A01114959@tec.mx')
+delete Administradores
+
+
+select COUNT(*) from Administradores where Correo = 'A01114959@tec.mx'
+
+        SELECT EmpHuerfano.Nombre AS Nombre, Proyecto.Nombre AS Proyecto, EmpLider.Nombre AS Lider
+        FROM Trabaja_En
+        JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
+        JOIN Empleado EmpHuerfano ON Trabaja_En.EmpleadoID = EmpHuerfano.EmpleadoID
+        join Empleado EmpLider ON Proyecto.Lider = EmpLider.EmpleadoID
+        where EmpHuerfano.Nombre in (SELECT distinct nombre FROM Empleado
+        WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
+                                JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
+
+select * from evalua where 
+
+select * from EvaluaA 
+Join Empleado EmpB on EvaluaA.EmpleadoB
+
+where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx')
+
+
+select * from Empleado
+
+
+
+select * from EvaluaA
+
+
+        delete EvaluaA
         delete Trabaja_En
         delete Proyecto
+        delete Reportes
         DBCC CHECKIDENT ('Proyecto', RESEED, 0);
         delete Empleado
         DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
         insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 
 
+
+        select EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
+        Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx') AND Estatus = 0

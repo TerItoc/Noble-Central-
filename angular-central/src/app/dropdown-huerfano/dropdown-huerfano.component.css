@@ -1,0 +1,10 @@
+#Huerfanos {
+    width: 60%
+}
+
+
+@media screen and (max-width: 650px){
+    #Huerfanos {
+        width: 100%;
+    }
+}

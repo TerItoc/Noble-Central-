@@ -1,11 +1,28 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <img class="navbar-brand" id="logo" src="../assets/IPS_logo.png" alt="Inflection Point Systems Logo" />
+            <div class="navbar-brand">
+                <img id="logoicon" src="../assets/IPS_logo_icon.png" alt="Inflection Point Systems Logo Icon" />
+                <b> IPS <span class="color-central">Central</span></b>
+            </div>
             <div>
                 <ul class="navbar-nav">
                     <li class="nav-item nav-element">
-                        <span *ngIf="loginDisplay">{{profile.givenName}}</span><i class="fa-solid fa-circle-user fa-2xl" style="margin-left: 0.25em"></i>
+                        <span *ngIf="loginDisplay">
+
+                            
+                            <div class="dropdown dropstart">
+
+                                <i class="fa-solid fa-circle-user fa-2xl" style="margin-left: 0.25em" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                  <li><a class="dropdown-item"><b>Nombre: </b> {{profile.displayName}} </a></li>
+                                  <li><a class="dropdown-item"><b>Correo: </b> {{profile.mail}}</a></li>
+                                  <li><a type="button" id="cerrarSesion" class="dropdown-item" (click) = "logout()"><b>Cerrar Sesion</b></a></li>
+                                </ul>
+                            </div>
+
+                        </span>
+
                     </li>
                 </ul>
             </div>
@@ -15,9 +32,5 @@
     <router-outlet *ngIf="!isIframe"></router-outlet>
     
 <footer class="text-center">
-  <img
-    id="logo"
-    src="../assets/IPS_logo.png"
-    alt="Infelction Point Systems Logo"
-  />
+  <p>v. {{version}}</p>
 </footer>

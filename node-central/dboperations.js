@@ -100,35 +100,67 @@ async function deleteEvaluation(empA,relacion,empB){
 }
 
 function processOrphans(recordset){
-    huerfanos = []
+    huerfanos = {}
 
     //console.log(recordset);
+
     for (let i = 0; i < recordset.length; i++) {
         let row = recordset[i];
 
-        let huerfano = {NombreHuerfano: row.Nombre[0], ProyectoDondeTrabajo: row.Nombre[1]};
-        huerfanos.push(huerfano);
-        
+        let currProject = {Proyecto: row.Proyecto, Lider: row.Lider}
+
+        if(huerfanos[row.Nombre]){
+            huerfanos[row.Nombre].push(currProject);
+        }
+        else{
+            huerfanos[row.Nombre] = [currProject];
+        }
     }
 
-    return {huerfanos: huerfanos};
+    //console.log(huerfanos);
+
+    let huerfanosParsed = [];
+    for(const [key, value] of Object.entries(huerfanos)){
+        let newEntry = {}
+        newEntry.nombreHuerfano = key;
+        newEntry.proyectos = value;
+        //console.log(newEntry);
+        huerfanosParsed.push(newEntry);
+    }
+
+    return {huerfanos: huerfanosParsed};
 
 }
 async function getOrphans(){
 
     let orphans = await getQuery(`
-        SELECT Empleado.Nombre, Proyecto.Nombre
+        SELECT EmpHuerfano.Nombre AS Nombre, Proyecto.Nombre AS Proyecto, EmpLider.Nombre AS Lider
         FROM Trabaja_En
         JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
-        JOIN Empleado ON Trabaja_En.EmpleadoID = Empleado.EmpleadoID
-        where Empleado.Nombre in (SELECT distinct nombre FROM Empleado
+        JOIN Empleado EmpHuerfano ON Trabaja_En.EmpleadoID = EmpHuerfano.EmpleadoID
+        join Empleado EmpLider ON Proyecto.Lider = EmpLider.EmpleadoID
+        where EmpHuerfano.Nombre in (SELECT distinct nombre FROM Empleado
         WHERE nombre NOT in (SELECT DISTINCT EmpA.Nombre from EvaluaA
                                 JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID))
     `)
     //console.log(processTeams(teams.recordset));
-    return processOrphans(orphans.recordset);
 
+    return processOrphans(orphans.recordset);
 }
+
+async function getEvaluationsForEmail(correo){
+
+    let evals = await getQuery(`
+        select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
+        Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') AND Estatus = 0
+    `)
+
+    return evals.recordset;
+}
+
 function processTeams(recordset){
     let teams = {};
 
@@ -160,6 +192,36 @@ function processTeams(recordset){
 
 }
 
+async function ifValidando(){
+    let res = await getQuery(`
+        SELECT CASE
+        WHEN NOT EXISTS(SELECT *
+                        FROM   EvaluaA
+                        WHERE  Estatus <> -1) THEN 'false'
+        ELSE 'true'
+    END AS ress
+    `)
+
+    return res.recordset[0].ress
+
+}
+
+async function publishTeams(){
+
+    try{
+        let res = await getQuery(`
+            UPDATE EvaluaA
+            SET Estatus = 0
+        `)
+
+        return {success : true, message: "successful publish"}
+    }
+    catch(error){
+        return {success : false, message: "couldnt publish"}
+
+    }
+}
+
 async function getTeams(){
 
     let teams = await getQuery(`
@@ -184,8 +246,39 @@ function turnSQLtoJsonEmpIds(sqlRes){
     return res;
 }
 
+async function isAdmin(correo){
+    let q = await getQuery(`
+        select COUNT(*) from Administradores where Correo = '${correo}'
+    `)
+    let res = q.recordset[0][''];
+
+    if(res == 0){
+        return {isAdmin: "false"};
+    }
+
+    else{
+        return {isAdmin: "true"};
+    }
+
+}
+
 async function addEvaluation(empA,TipoRelacion,empB){
     let relacionID = getRelacionID(TipoRelacion);
+
+    if(empA == empB){
+        return;
+    }
+
+    let validando = null;
+    await ifValidando().then((res) => { validando = res});
+
+    console.log(validando);
+    if(validando == "true"){
+        estatus = 0;
+    }
+    else{
+        estatus = -1;
+    }
 
     let idEmpA = null;
     await getEmployeeIdByName(empA).then((res) => {idEmpA = res});
@@ -198,20 +291,20 @@ async function addEvaluation(empA,TipoRelacion,empB){
     switch(relacionID){
         case 0:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},0,${idEmpB},0),(${idEmpB},0,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},0,${idEmpB},${estatus}),(${idEmpB},0,${idEmpA},${estatus});
             `
             break;
 
         case 1:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},1,${idEmpB},0),(${idEmpB},2,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},1,${idEmpB},${estatus}),(${idEmpB},2,${idEmpA},${estatus});
             `
             break;
 
 
         case 2:
             query = `
-                INSERT INTO EvaluaA Values (${idEmpA},2,${idEmpB},0),(${idEmpB},1,${idEmpA},0);
+                INSERT INTO EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) Values (${idEmpA},2,${idEmpB},${estatus}),(${idEmpB},1,${idEmpA},${estatus});
             `
             break;
 
@@ -219,7 +312,8 @@ async function addEvaluation(empA,TipoRelacion,empB){
             -1
     }
 
-    console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
+    //console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
+    console.log(query);
     await postQuery(query);
 
 }
@@ -524,9 +618,11 @@ async function deleteCurrentTeams(){
         delete EvaluaA
         delete Trabaja_En
         delete Proyecto
+        delete Reportes
         DBCC CHECKIDENT ('Proyecto', RESEED, 0);
         delete Empleado
         DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
         insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
     );
 
@@ -563,4 +659,8 @@ module.exports = {
     startConnection: startConnection,
     getEmployeeIDs: getEmployeeIDs,
     ifTeam: ifTeam,
+    isAdmin: isAdmin,
+    getEvaluationsForEmail: getEvaluationsForEmail,
+    ifValidando: ifValidando,
+    publishTeams : publishTeams,
 }

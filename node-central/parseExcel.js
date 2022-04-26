@@ -212,7 +212,7 @@ async function makeTeams(file){
         await db.getEmployeeIDs().then((res) => {empIds = res;});
 
         let sqlQuery = `
-            Insert Into EvaluaA values
+            Insert Into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values
 
         `
 
@@ -245,7 +245,7 @@ async function makeTeams(file){
                         continue
                     }               
                     
-                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", 0),";
+                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", -1),";
                     rowCounter++;
 
                     if(rowCounter > 990){

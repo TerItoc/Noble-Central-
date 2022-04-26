@@ -5,13 +5,37 @@
     <button *ngIf="makingTeams; else elseBlock" class="btn btn-secondary" type="button" (click) = "upload()" disabled> Upload </button>
 
     <ng-template #elseBlock>
-        <button  class="btn btn-success" type="button" (click) = "upload()"> Crear Equipos </button>
+        <button type="button" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmar"> Crear Equipos </button>
     </ng-template>
 </div>
 
 <div *ngIf="makingTeams" style="padding: 50px;">
-    <h3>Se estan creando los equipos, por favor no salga de esta pagina</h3>
-    <div id="loading-div" class="d-flex justify-content-center align-items-center">
-        <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
+    <div class="card">
+        <div class="card-body">
+            <b>Se estan creando los equipos, por favor no salga de esta pagina</b>
+
+            <div style="padding : 3.5%;" id="loading-div" class="d-flex justify-content-center align-items-center">
+                <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
+            </div>
+        </div>
+      </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmarLabel"><b>Esta seguro que quiere crear equipos?</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Ya se encuentran los equipos en la base de datos, esto sobre escribira los equipos que hay actualmente
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click) = "upload()" >Crear Equipos</button>
+        </div>
+      </div>
     </div>
 </div>
