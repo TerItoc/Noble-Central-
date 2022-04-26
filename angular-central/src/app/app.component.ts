@@ -5,9 +5,8 @@ import { InteractionStatus } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
 
 type ProfileType = {
-  givenName?: string;
-  surname?: string;
-  userPrincipalName?: string;
+  displayName ?: string;
+  mail?: string;
   id?: string;
 };
 

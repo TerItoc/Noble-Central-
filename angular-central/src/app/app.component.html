@@ -15,8 +15,8 @@
 
                                 <i class="fa-solid fa-circle-user fa-2xl" style="margin-left: 0.25em" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"></i>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                  <li><a class="dropdown-item"><b>Nombre:</b> <span *ngIf="profile.surname">{{profile.surname}}, </span>{{profile.givenName}} </a></li>
-                                  <li><a class="dropdown-item"><b>Correo:</b> {{profile.userPrincipalName}}</a></li>
+                                  <li><a class="dropdown-item"><b>Nombre: </b> {{profile.displayName}} </a></li>
+                                  <li><a class="dropdown-item"><b>Correo: </b> {{profile.mail}}</a></li>
                                   <li><a type="button" id="cerrarSesion" class="dropdown-item" (click) = "logout()"><b>Cerrar Sesion</b></a></li>
                                 </ul>
                             </div>

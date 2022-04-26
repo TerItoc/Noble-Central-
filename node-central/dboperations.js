@@ -151,7 +151,7 @@ async function getOrphans(){
 async function getEvaluationsForEmail(correo){
 
     let evals = await getQuery(`
-        select EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
         Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
