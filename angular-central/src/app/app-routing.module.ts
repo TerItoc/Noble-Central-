@@ -9,13 +9,9 @@ import { EmpleadoComponent } from './empleado/empleado.component';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [MsalGuard],
-  },
-  { path: 'adminEV', component: AdminEvComponent },
-  { path: 'empleado', component: EmpleadoComponent},
+  { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard] },
+  { path: 'adminEV', component: AdminEvComponent, canActivate: [MsalGuard] },
+  { path: 'empleado', component: EmpleadoComponent, canActivate: [MsalGuard] },
   { path: '**', redirectTo: 'login' },
 ];
 

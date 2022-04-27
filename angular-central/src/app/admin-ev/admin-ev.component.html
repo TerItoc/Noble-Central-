@@ -1,25 +1,28 @@
-<div class="container text-center" style="padding-top: 5%;">
+<div *ngIf="isAdmin">
+  <div class="container text-center" style="padding-top: 5%">
     <div class="row">
-        <div class="col">
-            <img id="IPS_TEAM" src="../assets/IPS_TEAM.png" class="rounded mx-auto d-block">
-        </div>
+      <div class="col">
+        <img
+          id="IPS_TEAM"
+          src="../assets/IPS_TEAM.png"
+          class="rounded mx-auto d-block"
+        />
+      </div>
     </div>
     <div class="row">
-        <div class="col">
-            <h1>Bienvenido a tu evaluacion 360</h1>
-        </div>
+      <div class="col">
+        <h1>Bienvenido a tu evaluacion 360</h1>
+      </div>
     </div>
     <div class="row">
-        <div class="col">
-            <p>Para empezar a crear tus equipos carga tu archivo excel</p>
-        </div>
+      <div class="col">
+        <p>Para empezar a crear tus equipos carga tu archivo excel</p>
+      </div>
     </div>
     <div class="row">
-        <div class="col">
-            <app-file-upload></app-file-upload>
-        </div>
+      <div class="col">
+        <app-file-upload></app-file-upload>
+      </div>
     </div>
+  </div>
 </div>
-
-
-

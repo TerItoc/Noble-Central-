@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ResultadoEquipos, Equipo } from './model/equipos.model';
 import { ResultadoHuerfano, Huerfano } from './model/orphan.model';
 import { ResultadoMakeTeams } from './model/response.model';
 import { Relacion } from './model/evaluacion.model';
-import { json } from 'body-parser';
 import { environment } from 'src/environments/environment';
-import { FormsModule } from '@angular/forms';
-import { RequestOptions } from 'https';
 import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
 
 
@@ -54,37 +51,39 @@ export class DashboardSqlService {
   postFile(file : File){
     let formData:FormData = new FormData();
     formData.append('file', file, file.name);
+    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
     
     //const headers : Headers = new Headers();
     //headers.append('Content-Type', 'text');
     //let options : RequestOptions = new RequestOptions({ headers: headers });
     //formData.append(headers);
 
-    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
   }
 
   addEval(empA,relacion,empB){
-
     var relAAgregar : Relacion = {
       empA : empA,
       relacion: relacion,
       empB: empB,
     };
-
-
     return this.http.post(environment.backendUrl+'/addEvaluation', relAAgregar);
   }
 
   delEval(empA,relacion,empB){
-
     var relABorrar : Relacion = {
       empA : empA,
       relacion: relacion,
       empB: empB,
     };
-
-
     return this.http.post(environment.backendUrl+'/deleteEvaluation', relABorrar);
+  }
+
+  getIsAdmin(correo: string) {
+    let emailData : FormData = new FormData();
+    emailData.append('correo', correo);
+
+
+    return this.http.post(environment.backendUrl+'/isAdmin', emailData);
   }
 
 }
