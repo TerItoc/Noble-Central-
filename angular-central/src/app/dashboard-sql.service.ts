@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { RequestOptions } from 'https';
 import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
+import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
 
 
 @Injectable({
@@ -61,6 +62,10 @@ export class DashboardSqlService {
     //formData.append(headers);
 
     return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
+  }
+
+  postChangeEvalEstatus(evals : EvaluacionAEnviar){
+    let formData:FormData = new FormData();
   }
 
   addEval(empA,relacion,empB){
