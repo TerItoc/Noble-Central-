@@ -89,6 +89,15 @@ app.post("/isAdmin", async (req, res) => {
   }
 });
 
+app.post('/updateEvals', async(req,res) =>{
+  res.send();
+  //Pass array of IDs
+  await db.confirmEvals()
+
+  //Pass ID and Report String
+  await db.generateReport()
+})
+
 // POST File
 app.post("/makeTeams", async (req, res) => {
   //console.log(req.file);

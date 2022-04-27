@@ -11,11 +11,9 @@
     </div>
   </div>
 
-  <ng-template #elseBlock>
-    <h3>
-      <b>Equipos</b><small *ngIf="!validando"> - Propuesta</small
-      ><small *ngIf="validando"> - En Proceso De Validacion</small>
-    </h3>
+<ng-template #elseBlock>
+
+    <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
     <div class="accordion" id="accordionTeams">
       <app-dropdown-persona
         *ngFor="let equipo of equipos; let i = index"
@@ -26,10 +24,7 @@
       ></app-dropdown-persona>
     </div>
 
-    <h3>
-      <b>Huerfanos</b><small *ngIf="!validando"> - Propuesta</small
-      ><small *ngIf="validando"> - En Proceso De Validacion</small>
-    </h3>
+    <h3 #Huerfanos><b>Huerfanos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
     <div class="accordion" id="accordionHuerfanos">
       <app-dropdown-huerfano
         *ngFor="let huerfano of huerfanos; let i = index"
@@ -71,21 +66,13 @@
     <br /><br /><br /><br /><br />
 
     <div class="container" id="contButtons">
-      <div class="row">
-        <button (click)="refresh()" class="refreshBtn myBtn" title="Refresh">
-          <i class="fa-solid fa-arrow-rotate-right"></i>
-        </button>
-        <button (click)="goTop()" class="goUpBtn myBtn" title="Go to top">
-          <i class="fa-solid fa-up-long"></i>
-        </button>
-        <button
-          (click)="goBottom()"
-          class="goDownBtn myBtn"
-          title="Go to bottom"
-        >
-          <i class="fa-solid fa-down-long"></i>
-        </button>
-      </div>
+        <div class="row">
+            <button (click)="refresh()" class="refreshBtn myBtn" title="Refresh"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+            <button (click)="goTop()" class="goUpBtn myBtn" title="Go to top"><i class="fa-solid fa-up-long"></i></button>
+            <button (click)="goTarget(Equipos)" class="goEquiposBtn myBtn" title="Go to Equipos"><i class="fa-solid fa-users"></i></button> 
+            <button (click)="goTarget(Huerfanos)" class="goHuerfanosBtn myBtn" title="Go to Huerfanos"><i class="fa-solid fa-user"></i></button>
+            <button (click)="goBottom()" class="goDownBtn myBtn" title="Go to bottom"><i class="fa-solid fa-down-long"></i></button>
+        </div>
     </div>
   </ng-template>
 </div>

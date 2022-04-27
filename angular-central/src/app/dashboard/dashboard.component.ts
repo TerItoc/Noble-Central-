@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -37,6 +37,8 @@ export class DashboardComponent implements OnInit {
   validando: boolean = true;
 
   ifTeam: boolean = false;
+
+  @ViewChild('Huerfanos') Huer:any;
 
   constructor(
     private dsqls: DashboardSqlService,
@@ -127,4 +129,8 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+  goTarget(el: HTMLElement){
+    el.scrollIntoView();
+  }
+
 }

@@ -161,6 +161,36 @@ async function getEvaluationsForEmail(correo){
     return evals.recordset;
 }
 
+async function generateReport(evalID, report){
+    try{
+        await postQuery(`
+            UPDATE EvaluaA SET Estatus = 2 WHERE EvaluacionID = ${evalID}
+            INSERT INTO Reportes values (${evalID},'${reporte}')
+        `)
+
+        return {success : true};
+
+    }catch(error){
+        return {success : false};
+    }
+}
+
+async function confirmEvals(evalsID){
+    try{
+        let stringy = "("+evalsID.join(",")+")";
+        await postQuery(`
+            UPDATE EvaluaA
+            SET Estatus = 1
+            WHERE EvaluacionID IN ${stringy}
+        `)
+
+        return {success : true};
+
+    }catch(error){
+        return {success : false};
+    }
+}
+
 function processTeams(recordset){
     let teams = {};
 
@@ -663,4 +693,6 @@ module.exports = {
     getEvaluationsForEmail: getEvaluationsForEmail,
     ifValidando: ifValidando,
     publishTeams : publishTeams,
+    confirmEvals : confirmEvals,
+    generateReport : generateReport,
 }

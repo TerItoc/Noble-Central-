@@ -7,6 +7,7 @@ import { ResultadoMakeTeams } from './model/response.model';
 import { Relacion } from './model/evaluacion.model';
 import { environment } from 'src/environments/environment';
 import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
+import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
 
 
 @Injectable({
@@ -58,6 +59,10 @@ export class DashboardSqlService {
     //let options : RequestOptions = new RequestOptions({ headers: headers });
     //formData.append(headers);
 
+  }
+
+  postChangeEvalEstatus(evals : EvaluacionAEnviar){
+    let formData:FormData = new FormData();
   }
 
   addEval(empA,relacion,empB){
