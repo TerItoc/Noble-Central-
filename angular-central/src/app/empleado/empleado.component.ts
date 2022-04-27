@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, Output, HostListener } from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
-import { filter } from 'rxjs';
+import { filter, noop } from 'rxjs';
+import { EventEmitter } from 'stream';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { EmpleadoEvaluacion } from '../model/empleadoEvaluacion.model';
 
@@ -15,7 +16,7 @@ type ProfileType = {
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleado.component.html',
-  styleUrls: ['./empleado.component.css']
+  styleUrls: ['./empleado.component.css'],
 })
 
 export class EmpleadoComponent implements OnInit {
@@ -28,12 +29,22 @@ export class EmpleadoComponent implements OnInit {
 
   myEvals : EmpleadoEvaluacion[];
   nombreEmpleado : string = "NO HAY EMPLEADO";
-  allChecked : boolean = false;
 
-  
+  allChecked : boolean = true;
+  isChecked : boolean = true;
+
+  Uncheck(isChecked){
+    if(isChecked==false){
+      return this.allChecked=false;
+    }
+    else{
+      return this.allChecked=true;
+    }
+  }
+
   constructor(
-    private dsqls : DashboardSqlService, 
-    private authService : MsalService, 
+    private dsqls : DashboardSqlService,
+    private authService : MsalService,
     private msalBroadcastService : MsalBroadcastService,
     private http : HttpClient) { }
 
@@ -57,7 +68,7 @@ export class EmpleadoComponent implements OnInit {
           this.http.get("https://graph.microsoft.com/v1.0/me").subscribe(profile => {
 
             this.profile = profile
-            
+
             this.dsqls.getValidando().then(res => {
               this.validando = res;
             })
@@ -69,27 +80,10 @@ export class EmpleadoComponent implements OnInit {
               //console.log(this.myEvals);
 
             })
-        
+
       })
     });
 
-  }
-
-  checkAllChecked() : boolean {
-    return true;
-  }
-
-
-  selectedIds = [];
-
-  OnCheckboxSelect(id, event) {
-    if (event.target.checked === true) {
-      this.selectedIds.push({id: id, checked: event.target.checked});
-      console.log('Selected Ids ', this.selectedIds);
-    }
-    if (event.target.checked === false) {
-      this.selectedIds = this.selectedIds.filter((item) => item.id !== id);
-    }
   }
 
 }
