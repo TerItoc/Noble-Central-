@@ -62,18 +62,18 @@ export class DashboardComponent implements OnInit {
         this.http.get(GRAPH_POINT).subscribe((profile) => {
           this.profile = profile;
 
-          this.dsqls.getIsAdmin(this.profile.userPrincipalName).
-          subscribe(msg => {
-            let value = Object.values(msg)[0];
-            if(value === "No hay correo") {
-              this.isAdmin = false;
-              this.router.navigateByUrl('empleado');
-            }
-            else {
-              this.isAdmin = true;
-              this.createTeams();
-            }
-          });
+          this.dsqls
+            .getIsAdmin(this.profile.userPrincipalName)
+            .subscribe((msg) => {
+              let value = Object.values(msg)[0];
+              if (value === 'No hay correo' || value === 'false') {
+                this.isAdmin = false;
+                this.router.navigateByUrl('empleado');
+              } else {
+                this.isAdmin = true;
+                this.createTeams();
+              }
+            });
         });
       });
   }
