@@ -38,8 +38,7 @@ export class AppComponent implements OnInit {
       .pipe(
         filter(
           (status: InteractionStatus) => status === InteractionStatus.None
-        ),
-        takeUntil(this._destroying$)
+        )
       )
       .subscribe(() => {
         this.setLoginDisplay();

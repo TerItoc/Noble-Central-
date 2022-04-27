@@ -1,106 +1,145 @@
-<div *ngIf="loading; else elseBlock">
-    <div id="loading-div" class="d-flex justify-content-center align-items-center">
-        <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
+<div *ngIf="!isAdmin">
+  <div *ngIf="loading; else elseBlock">
+    <div
+      id="loading-div"
+      class="d-flex justify-content-center align-items-center"
+    >
+      <i
+        class="fa-3x fa-solid fa-circle-notch fa-spin"
+        style="--fa-animation-duration: 0.7s"
+      ></i>
     </div>
-</div>
+  </div>
 
-<ng-template #elseBlock>
-
+  <ng-template #elseBlock>
     <div *ngIf="validando; else notValidando">
-
-        <div *ngIf="myEvals.length > 0; else eresHuerfano">
-
-            <div class="container text-center">
-                <div class="row">
-                    <div class="col paddy">
-                        <h1>Bienvenido a tu evaluacion 360</h1>
-                    </div>
-                </div>
-                <div class="row paddy">
-                    <p>Por favor confirma que conoces a las siguientes personas: </p>
-                </div>
-    
-                <h3 class="paddy"><small class="smalll">Evaluaciones para:</small> {{myEvals[0].EmpleadoANombre}}</h3>
-    
-                <div class="d-flex justify-content-center paddy">
-                    <table class="table" style="width: 60%;">
-                        <thead>
-                            <tr class="table-primary">
-                            <th scope="col">Evaluador</th>
-                            <th scope="col">Tipo de Evaluacion</th>
-                            <th scope="col" data-halign="center" data-align="center">Lo conozco</th>
-                            </tr>
-                        </thead>
-                        <tbody class="border">
-                            <tr *ngFor="let evaluacion of myEvals; let i = index">
-                            <td scope="row">{{evaluacion.EmpleadoBNombre}}</td>
-                            <td>{{evaluacion.TipoEvaluacion}}</td>
-                            <td><div class="form-check form-switch"><input class="form-check-input align-items-center" type="checkbox"  id="cb{{evaluacion.EvaluacionID}}" checked></div>
-                            </td>
-                            </tr>
-                            
-                        </tbody>
-                        </table>
-                </div>
-
-                <div class="d-flex justify-content-center">
-                    <button class="btn btn-primary" style="margin: 15px;" >Reportar Cambio</button>
-
-                    <a *ngIf="allChecked; else notAllCheckedTemplate" class="btn btn-success" href="" role="button" style="margin: 15px;" id="B-N">Continuar</a>
-                    
-                    <ng-template #notAllCheckedTemplate>
-                        <a  id="popover-continuar" class="btn btn-secondary" role="button" style="margin: 15px;" >Continuar</a>
-
-                    </ng-template>
-                </div>
-                    
+      <div *ngIf="myEvals.length > 0; else eresHuerfano">
+        <div class="container text-center">
+          <div class="row">
+            <div class="col paddy">
+              <h1>Bienvenido a tu evaluacion 360</h1>
             </div>
+          </div>
+          <div class="row paddy">
+            <p>Por favor confirma que conoces a las siguientes personas:</p>
+          </div>
+
+          <h3 class="paddy">
+            <small class="smalll">Evaluaciones para:</small>
+            {{ myEvals[0].EmpleadoANombre }}
+          </h3>
+
+          <div class="d-flex justify-content-center paddy">
+            <table class="table" style="width: 60%">
+              <thead>
+                <tr class="table-primary">
+                  <th scope="col">Evaluador</th>
+                  <th scope="col">Tipo de Evaluacion</th>
+                  <th scope="col" data-halign="center" data-align="center">
+                    Lo conozco
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="border">
+                <tr *ngFor="let evaluacion of myEvals; let i = index">
+                  <td scope="row">{{ evaluacion.EmpleadoBNombre }}</td>
+                  <td>{{ evaluacion.TipoEvaluacion }}</td>
+                  <td>
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input align-items-center"
+                        type="checkbox"
+                        id="cb{{ evaluacion.EvaluacionID }}"
+                        checked
+                      />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-primary" style="margin: 15px">
+              Reportar Cambio
+            </button>
+
+            <a
+              *ngIf="allChecked; else notAllCheckedTemplate"
+              class="btn btn-success"
+              href=""
+              role="button"
+              style="margin: 15px"
+              id="B-N"
+              >Continuar</a
+            >
+
+            <ng-template #notAllCheckedTemplate>
+              <a
+                id="popover-continuar"
+                class="btn btn-secondary"
+                role="button"
+                style="margin: 15px"
+                >Continuar</a
+              >
+            </ng-template>
+          </div>
         </div>
+      </div>
 
-        <ng-template #eresHuerfano>
-            <div class="container text-center">
-                <div class="row">
-                    <div class="col">
-                        <h1>Bienvenido a tu evaluacion 360</h1>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <img id="IPS_PROBLEM" src="../assets/IPS_PROBLEM.png" class="rounded mx-auto d-block">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h5>No tienes evaluaciones que realizar, por favor contacta a Recursos Humanos</h5>
-                    </div>
-                </div>
+      <ng-template #eresHuerfano>
+        <div class="container text-center">
+          <div class="row">
+            <div class="col">
+              <h1>Bienvenido a tu evaluacion 360</h1>
             </div>
-
-        </ng-template>
-
+          </div>
+          <div class="row">
+            <div class="col">
+              <img
+                id="IPS_PROBLEM"
+                src="../assets/IPS_PROBLEM.png"
+                class="rounded mx-auto d-block"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h5>
+                No tienes evaluaciones que realizar, por favor contacta a
+                Recursos Humanos
+              </h5>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
 
     <ng-template #notValidando>
-        <div class="container text-center">
-            <div class="row">
-                <div class="col">
-                    <h1>Bienvenido a tu evaluacion 360</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <img id="IPS_WorkingOnIt" src="../assets/working-on-it.png" class="rounded mx-auto d-block">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <h5>Todavia no hay equipos publicado, por favor vuelve mas tarde para validar tus evaluaciones</h5>
-                </div>
-            </div>
+      <div class="container text-center">
+        <div class="row">
+          <div class="col">
+            <h1>Bienvenido a tu evaluacion 360</h1>
+          </div>
         </div>
-
+        <div class="row">
+          <div class="col">
+            <img
+              id="IPS_WorkingOnIt"
+              src="../assets/working-on-it.png"
+              class="rounded mx-auto d-block"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h5>
+              Todavia no hay equipos publicado, por favor vuelve mas tarde para
+              validar tus evaluaciones
+            </h5>
+          </div>
+        </div>
+      </div>
     </ng-template>
-
-</ng-template>
-
-
+  </ng-template>
+</div>
