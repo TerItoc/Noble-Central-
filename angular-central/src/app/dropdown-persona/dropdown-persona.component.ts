@@ -17,6 +17,9 @@ export class DropdownPersonaComponent implements OnInit {
 
   arrRelaciones: string[] = ["Peer to Peer","Lider a Equipo","Equipo a Lider"]; 
 
+  isError: boolean = false;
+  isSamePerson: boolean = false;
+
   nombreDelete : string;
   tipoRelacionDelete : string;
   nombreEvaluadorDelete : string;
@@ -54,6 +57,15 @@ export class DropdownPersonaComponent implements OnInit {
 
   saveEval() : void {
     console.log(this.nombreAgregar,this.tipoRelacionAgregar,this.nombreEvaluadorAgregar);
+    if(this.nombreEvaluadorAgregar == "0" || this.tipoRelacionAgregar == "0") {
+      this.isError = true;
+      return;
+    }
+    if(this.nombreEvaluadorAgregar === this.nombreAgregar) {
+      this.isSamePerson = true;
+      return
+    }
+    this.isError = false;
     this.dsqls.addEval(this.nombreAgregar,this.tipoRelacionAgregar,this.nombreEvaluadorAgregar).subscribe((res) => {this.refresh()});
   }
 
