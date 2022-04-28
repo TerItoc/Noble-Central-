@@ -88,6 +88,7 @@ export class EmpleadoComponent implements OnInit {
               if (value === 'No hay correo' || value === 'false') {
                 this.getTeam();
                 this.isAdmin = false;
+                this.getTeam();
               } else {
                 this.isAdmin = true;
                 this.router.navigateByUrl('dashboard');
