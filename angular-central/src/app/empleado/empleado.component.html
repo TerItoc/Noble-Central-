@@ -37,7 +37,7 @@
                                 <td>{{evaluacion.TipoEvaluacion}}</td>
                                 <td>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" [(ngModel)]="isChecked" (change)="Uncheck(isChecked)">
+                                        <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (change)="Uncheck(isChecked)" checked>
                                     </div>
                                 </td>
                             </tr>

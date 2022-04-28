@@ -33,6 +33,8 @@ export class EmpleadoComponent implements OnInit {
   allChecked : boolean = true;
   isChecked : boolean = true;
 
+
+
   Uncheck(isChecked){
     if(isChecked==false){
       return this.allChecked=false;
