@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ResultadoEquipos, Equipo } from './model/equipos.model';
 import { ResultadoHuerfano, Huerfano } from './model/orphan.model';
 import { ResultadoMakeTeams } from './model/response.model';
@@ -8,6 +9,7 @@ import { Relacion } from './model/evaluacion.model';
 import { environment } from 'src/environments/environment';
 import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
 import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
+import { Empleado } from './model/empleado.model'
 
 
 @Injectable({
@@ -15,6 +17,9 @@ import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
 })
 
 export class DashboardSqlService {
+
+  searchOption=[];
+  public empData: Empleado[];
 
   constructor(private http: HttpClient) {};
 
@@ -89,6 +94,24 @@ export class DashboardSqlService {
 
 
     return this.http.post(environment.backendUrl+'/isAdmin', emailData);
+  }
+
+  getEmps(): Observable<Empleado[]>{
+    return this.http.get<Empleado[]>(environment.backendUrl+'/getEmployees');
+  }
+
+  filteredListOptions() {
+    let emps = this.empData;
+        let filteredPostsList = [];
+        for (let emp of emps) {
+            for (let options of this.searchOption) {
+                if (options.nombre === emp.nombre) {
+                  filteredPostsList.push(emps);
+                }
+            }
+        }
+        console.log(filteredPostsList);
+        return filteredPostsList;
   }
 
 }

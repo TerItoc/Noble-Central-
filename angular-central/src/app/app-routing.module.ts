@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AdminEvComponent } from './admin-ev/admin-ev.component';
 import { EmpleadoComponent } from './empleado/empleado.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard] },
   { path: 'adminEV', component: AdminEvComponent, canActivate: [MsalGuard] },
   { path: 'empleado', component: EmpleadoComponent, canActivate: [MsalGuard] },
+  { path: 'search', component: SearchComponent, canActivate: [MsalGuard] },
   { path: '**', redirectTo: 'login' },
 ];
 
