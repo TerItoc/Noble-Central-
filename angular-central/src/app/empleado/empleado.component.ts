@@ -86,6 +86,7 @@ export class EmpleadoComponent implements OnInit {
             .subscribe((msg) => {
               let value = Object.values(msg)[0];
               if (value === 'No hay correo' || value === 'false') {
+                this.getTeam();
                 this.isAdmin = false;
               } else {
                 this.isAdmin = true;
