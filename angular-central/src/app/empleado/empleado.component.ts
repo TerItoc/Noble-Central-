@@ -73,6 +73,7 @@ export class EmpleadoComponent implements OnInit {
               let value = Object.values(msg)[0];
               if (value === 'No hay correo' || value === 'false') {
                 this.isAdmin = false;
+                this.getTeam();
               } else {
                 this.isAdmin = true;
                 this.router.navigateByUrl('dashboard');
