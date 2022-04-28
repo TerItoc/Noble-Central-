@@ -35,9 +35,23 @@ export class EmpleadoComponent implements OnInit {
 
   validando: boolean;
 
-  myEvals: EmpleadoEvaluacion[];
-  nombreEmpleado: string = 'NO HAY EMPLEADO';
-  allChecked: boolean = false;
+
+  myEvals : EmpleadoEvaluacion[];
+  nombreEmpleado : string = "NO HAY EMPLEADO";
+
+  allChecked : boolean = true;
+  isChecked : boolean = true;
+
+
+
+  Uncheck(isChecked){
+    if(isChecked==false){
+      return this.allChecked=false;
+    }
+    else{
+      return this.allChecked=true;
+    }
+  }
 
   constructor(
     private dsqls: DashboardSqlService,
@@ -96,19 +110,4 @@ export class EmpleadoComponent implements OnInit {
       });
   }
 
-  checkAllChecked(): boolean {
-    return true;
-  }
-
-  selectedIds = [];
-
-  OnCheckboxSelect(id, event) {
-    if (event.target.checked === true) {
-      this.selectedIds.push({ id: id, checked: event.target.checked });
-      console.log('Selected Ids ', this.selectedIds);
-    }
-    if (event.target.checked === false) {
-      this.selectedIds = this.selectedIds.filter((item) => item.id !== id);
-    }
-  }
 }
