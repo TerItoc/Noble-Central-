@@ -61,10 +61,6 @@ export class DashboardSqlService {
 
   }
 
-  postChangeEvalEstatus(evals : EvaluacionAEnviar){
-    let formData:FormData = new FormData();
-  }
-
   addEval(empA,relacion,empB){
     var relAAgregar : Relacion = {
       empA : empA,
@@ -89,6 +85,17 @@ export class DashboardSqlService {
 
 
     return this.http.post(environment.backendUrl+'/isAdmin', emailData);
+  }
+
+  postReport(evall : EmpleadoEvaluacion, report){
+    evall.Reporte = report;    
+    return this.http.post(environment.backendUrl+'/generateReport',evall);
+  }
+
+  postConfirmEvals(evals){
+    let formData:FormData = new FormData();
+    formData.append("evals",evals);
+    return this.http.post(environment.backendUrl+'/confirmEvals',evals);
   }
 
 }

@@ -89,13 +89,26 @@ app.post("/isAdmin", async (req, res) => {
   }
 });
 
-app.post('/updateEvals', async(req,res) =>{
-  res.send();
-  //Pass array of IDs
-  await db.confirmEvals()
+app.post('/generateReport', async(req,res) =>{
+  try{
+    await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
+    res.send(true);
+  }
+  catch(error){
+    res.send({error : error});
+  }
 
   //Pass ID and Report String
-  await db.generateReport()
+})
+
+app.post('/confirmEvals', async(req,res) => {
+  try {
+    await db.confirmEvals(req.body.evals);
+    res.send(true);
+
+  } catch (error) {
+    res.send({error : error});
+  }
 })
 
 // POST File
