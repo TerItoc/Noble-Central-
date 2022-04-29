@@ -45,19 +45,10 @@ export class EmpleadoComponent implements OnInit {
     private msalBroadcastService: MsalBroadcastService,
     private http: HttpClient,
     private router: Router
-
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
-
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
-      )
-      .subscribe((result: EventMessage) => {
-        console.log(result);
-      });
 
     this.msalBroadcastService.inProgress$
       .pipe(

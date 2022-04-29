@@ -13,7 +13,10 @@ import { filter, Subject, takeUntil } from 'rxjs';
 import { DashboardSqlService } from '../dashboard-sql.service';
 
 type ProfileType = {
-  userNamePrincipal?: string;
+  givenName?: string;
+  surname?: string;
+  userPrincipalName?: string;
+  id?: string;
 };
 
 @Component({
@@ -51,14 +54,14 @@ export class LoginComponent implements OnInit, OnDestroy {
             .get('https://graph.microsoft.com/v1.0/me')
             .subscribe((profile) => {
               this.profile = profile;
-
               this.dsqls
-                .getIsAdmin(this.profile.userNamePrincipal)
+                .getIsAdmin(this.profile.userPrincipalName)
                 .subscribe((msg) => {
                   let value = Object.values(msg)[0];
-                  if (value === 'No hay correo' || value === 'false') {
+                  //Es admin
+                  if (value === 'true') {
                     this.router.navigateByUrl('dashboard');
-                  } else {
+                  } else { //No es admin
                     this.router.navigateByUrl('empleado');
                   }
                 });

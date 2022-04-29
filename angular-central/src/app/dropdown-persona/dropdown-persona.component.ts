@@ -63,6 +63,7 @@ export class DropdownPersonaComponent implements OnInit {
     }
     if(this.nombreEvaluadorAgregar === this.nombreAgregar) {
       this.isSamePerson = true;
+      this.isError = false;
       return
     }
     this.isError = false;
