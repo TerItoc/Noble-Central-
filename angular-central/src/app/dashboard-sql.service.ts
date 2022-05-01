@@ -41,6 +41,15 @@ export class DashboardSqlService {
   getEmployeeEval(correo:string){
     let formData:FormData = new FormData();
     formData.append('correo', correo);
+    formData.append('all', "false");
+
+    return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
+  }
+
+  getAllEmployeeEvals(correo : string){
+    let formData:FormData = new FormData();
+    formData.append('correo', correo);
+    formData.append('all', "true");
 
     return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
   }
@@ -52,13 +61,6 @@ export class DashboardSqlService {
   postFile(file : File){
     let formData:FormData = new FormData();
     formData.append('file', file, file.name);
-    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
-    
-    //const headers : Headers = new Headers();
-    //headers.append('Content-Type', 'text');
-    //let options : RequestOptions = new RequestOptions({ headers: headers });
-    //formData.append(headers);
-
     return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
   }
 
@@ -83,20 +85,7 @@ export class DashboardSqlService {
   getIsAdmin(correo: string) {
     let emailData : FormData = new FormData();
     emailData.append('correo', correo);
-
-
     return this.http.post(environment.backendUrl+'/isAdmin', emailData);
-  }
-
-  postReport(evall : EmpleadoEvaluacion, report){
-    evall.Reporte = report;    
-    return this.http.post(environment.backendUrl+'/generateReport',evall);
-  }
-
-  postConfirmEvals(evals){
-    let formData:FormData = new FormData();
-    formData.append("evals",evals);
-    return this.http.post(environment.backendUrl+'/confirmEvals',evals);
   }
 
   postReport(evall : EmpleadoEvaluacion, report){

@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import {
@@ -19,11 +19,12 @@ type ProfileType = {
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
 @Component({
-  selector: 'app-empleados',
-  templateUrl: './empleado.component.html',
-  styleUrls: ['./empleado.component.css'],
+  selector: 'app-empleado-dashboard',
+  templateUrl: './empleado-dashboard.component.html',
+  styleUrls: ['./empleado-dashboard.component.css']
 })
-export class EmpleadoComponent implements OnInit {
+export class EmpleadoDashboardComponent implements OnInit {
+
 
   constructor(
     private dsqls: DashboardSqlService,
@@ -44,7 +45,10 @@ export class EmpleadoComponent implements OnInit {
   reporteTexto : string;
   confirmEvals : number[];
 
-  myEvals : EmpleadoEvaluacion[];
+  allEvals : EmpleadoEvaluacion[];
+  confirmedEvals : EmpleadoEvaluacion[];
+  reportedEvals : EmpleadoEvaluacion[];
+
   nombreEmpleado : string = "NO HAY EMPLEADO";
 
   allChecked : boolean = true;
@@ -52,15 +56,6 @@ export class EmpleadoComponent implements OnInit {
 
   evalToReport : EmpleadoEvaluacion;
   checkboxEvalReport;
-
-  Uncheck(isChecked){
-    if(isChecked==false){
-      return this.allChecked=false;
-    }
-    else{
-      return this.allChecked=true;
-    }
-  }
 
   ngOnInit(): void {
     this.loading = true;
@@ -95,36 +90,10 @@ export class EmpleadoComponent implements OnInit {
       this.validando = res;
     });
 
-    this.dsqls.getEmployeeEval(this.profile.userPrincipalName).subscribe((res) => {
-      this.myEvals = res;
-      this.evalToReport = this.myEvals[0];
+    this.dsqls.getAllEmployeeEvals(this.profile.userPrincipalName).subscribe((res) => {
+      this.allEvals = res;
       this.loading = false;
     });
-  }
 
-  setReporteTexto(texto){
-    this.reporteTexto = texto; 
-  }
-
-  setReport(empleadoEvaluacion){
-    this.evalToReport = empleadoEvaluacion;
-  }
-
-  sendReport(){
-    console.log(this.evalToReport, this.reporteTexto);
-    this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
-      this.loading = true;
-      window.location.reload();
-    });
-  }
-
-  sendConfirmedEvals(){
-    this.confirmEvals = this.myEvals.map(function(i) {
-      return i.EvaluacionID;
-    });
-    this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
-      this.loading = true;
-      window.location.href = "empleado-dashboard";
-    });
   }
 }

@@ -148,16 +148,24 @@ async function getOrphans(){
     return processOrphans(orphans.recordset);
 }
 
-async function getEvaluationsForEmail(correo){
-
-    let evals = await getQuery(`
-        select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+async function getEvaluationsForEmail(correo,all){
+    let query;
+    if(all){
+        query = `select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion, EvaluaA.Estatus as Estatus from EvaluaA 
         Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') AND Estatus = 0
-    `)
-
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}')`
+    }
+    else{
+        query = `select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
+        Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') AND Estatus = 0`
+    }
+    let evals = await getQuery(query);
+    console.log(evals.recordset);
     return evals.recordset;
 }
 
@@ -165,7 +173,7 @@ async function generateReport(evalID, report){
     try{
         await postQuery(`
             UPDATE EvaluaA SET Estatus = 2 WHERE EvaluacionID = ${evalID}
-            INSERT INTO Reportes values (${evalID},'${reporte}')
+            INSERT INTO Reportes values (${evalID},'${report}')
         `)
 
         return {success : true};
@@ -275,6 +283,8 @@ function turnSQLtoJsonEmpIds(sqlRes){
     }
     return res;
 }
+
+
 
 async function isAdmin(correo){
     let q = await getQuery(`

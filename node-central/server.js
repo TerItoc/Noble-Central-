@@ -56,18 +56,6 @@ app.get("/publishTeams", async (req, res) => {
   res.send(await db.publishTeams());
 });
 
-app.post("/getEmployeeEvals", async (req, res) => {
-  if (!req.body.correo) {
-    res.send({ success: false, info: undefined });
-  }
-
-  try {
-    res.send(await db.getEvaluationsForEmail(req.body.correo));
-  } catch (error) {
-    res.send({ success: false, info: undefined });
-  }
-});
-
 app.post("/isAdmin", async (req, res) => {
   if (!req.body.correo) {
     res.json({ isAdmin: "No hay correo" });
@@ -78,9 +66,9 @@ app.post("/isAdmin", async (req, res) => {
 });
 
 app.post('/generateReport', async(req,res) =>{
-  //Pass ID and Report String
   try{
-    await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
+    console.log(req.body.EvaluacionID,req.body.Reporte);
+    await db.generateReport(req.body.EvaluacionID,req.body.Reporte);
     res.send(true);
   }
   catch(error){
@@ -88,26 +76,9 @@ app.post('/generateReport', async(req,res) =>{
   }
 })
 
-app.post('/generateReport', async(req,res) =>{
-  try{
-    await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
-    res.send(true);
-  }
-  catch(error){
-    res.send({error : error});
-  }
-
-  //Pass ID and Report String
-})
-
 app.post('/confirmEvals', async(req,res) => {
   try {
-    await db.confirmEvals(req.body.evals);
-    res.send(true);
-
-app.post('/confirmEvals', async(req,res) => {
-  try {
-    await db.confirmEvals(req.body.evals);
+    await db.confirmEvals(req.body);
     res.send(true);
 
   } catch (error) {
@@ -115,20 +86,20 @@ app.post('/confirmEvals', async(req,res) => {
   }
 })
 
-app.post("/getConfirmedEvals", async(req,res) => {
+app.post("/getEmployeeEvals", async (req, res) => {
+  if (!req.body.correo || !req.body.all) {
+    res.send({ success: false, info: undefined });
+  }
+
   try {
-    if (req.files.file == undefined) {
-      return res.status(400).send({ success: false, message: "No file" });
+    if(req.body.all == "false"){
+      res.send(await db.getEvaluationsForEmail(req.body.correo,false));
     }
-
-    return res.send(await mt.makeTeams(req.files.file));
+    else{
+      res.send(await db.getEvaluationsForEmail(req.body.correo,true));
+    }
   } catch (error) {
-    console.log(error);
-
-    res.status(500).send({
-      success: false,
-      message: "Error making teams, excel file may be invalid",
-    });
+    res.send({ success: false, info: undefined });
   }
 });
 

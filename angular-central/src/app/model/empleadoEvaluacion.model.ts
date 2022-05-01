@@ -7,4 +7,5 @@ export interface EmpleadoEvaluacion {
     EmpleadoBNombre: string;
     TipoEvaluacion: string;
     Reporte? : string;
+    Estatus? : number;
 }

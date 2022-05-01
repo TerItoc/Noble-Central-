@@ -37,7 +37,7 @@
                             <td>{{evaluacion.TipoEvaluacion}}</td>
                             <td>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (change)="Uncheck(isChecked)" checked>
+                                    <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (click)="setReport(evaluacion)" data-bs-toggle="modal" data-bs-target="#modalReporte" checked>
                                 </div>
                             </td>
                         </tr>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="d-flex justify-content-center">
-                <a class="btn btn-success" href="" role="button" id="B-N">Continuar</a>
+                <a class="btn btn-success" href="" role="button" id="B-N" (click)="sendConfirmedEvals()">Continuar</a>
             </div>
         </div>
     </div>
@@ -96,3 +96,35 @@
     </div>
 </ng-template>
 
+
+  
+<!-- Modal -->
+<div *ngIf="evalToReport" class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modalReporteLabel"><b>Reportar Cambio</b></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="paddy">
+            Vas a mandar un reporte para tu relacion con <b>{{evalToReport.EmpleadoBNombre}}</b> de manera <b>{{evalToReport.TipoEvaluacion}}</b><br>
+            <span class="ita">Cuando no es correcta la informacion de la relacion es necesario reportar un cambio</span>
+        </div>
+        <hr>
+        <form>
+            <div class="form-group">
+              <label for="reporteInput"><h6><b>Reporte</b></h6></label>
+              <input type="text" class="form-control" id="reporteInput" name="reporteInput" [(ngModel)]="reporteTexto" aria-describedby="reportHelp"  placeholder="Escribe tu reporte aqui..">
+              <small id="reportHelp" class="form-text text-muted">Ej. Nunca me toco trabajar con el</small>
+            </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</button>
+        <button type="button" (click)="sendReport()" class="btn btn-primary">Mandar Reporte</button>
+    </div>
+    </div>
+</div>
+</div>

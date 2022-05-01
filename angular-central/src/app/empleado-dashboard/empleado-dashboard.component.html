@@ -1,0 +1,22 @@
+<div *ngIf="!isAdmin">
+    <div *ngIf="loading; else notAdmin">
+        <div id="loading-div" class="d-flex justify-content-center align-items-center">
+            <i class="fa-3x fa-solid fa-circle-notch fa-spin" style="--fa-animation-duration: 0.7s"></i>
+        </div>
+    </div>
+
+
+<ng-template #notAdmin>
+    <h1>Tus evaluaciones confirmadas: </h1>
+
+    <div *ngFor="let evaluacion of allEvals">
+        {{evaluacion.EmpleadoBNombre}} - 
+
+        <span [ngSwitch]="evaluacion.Estatus">
+            <i *ngSwitchCase="0" class="fa-solid fa-clock"></i>
+            <i *ngSwitchCase="1" class="fa-solid fa-check"></i>
+            <i *ngSwitchCase="2" class="fa-solid fa-flag"></i>
+            <i *ngSwitchDefault class="fa-solid fa-circle-exclamation"></i>
+        </span>
+    </div>
+</ng-template>
