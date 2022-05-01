@@ -36,6 +36,21 @@ export class EmpleadoComponent implements OnInit {
   validando: boolean;
 
 
+
+
+  reporteTexto : string;
+  evaltoReport = new EmpleadoEvaluacion({
+    EvaluacionID : 1,
+    EmpleadoAID : 1,
+    EmpleadoANombre : "",
+    EmpleadoBID : "",
+    EmpleadoBNombre :  "",
+    TipoEvaluacion : "",
+    Reporte : "",
+});
+  confirmEvals : number[];
+
+
   myEvals : EmpleadoEvaluacion[];
   nombreEmpleado : string = "NO HAY EMPLEADO";
 
@@ -88,6 +103,20 @@ export class EmpleadoComponent implements OnInit {
         });
       });
   }
+          this.http.get("https://graph.microsoft.com/v1.0/me").subscribe(profile => {
+
+            this.profile = profile
+
+            this.dsqls.getValidando().then(res => {
+              this.validando = res;
+            })
+
+            //this.correo
+            this.dsqls.getEmployeeEval(this.profile.userPrincipalName).subscribe(res => {
+              this.myEvals = res;
+              this.evaltoReport = this.myEvals[0];
+              this.loading = false; 
+            })
 
   getTeam() {
     this.dsqls.getValidando().then((res) => {
@@ -100,6 +129,26 @@ export class EmpleadoComponent implements OnInit {
         this.myEvals = res;
         this.loading = false;
       });
+  }
+
+  setReporteTexto(texto){
+    this.reporteTexto = texto; 
+  }
+
+  setReport(empleadoEvaluacion){
+    this.evaltoReport = empleadoEvaluacion;
+  }
+
+  sendReport(){
+    this.dsqls.postReport(this.evaltoReport, this.reporteTexto).subscribe((res)=>{
+      window.location.reload();
+    });
+  }
+
+  sendConfirmedEvals(){
+    this.confirmEvals = this.myEvals.map(function(i) {
+      return i.EvaluacionID;
+    });
   }
 
 }

@@ -88,6 +88,23 @@ app.post('/generateReport', async(req,res) =>{
   }
 })
 
+app.post('/generateReport', async(req,res) =>{
+  try{
+    await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
+    res.send(true);
+  }
+  catch(error){
+    res.send({error : error});
+  }
+
+  //Pass ID and Report String
+})
+
+app.post('/confirmEvals', async(req,res) => {
+  try {
+    await db.confirmEvals(req.body.evals);
+    res.send(true);
+
 app.post('/confirmEvals', async(req,res) => {
   try {
     await db.confirmEvals(req.body.evals);

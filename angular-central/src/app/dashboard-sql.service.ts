@@ -59,6 +59,7 @@ export class DashboardSqlService {
     //let options : RequestOptions = new RequestOptions({ headers: headers });
     //formData.append(headers);
 
+    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
   }
 
   addEval(empA,relacion,empB){
@@ -85,6 +86,17 @@ export class DashboardSqlService {
 
 
     return this.http.post(environment.backendUrl+'/isAdmin', emailData);
+  }
+
+  postReport(evall : EmpleadoEvaluacion, report){
+    evall.Reporte = report;    
+    return this.http.post(environment.backendUrl+'/generateReport',evall);
+  }
+
+  postConfirmEvals(evals){
+    let formData:FormData = new FormData();
+    formData.append("evals",evals);
+    return this.http.post(environment.backendUrl+'/confirmEvals',evals);
   }
 
   postReport(evall : EmpleadoEvaluacion, report){
