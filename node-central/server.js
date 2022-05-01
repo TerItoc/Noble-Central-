@@ -1,14 +1,10 @@
 //IMPORTS
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const path = require("path");
 const cors = require("cors");
-const multer = require("multer");
 
 const db = require("./dboperations");
 const mt = require("./parseExcel");
-const { makeTeams } = require("./parseExcel");
-const { ifValidando } = require("./dboperations");
 
 db.startConnection();
 
@@ -20,10 +16,6 @@ app.use(cors());
 app.use(fileUpload());
 
 //Endpoints
-app.get("/api", function (req, res) {
-  res.end("File catcher");
-});
-
 app.get("/getTeams", async (req, res) => {
   return res.send(await db.getTeams());
 });
@@ -35,10 +27,6 @@ app.get("/getOrphans", async (req, res) => {
 app.get("/ifTeam", async (req, res) => {
   return res.send(await db.ifTeam());
 });
-
-//app.post('/makeTeams', async (req,res) => {
-//  return res.send(await mt.makeTeams());
-//});
 
 app.get("/getEmployees", async (req, res) => {
   return res.send(await db.getEmployees());
@@ -90,6 +78,7 @@ app.post("/isAdmin", async (req, res) => {
 });
 
 app.post('/generateReport', async(req,res) =>{
+  //Pass ID and Report String
   try{
     await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
     res.send(true);
@@ -97,8 +86,6 @@ app.post('/generateReport', async(req,res) =>{
   catch(error){
     res.send({error : error});
   }
-
-  //Pass ID and Report String
 })
 
 app.post('/confirmEvals', async(req,res) => {
@@ -111,12 +98,25 @@ app.post('/confirmEvals', async(req,res) => {
   }
 })
 
+app.post("/getConfirmedEvals", async(req,res) => {
+  try {
+    if (req.files.file == undefined) {
+      return res.status(400).send({ success: false, message: "No file" });
+    }
+
+    return res.send(await mt.makeTeams(req.files.file));
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).send({
+      success: false,
+      message: "Error making teams, excel file may be invalid",
+    });
+  }
+});
+
 // POST File
 app.post("/makeTeams", async (req, res) => {
-  //console.log(req.file);
-
-  //console.log(req);
-
   if (!req.files.file) {
     console.log("No file sent");
     return res.send({ success: false, message: "No file sent" });
@@ -142,7 +142,6 @@ app.post("/makeTeams", async (req, res) => {
 
 // Create PORT
 const PORT = 3000;
-
 const server = app.listen(PORT, () => {
   console.log("Connected to port " + PORT);
 });
