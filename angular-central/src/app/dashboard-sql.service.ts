@@ -38,9 +38,18 @@ export class DashboardSqlService {
     return this.http.get<Response>(environment.backendUrl+'/publishTeams');
   }
 
-  getEmployeeEval(correo:string){
+  getPendingEmployeeEvals(correo:string){
     let formData:FormData = new FormData();
     formData.append('correo', correo);
+    formData.append('all', "false");
+
+    return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
+  }
+
+  getAllEmployeeEvals(correo : string){
+    let formData:FormData = new FormData();
+    formData.append('correo', correo);
+    formData.append('all', "true");
 
     return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
   }
@@ -53,21 +62,15 @@ export class DashboardSqlService {
     let formData:FormData = new FormData();
     formData.append('file', file, file.name);
     return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
-    
-    //const headers : Headers = new Headers();
-    //headers.append('Content-Type', 'text');
-    //let options : RequestOptions = new RequestOptions({ headers: headers });
-    //formData.append(headers);
-
   }
 
   addEval(empA,relacion,empB){
-    var relAAgregar : Relacion = {
-      empA : empA,
-      relacion: relacion,
-      empB: empB,
-    };
-    return this.http.post(environment.backendUrl+'/addEvaluation', relAAgregar);
+    let formData:FormData = new FormData();
+    formData.append('empA', empA);
+    formData.append('relacion', relacion);
+    formData.append('empB', empB);
+
+    return this.http.post(environment.backendUrl+'/addEvaluation', formData);
   }
 
   delEval(empA,relacion,empB){
@@ -82,8 +85,6 @@ export class DashboardSqlService {
   getIsAdmin(correo: string) {
     let emailData : FormData = new FormData();
     emailData.append('correo', correo);
-
-
     return this.http.post(environment.backendUrl+'/isAdmin', emailData);
   }
 

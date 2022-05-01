@@ -15,10 +15,14 @@ export class FileUploadComponent implements OnInit {
     makingTeams : boolean = false;
     success: boolean = false;
 
+    ifTeam : boolean = true;
+
     constructor(private toastr: ToastrService, private dsqls : DashboardSqlService, private router:Router) {};
 
     ngOnInit() {
-      
+      this.dsqls.getValidando().then((res) => {
+        this.ifTeam = res;
+      });
     }
 
     handleFileInput(event: Event){
@@ -33,7 +37,6 @@ export class FileUploadComponent implements OnInit {
         return;
       }
 
-      
       this.makingTeams = true;
 
       this.dsqls.postFile(this.fileToUpload).subscribe((res) => {

@@ -1,14 +1,10 @@
 //IMPORTS
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const path = require("path");
 const cors = require("cors");
-const multer = require("multer");
 
 const db = require("./dboperations");
 const mt = require("./parseExcel");
-const { makeTeams } = require("./parseExcel");
-const { ifValidando } = require("./dboperations");
 
 db.startConnection();
 
@@ -20,10 +16,6 @@ app.use(cors());
 app.use(fileUpload());
 
 //Endpoints
-app.get("/api", function (req, res) {
-  res.end("File catcher");
-});
-
 app.get("/getTeams", async (req, res) => {
   return res.send(await db.getTeams());
 });
@@ -36,18 +28,13 @@ app.get("/ifTeam", async (req, res) => {
   return res.send(await db.ifTeam());
 });
 
-//app.post('/makeTeams', async (req,res) => {
-//  return res.send(await mt.makeTeams());
-//});
-
 app.get("/getEmployees", async (req, res) => {
   return res.send(await db.getEmployees());
 });
 
 app.post("/addEvaluation", async (req, res) => {
-  const { empA, relacion, empB } = req.body;
-
-  await db.addEvaluation(empA, relacion, empB);
+  console.log(req.body.empA);
+  await db.addEvaluation(req.body.empA, req.body.relacion, req.body.empB);
 
   res.send({ success: true });
 });
@@ -68,18 +55,6 @@ app.get("/publishTeams", async (req, res) => {
   res.send(await db.publishTeams());
 });
 
-app.post("/getEmployeeEvals", async (req, res) => {
-  if (!req.body.correo) {
-    res.send({ success: false, info: undefined });
-  }
-
-  try {
-    res.send(await db.getEvaluationsForEmail(req.body.correo));
-  } catch (error) {
-    res.send({ success: false, info: undefined });
-  }
-});
-
 app.post("/isAdmin", async (req, res) => {
   if (!req.body.correo) {
     res.json({ isAdmin: "No hay correo" });
@@ -91,19 +66,18 @@ app.post("/isAdmin", async (req, res) => {
 
 app.post('/generateReport', async(req,res) =>{
   try{
-    await db.generateReport(req.body.EvaluacionID,req.body.Reporte)
+    console.log(req.body.EvaluacionID,req.body.Reporte);
+    await db.generateReport(req.body.EvaluacionID,req.body.Reporte);
     res.send(true);
   }
   catch(error){
     res.send({error : error});
   }
-
-  //Pass ID and Report String
 })
 
 app.post('/confirmEvals', async(req,res) => {
   try {
-    await db.confirmEvals(req.body.evals);
+    await db.confirmEvals(req.body);
     res.send(true);
 
   } catch (error) {
@@ -111,12 +85,25 @@ app.post('/confirmEvals', async(req,res) => {
   }
 })
 
+app.post("/getEmployeeEvals", async (req, res) => {
+  if (!req.body.correo || !req.body.all) {
+    res.send({ success: false, info: undefined });
+  }
+
+  try {
+    if(req.body.all == "false"){
+      res.send(await db.getEvaluationsForEmail(req.body.correo,false));
+    }
+    else{
+      res.send(await db.getEvaluationsForEmail(req.body.correo,true));
+    }
+  } catch (error) {
+    res.send({ success: false, info: undefined });
+  }
+});
+
 // POST File
 app.post("/makeTeams", async (req, res) => {
-  //console.log(req.file);
-
-  //console.log(req);
-
   if (!req.files.file) {
     console.log("No file sent");
     return res.send({ success: false, message: "No file sent" });
@@ -142,7 +129,6 @@ app.post("/makeTeams", async (req, res) => {
 
 // Create PORT
 const PORT = 3000;
-
 const server = app.listen(PORT, () => {
   console.log("Connected to port " + PORT);
 });

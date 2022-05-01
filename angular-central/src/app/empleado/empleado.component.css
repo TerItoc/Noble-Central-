@@ -3,6 +3,27 @@
     width: 25%;
 }
 
+.fa-check{
+    color: limegreen;
+}
+
+.fa-flag{
+    color: red;
+}
+
+.fa-x{
+    color: black;
+}
+
+.fa-clock{
+    color: black;
+}
+
+.ita{
+    font-style: italic;
+    color: gray;
+}
+
 .Check {
     margin-left: 15px;
 }
@@ -13,7 +34,7 @@
 }
 
 .paddy {
-    padding: 20px;
+    padding: 5px;
 }
 
 .Error {
