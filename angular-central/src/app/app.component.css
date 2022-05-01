@@ -9,7 +9,7 @@ footer {
   padding: 0.1em;
   background-color: whitesmoke;
   box-shadow: 0px -5px 6px rgba(135, 135, 135, 0.15);
-  
+  z-index: 998;  
 }
 
 .dropdown-item:hover{
