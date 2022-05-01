@@ -33,9 +33,8 @@ app.get("/getEmployees", async (req, res) => {
 });
 
 app.post("/addEvaluation", async (req, res) => {
-  const { empA, relacion, empB } = req.body;
-
-  await db.addEvaluation(empA, relacion, empB);
+  console.log(req.body.empA);
+  await db.addEvaluation(req.body.empA, req.body.relacion, req.body.empB);
 
   res.send({ success: true });
 });

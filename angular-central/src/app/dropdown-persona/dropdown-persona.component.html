@@ -38,7 +38,7 @@
               <td scope="row">{{ evaluador.NombreEvaluador }}</td>
               <td>{{ evaluador.TipoRelacion }}</td>
               <td>
-                <span [ngSwitch]="evaluador.estatus">
+                <span [ngSwitch]="evaluador.Estatus">
                   <button
                     *ngSwitchCase="0"
                     class="botonInvis"
@@ -61,7 +61,7 @@
                     *ngSwitchCase="2"
                     class="botonInvis"
                     data-toggle="popover"
-                    title="Existe un report y aqui va"
+                    title="{{nombre + ' reporta:' + evaluador.Reporte}}"
                     data-content=""
                   >
                     <i class="fa-solid fa-flag"></i>
@@ -79,7 +79,7 @@
                   type="button"
                   class="btn btn-light"
                   data-bs-toggle="modal"
-                  data-bs-target="#modalRemover"
+                  [attr.data-bs-target]="'#modalRemover' + id"
                   (click)="
                     setDelete(
                       nombre,
@@ -102,7 +102,7 @@
           type="button"
           class="btn btn-light"
           data-bs-toggle="modal"
-          data-bs-target="#modalAgregar"
+          [attr.data-bs-target]="'#modalAgregar'+id"
           (click)="setNombreAgregar(nombre)"
         >
           <i class="fa-solid fa-plus"></i>
@@ -115,15 +115,15 @@
 <!-- Modal Remover Confirm -->
 <div
   class="modal fade"
-  id="modalRemover"
+  id="{{ 'modalRemover' + id }}"
   tabindex="-1"
-  aria-labelledby="modalRemoverLabel"
+  [attr.aria-labelledby]="'modalRemover' + id + 'Label'"
   aria-hidden="true"
 >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalRemoverLabel">
+        <h5 class="modal-title" id="{{ 'modalRemover' + id }}">
           <b>{{ nombreDelete }}</b> ya no evaluara a:
         </h5>
         <button
@@ -164,15 +164,15 @@
 <!-- Modal Agregar -->
 <div
   class="modal fade"
-  id="modalAgregar"
+  id="{{ 'modalAgregar' + id }}"
   tabindex="-1"
-  aria-labelledby="modalAgregarLabel"
+  [attr.aria-labelledby]="'modalAgregar' + id + 'Label'"
   aria-hidden="true"
 >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAgregarLabel">
+        <h5 class="modal-title" id="{{ 'modalAgregar' + id }}">
           Agregar Evaluacion para: <b>{{ nombreAgregar }}</b>
         </h5>
         <button

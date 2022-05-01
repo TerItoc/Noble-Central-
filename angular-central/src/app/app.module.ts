@@ -24,7 +24,6 @@ import {
 
 import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { DropdownHuerfanoComponent } from './dropdown-huerfano/dropdown-huerfano.component';
-import { EmpleadoDashboardComponent } from './empleado-dashboard/empleado-dashboard.component';
 
 const isIE =
   window.navigator.userAgent.indexOf('MSIE ') > -1 ||
@@ -41,7 +40,6 @@ const isIE =
     FileUploadComponent,
     DropdownHuerfanoComponent,
     EmpleadoComponent,
-    EmpleadoDashboardComponent,
   ],
 
   imports: [

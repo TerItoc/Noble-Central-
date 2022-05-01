@@ -5,7 +5,8 @@
     <button *ngIf="makingTeams; else elseBlock" class="btn btn-secondary" type="button" (click) = "upload()" disabled> Upload </button>
 
     <ng-template #elseBlock>
-        <button type="button" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmar"> Crear Equipos </button>
+      <button *ngIf="ifTeam" type="button" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmar"> Crear Equipos </button>
+      <button *ngIf="!ifTeam" type="button" class="btn btn-success" type="button" (click) = "upload()"> Crear Equipos </button>
     </ng-template>
 </div>
 

@@ -38,7 +38,7 @@ export class DashboardSqlService {
     return this.http.get<Response>(environment.backendUrl+'/publishTeams');
   }
 
-  getEmployeeEval(correo:string){
+  getPendingEmployeeEvals(correo:string){
     let formData:FormData = new FormData();
     formData.append('correo', correo);
     formData.append('all', "false");
@@ -65,12 +65,12 @@ export class DashboardSqlService {
   }
 
   addEval(empA,relacion,empB){
-    var relAAgregar : Relacion = {
-      empA : empA,
-      relacion: relacion,
-      empB: empB,
-    };
-    return this.http.post(environment.backendUrl+'/addEvaluation', relAAgregar);
+    let formData:FormData = new FormData();
+    formData.append('empA', empA);
+    formData.append('relacion', relacion);
+    formData.append('empB', empB);
+
+    return this.http.post(environment.backendUrl+'/addEvaluation', formData);
   }
 
   delEval(empA,relacion,empB){

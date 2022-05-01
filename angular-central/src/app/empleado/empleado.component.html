@@ -4,54 +4,135 @@
             <i class="fa-3x fa-solid fa-circle-notch fa-spin" style="--fa-animation-duration: 0.7s"></i>
         </div>
     </div>
+</div>
 
 <ng-template #notAdmin>
-<div *ngIf="validando; else notValidando">
-
-    <div *ngIf="myEvals.length > 0; else eresHuerfano">
-
-        <div class="container text-center">
-            <div class="row">
-                <div class="col paddy">
-                    <h1>Bienvenido a tu evaluacion 360</h1>
+    <div *ngIf="validando; else notValidando">
+        <div *ngIf="allEvals.length > 0; else eresHuerfano">
+            <div *ngIf="pendingEvals.length > 0; else noPending">
+                <div class="container text-center">
+                    <div class="row">
+                        <div class="col paddy">
+                            <h1>Bienvenido a tu evaluacion 360</h1>
+                        </div>
+                    </div>
+                    <div class="row paddy">
+                        <p>Por favor confirma que conoces a las siguientes personas: </p>
+                    </div>
+        
+                    <h3 class="paddy"><small class="smalll">Evaluaciones para:</small> {{pendingEvals[0].EmpleadoANombre}}</h3>
+        
+                    <div class="d-flex justify-content-center paddy">
+                        <table class="table" style="width: 60%;">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">Evaluador</th>
+                                    <th scope="col">Tipo de Evaluacion</th>
+                                    <th scope="col" data-halign="center" data-align="center">Lo conozco</th>
+                                </tr>
+                            </thead>
+                            <tbody class="border">
+                                <tr *ngFor="let evaluacion of pendingEvals; let i = index">
+                                    <td scope="row">{{evaluacion.EmpleadoBNombre}}</td>
+                                    <td>{{evaluacion.TipoEvaluacion}}</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (click)="setReport(evaluacion)" data-bs-toggle="modal" data-bs-target="#modalReporte" checked>
+                                        </div>
+                                    </td>
+                                </tr>
+        
+                            </tbody>
+                        </table>
+                    </div>
+        
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-success" href="" role="button" id="B-N" (click)="sendConfirmedEvals()">Continuar</a>
+                    </div>
                 </div>
-            </div>
-            <div class="row paddy">
-                <p>Por favor confirma que conoces a las siguientes personas: </p>
-            </div>
-
-            <h3 class="paddy"><small class="smalll">Evaluaciones para:</small> {{myEvals[0].EmpleadoANombre}}</h3>
-
-            <div class="d-flex justify-content-center paddy">
-                <table class="table" style="width: 60%;">
-                    <thead>
-                        <tr class="table-primary">
-                            <th scope="col">Evaluador</th>
-                            <th scope="col">Tipo de Evaluacion</th>
-                            <th scope="col" data-halign="center" data-align="center">Lo conozco</th>
-                        </tr>
-                    </thead>
-                    <tbody class="border">
-                        <tr *ngFor="let evaluacion of myEvals; let i = index">
-                            <td scope="row">{{evaluacion.EmpleadoBNombre}}</td>
-                            <td>{{evaluacion.TipoEvaluacion}}</td>
-                            <td>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (click)="setReport(evaluacion)" data-bs-toggle="modal" data-bs-target="#modalReporte" checked>
-                                </div>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="d-flex justify-content-center">
-                <a class="btn btn-success" href="" role="button" id="B-N" (click)="sendConfirmedEvals()">Continuar</a>
             </div>
         </div>
     </div>
-</div>
+</ng-template>
+
+<ng-template #noPending>
+
+    <div class="container text-center">
+        <div class="row">
+            <div class="col paddy">
+                <h1>Bienvenido a tu evaluacion 360</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col paddy">
+                <h5>Este es tu portal {{allEvals[0].EmpleadoANombre}}</h5>
+            </div>
+        </div>
+
+        <h3 class="paddy"><small class="smalll">Tus evaluaciones confirmadas:</small></h3>
+
+        <div *ngIf="confirmedEvals.length>0; else noConfirmedEvals" class="d-flex justify-content-center paddy">
+            <table class="table" style="width: 60%;">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Evaluador</th>
+                        <th scope="col">Tipo de Evaluacion</th>
+                        <th scope="col" data-halign="center" data-align="center">Lo conozco</th>
+                    </tr>
+                </thead>
+                <tbody class="border">
+                    <tr *ngFor="let evaluacion of confirmedEvals; let i = index">
+                        <td scope="row">{{evaluacion.EmpleadoBNombre}}</td>
+                        <td>{{evaluacion.TipoEvaluacion}}</td>
+                        <td>
+                            <span [ngSwitch]="evaluacion.Estatus">
+                                <i *ngSwitchCase="0" class="fa-solid fa-clock"></i>
+                                <i *ngSwitchCase="1" class="fa-solid fa-check"></i>
+                                <i *ngSwitchCase="2" class="fa-solid fa-flag"></i>
+                                <i *ngSwitchDefault class="fa-solid fa-circle-exclamation"></i>
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <h3 class="paddy"><small class="smalll">Tus evaluaciones con reporte:</small></h3>
+
+        <div *ngIf="reportedEvals.length>0; else noReportedEvals" class="d-flex justify-content-center paddy">
+            <table class="table" style="width: 60%;">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Evaluador</th>
+                        <th scope="col">Tipo de Evaluacion</th>
+                        <th scope="col" data-halign="center" data-align="center">Lo conozco</th>
+                    </tr>
+                </thead>
+                <tbody class="border">
+                    <tr *ngFor="let evaluacion of reportedEvals; let i = index">
+                        <td scope="row">{{evaluacion.EmpleadoBNombre}}</td>
+                        <td>{{evaluacion.TipoEvaluacion}}</td>
+                        <td>
+                            <span [ngSwitch]="evaluacion.Estatus">
+                                <i *ngSwitchCase="0" class="fa-solid fa-clock"></i>
+                                <i *ngSwitchCase="1" class="fa-solid fa-check"></i>
+                                <i *ngSwitchCase="2" class="fa-solid fa-flag" data-toggle="tooltip" data-placement="top" title="{{evaluacion.Reporte}}"></i>
+                                <i *ngSwitchDefault class="fa-solid fa-circle-exclamation"></i>
+
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</ng-template>
+
 <ng-template #eresHuerfano>
     <div class="container text-center">
         <div class="row">
@@ -96,35 +177,42 @@
     </div>
 </ng-template>
 
+<ng-template #noConfirmedEvals>
+    <h5 class="paddy">No tienes ninguna evaluacion confirmada</h5>
 
-  
+</ng-template>
+
+<ng-template #noReportedEvals>
+    <h5 class="paddy">No tienes evaluaciones reportadas</h5>
+</ng-template>
+
 <!-- Modal -->
 <div *ngIf="evalToReport" class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
-<div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title" id="modalReporteLabel"><b>Reportar Cambio</b></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-        <div class="paddy">
-            Vas a mandar un reporte para tu relacion con <b>{{evalToReport.EmpleadoBNombre}}</b> de manera <b>{{evalToReport.TipoEvaluacion}}</b><br>
-            <span class="ita">Cuando no es correcta la informacion de la relacion es necesario reportar un cambio</span>
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modalReporteLabel"><b>Reportar Cambio</b></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <hr>
-        <form>
-            <div class="form-group">
-              <label for="reporteInput"><h6><b>Reporte</b></h6></label>
-              <input type="text" class="form-control" id="reporteInput" name="reporteInput" [(ngModel)]="reporteTexto" aria-describedby="reportHelp"  placeholder="Escribe tu reporte aqui..">
-              <small id="reportHelp" class="form-text text-muted">Ej. Nunca me toco trabajar con el</small>
+        <div class="modal-body">
+            <div class="paddy">
+                Vas a mandar un reporte para tu relacion con <b>{{evalToReport.EmpleadoBNombre}}</b> de manera <b>{{evalToReport.TipoEvaluacion}}</b><br>
+                <span class="ita">Cuando no es correcta la informacion de la relacion es necesario reportar un cambio</span>
             </div>
-        </form>
-
+            <hr>
+            <form>
+                <div class="form-group">
+                  <label for="reporteInput"><h6><b>Reporte</b></h6></label>
+                  <input type="text" class="form-control" id="reporteInput" name="reporteInput" [(ngModel)]="reporteTexto" aria-describedby="reportHelp"  placeholder="Escribe tu reporte aqui..">
+                  <small id="reportHelp" class="form-text text-muted">Ej. Nunca me toco trabajar con el</small>
+                </div>
+            </form>
+    
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</button>
+            <button type="button" (click)="sendReport()" class="btn btn-primary">Mandar Reporte</button>
+        </div>
+        </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</button>
-        <button type="button" (click)="sendReport()" class="btn btn-primary">Mandar Reporte</button>
-    </div>
-    </div>
-</div>
 </div>

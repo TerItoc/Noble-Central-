@@ -26,6 +26,7 @@ async function postQuery(query){
     }
     catch(error){
         console.log("Error en:", query);
+        console.log(error);
     }
 }
 
@@ -151,21 +152,24 @@ async function getOrphans(){
 async function getEvaluationsForEmail(correo,all){
     let query;
     if(all){
-        query = `select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion, EvaluaA.Estatus as Estatus from EvaluaA 
+        query = `select EvaluaA.EvaluacionID, EmpA.Nombre as EmpleadoANombre, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion, EvaluaA.Estatus as Estatus, Rep.Reporte
+        from EvaluaA
         Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Left Join Reportes Rep on EvaluaA.EvaluacionID = Rep.EvaluacionID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
         where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}')`
     }
     else{
-        query = `select EvaluaA.EvaluacionID, EmpleadoA as EmpleadoAID,EmpA.Nombre as EmpleadoANombre, EmpB.EmpleadoID as EmpleadoBID, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion from EvaluaA 
+        query = `select EvaluaA.EvaluacionID, EmpA.Nombre as EmpleadoANombre, EmpB.Nombre as EmpleadoBNombre, Evaluacion.EvaluacionNombre as TipoEvaluacion, EvaluaA.Estatus as Estatus, Rep.Reporte
+        from EvaluaA
         Join Empleado EmpB on EvaluaA.EmpleadoB = EmpB.EmpleadoID
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
+        Left Join Reportes Rep on EvaluaA.EvaluacionID = Rep.EvaluacionID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') AND Estatus = 0`
+        where EmpleadoA = (select EmpleadoID from Empleado where Correo = '${correo}') and Estatus = 0`
     }
     let evals = await getQuery(query);
-    console.log(evals.recordset);
     return evals.recordset;
 }
 
@@ -199,37 +203,6 @@ async function confirmEvals(evalsID){
     }
 }
 
-function processTeams(recordset){
-    let teams = {};
-
-    for (let i = 0; i < recordset.length; i++) {
-        let row = recordset[i];
-
-        let relation = {NombreEvaluador: row.Nombre, TipoRelacion: row.EvaluacionNombre, estatus : row.estatus};
-
-        if(teams[row.nombre]){
-            teams[row.nombre].push(relation);
-        }
-        else{
-            teams[row.nombre] = [relation];
-        }
-        
-    }
-
-    //console.log(teams);
-    let equipos = [];
-
-    for(const [key, value] of Object.entries(teams)){
-        let newEntry = {}
-        newEntry.nombre = key;
-        newEntry.evaluadores = value;
-        equipos.push(newEntry);
-    }
-
-    return {equipos:equipos};
-
-}
-
 async function ifValidando(){
     let res = await getQuery(`
         SELECT CASE
@@ -260,16 +233,51 @@ async function publishTeams(){
     }
 }
 
+
+function processTeams(recordset){
+    let teams = {};
+
+    for (let i = 0; i < recordset.length; i++) {
+        let row = recordset[i];
+
+        let relation = {NombreEvaluador: row.Nombre, TipoRelacion: row.EvaluacionNombre, Estatus : row.estatus};
+
+        if(row.Reporte){
+            relation.Reporte = row.Reporte;
+        }
+
+        if(teams[row.nombre]){
+            teams[row.nombre].push(relation);
+        }
+        else{
+            teams[row.nombre] = [relation];
+        }
+        
+    }
+
+    //console.log(teams);
+    let equipos = [];
+
+    for(const [key, value] of Object.entries(teams)){
+        let newEntry = {}
+        newEntry.nombre = key;
+        newEntry.evaluadores = value;
+        equipos.push(newEntry);
+    }
+
+    return {equipos:equipos};
+
+}
+
 async function getTeams(){
 
     let teams = await getQuery(`
-        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus from EvaluaA
+        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus, Rep.Reporte from EvaluaA
         JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
         JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+        LEFT JOIN Reportes Rep ON EvaluaA.EvaluacionID = Rep.EvaluacionID
         JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
     `)
-
-    //console.log(processTeams(teams.recordset));
     return processTeams(teams.recordset);
 
 }
@@ -303,6 +311,7 @@ async function isAdmin(correo){
 }
 
 async function addEvaluation(empA,TipoRelacion,empB){
+    console.log("Literally here: ",empA,TipoRelacion,empB)
     let relacionID = getRelacionID(TipoRelacion);
 
     if(empA == empB){
@@ -312,14 +321,13 @@ async function addEvaluation(empA,TipoRelacion,empB){
     let validando = null;
     await ifValidando().then((res) => { validando = res});
 
-    console.log(validando);
     if(validando == "true"){
         estatus = 0;
     }
     else{
         estatus = -1;
     }
-
+    
     let idEmpA = null;
     await getEmployeeIdByName(empA).then((res) => {idEmpA = res});
     let idEmpB = null;
@@ -353,7 +361,6 @@ async function addEvaluation(empA,TipoRelacion,empB){
     }
 
     //console.log("Added Evaluation" ,empA,idEmpA,relacionID,empB,idEmpB, "y su viceversa");
-    console.log(query);
     await postQuery(query);
 
 }

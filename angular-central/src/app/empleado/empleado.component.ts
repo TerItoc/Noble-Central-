@@ -44,7 +44,11 @@ export class EmpleadoComponent implements OnInit {
   reporteTexto : string;
   confirmEvals : number[];
 
-  myEvals : EmpleadoEvaluacion[];
+  allEvals : EmpleadoEvaluacion[];
+  confirmedEvals : EmpleadoEvaluacion[];
+  reportedEvals : EmpleadoEvaluacion[];
+  pendingEvals : EmpleadoEvaluacion[];
+
   nombreEmpleado : string = "NO HAY EMPLEADO";
 
   allChecked : boolean = true;
@@ -78,7 +82,6 @@ export class EmpleadoComponent implements OnInit {
             this.profile = profile
 
             if (value === 'No hay correo' || value === 'false') {
-              this.getTeam();
               this.isAdmin = false;
               this.getTeam();
             } else {
@@ -95,9 +98,17 @@ export class EmpleadoComponent implements OnInit {
       this.validando = res;
     });
 
-    this.dsqls.getEmployeeEval(this.profile.userPrincipalName).subscribe((res) => {
-      this.myEvals = res;
-      this.evalToReport = this.myEvals[0];
+    this.dsqls.getAllEmployeeEvals(this.profile.userPrincipalName).subscribe((res) => {
+      this.allEvals = res;
+      this.pendingEvals = res.filter(x => x.Estatus == 0);
+      
+      if(this.pendingEvals.length > 0){
+        this.router.navigateByUrl('empleado');
+      }
+      
+      this.confirmedEvals = res.filter(x => x.Estatus == 1);
+      this.reportedEvals = res.filter(x => x.Estatus == 2);
+
       this.loading = false;
     });
   }
@@ -114,17 +125,17 @@ export class EmpleadoComponent implements OnInit {
     console.log(this.evalToReport, this.reporteTexto);
     this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
       this.loading = true;
-      window.location.reload();
+      window.location.href = 'empleado';
     });
   }
 
   sendConfirmedEvals(){
-    this.confirmEvals = this.myEvals.map(function(i) {
+    this.confirmEvals = this.pendingEvals.map(function(i) {
       return i.EvaluacionID;
     });
     this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
       this.loading = true;
-      window.location.href = "empleado-dashboard";
+      window.location.href = "empleado";
     });
   }
 }

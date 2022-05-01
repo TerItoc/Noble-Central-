@@ -3,6 +3,22 @@
     width: 25%;
 }
 
+.fa-check{
+    color: limegreen;
+}
+
+.fa-flag{
+    color: red;
+}
+
+.fa-x{
+    color: black;
+}
+
+.fa-clock{
+    color: black;
+}
+
 .ita{
     font-style: italic;
     color: gray;
