@@ -3,13 +3,42 @@
     width: 25%;
 }
 
-.smalll{
+.fa-check{
+    color: limegreen;
+}
+
+.fa-flag{
+    color: red;
+}
+
+.fa-x{
+    color: black;
+}
+
+.fa-clock{
+    color: black;
+}
+
+.ita{
+    font-style: italic;
+    color: gray;
+}
+
+.Check {
+    margin-left: 15px;
+}
+
+.smalll {
     color: gray;
     font-style: italic;
 }
 
-paddy{
-    padding: 20px;
+.paddy {
+    padding: 5px;
+}
+
+.Error {
+    color: red;
 }
 
 #IPS_PROBLEM {
@@ -17,12 +46,12 @@ paddy{
     width: 25%;
 }
 
-#IPS_WorkingOnIt{
+#IPS_WorkingOnIt {
     width: 25%;
     padding: 20px;
 }
 
-.container{
+.container {
     padding: 30px;
 }
 
@@ -37,8 +66,7 @@ paddy{
 }
 
 #B-N {
-    margin-top: 80px;
-    margin-left: 0px;
+    margin: 15px;
 }
 
 .form-switch .form-check-input:focus {
@@ -46,20 +74,17 @@ paddy{
     outline: 0;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
 }
+
 .form-switch .form-check-input:checked {
     background-color: #2ab34c;
     border-color: #2ab34c;
     border: none;
 }
 
-#loading-div{
-    width: 100%; 
+#loading-div {
+    width: 100%;
     height: 100%;
-    position: absolute; 
-    top: 0; 
+    position: absolute;
+    top: 0;
     left: 0;
 }
-
-
-
-

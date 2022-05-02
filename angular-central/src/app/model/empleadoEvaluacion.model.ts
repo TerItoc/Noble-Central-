@@ -1,8 +1,11 @@
 export interface EmpleadoEvaluacion {
-    EvaluacionID: string;
-    EmpleadoAID: number;
+
+    EvaluacionID: number;
+    EmpleadoAID?: number;
     EmpleadoANombre: string;
-    EmpleadoBID: string;
-    EmpleadoBNombre: number;
+    EmpleadoBID?: number;
+    EmpleadoBNombre: string;
     TipoEvaluacion: string;
+    Reporte? : string;
+    Estatus? : number;
 }

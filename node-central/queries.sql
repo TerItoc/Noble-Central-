@@ -48,8 +48,8 @@ create table EvaluaA(
 )
 
 create table Reportes(
-    EvaluacionID int FOREIGN KEY REFERENCES evaluaa,
-    Reporte VARCHAR(255),
+    EvaluacionID int FOREIGN KEY REFERENCES EvaluaA,
+    Reporte VARCHAR(500),
 )
 
 create table Administradores(
@@ -78,11 +78,10 @@ SELECT CASE WHEN EXISTS (
 THEN CAST(1 AS BIT)
 ELSE CAST(0 AS BIT) END
 
-
-        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre,estatus from EvaluaA
-        JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
-        JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
-        JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre,estatus from EvaluaA
+JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
 
 UPDATE EvaluaA
 SET estatus = 1
@@ -182,6 +181,7 @@ If Not Exists(select * from EvaluaA where Empleado='${empleadoa}' or Lider = 7 )
 
 
 
+
 SELECT CASE WHEN EXISTS (
             SELECT *
             FROM EvaluaA
@@ -208,15 +208,22 @@ delete Empleado WHERE EmpleadoID = 242
 
 
 INSERT into Empleado(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
-Insert into EvaluaA values(241,0,4,0)
-Insert into EvaluaA values(241,1,5,0)
-Insert into EvaluaA values(241,2,7,0)
-Insert into EvaluaA values(241,0,9,0)
-Insert into EvaluaA values(241,0,11,0)
+Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,0,4,0)
+Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,1,5,0)
+Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,2,7,0)
+Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,0,9,0)
+Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,0,20,0)
+
+update evaluaa set estatus = 0
+select * from Reportes
+
+update Empleado SET Correo = 'A01114959@tec.mx' where EmpleadoID = 4
 
 INSERT INTO Administradores values('AA Nicolas Cardenas','A01114959@tec.mx')
-delete Administradores
+update EvaluaA set Estatus = 0
+delete Administradores where correo = 'A01114959@tec.mx'
 
+select * from Empleado
 
 select COUNT(*) from Administradores where Correo = 'A01114959@tec.mx'
 
@@ -261,3 +268,21 @@ select * from EvaluaA
         Join Empleado EmpA on EvaluaA.EmpleadoA = EmpA.EmpleadoID
         Join Evaluacion on EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
         where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx') AND Estatus = 0
+
+SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus, Rep.Reporte from EvaluaA
+        JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+        JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+        LEFT JOIN Reportes Rep ON EvaluaA.EvaluacionID = Rep.EvaluacionID
+        JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+
+        
+
+delete EvaluaA
+        delete Trabaja_En
+        delete Proyecto
+        delete Reportes
+        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
+        delete Empleado
+        DBCC CHECKIDENT ('Empleado', RESEED, 0);
+        DBCC CHECKIDENT ('EvaluaA', RESEED, 0);
+        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
