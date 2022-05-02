@@ -100,6 +100,7 @@ export class EmpleadoComponent implements OnInit {
 
     this.dsqls.getAllEmployeeEvals(this.profile.userPrincipalName).subscribe((res) => {
       this.allEvals = res;
+      this.evalToReport = this.allEvals[0];
       this.pendingEvals = res.filter(x => x.Estatus == 0);
       
       if(this.pendingEvals.length > 0){

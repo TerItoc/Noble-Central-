@@ -37,7 +37,7 @@
                                     <td>{{evaluacion.TipoEvaluacion}}</td>
                                     <td>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input align-items-center Check" type="checkbox" id="cb{{evaluacion.EvaluacionID}}" (click)="setReport(evaluacion)" data-bs-toggle="modal" data-bs-target="#modalReporte" checked>
+                                            <input class="form-check-input align-items-center" checked type="checkbox" name="cb" id="cb{{evaluacion.EvaluacionID}}" (change)="setReport(evaluacion)" data-bs-toggle="modal" data-bs-target="#modalReporte">
                                         </div>
                                     </td>
                                 </tr>
@@ -209,9 +209,17 @@
             </form>
     
         </div>
+
+
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancelar</button>
-            <button type="button" (click)="sendReport()" class="btn btn-primary">Mandar Reporte</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 
+            onclick="var checkboxes = document.getElementsByName('cb');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = true;
+                    console.log(checkboxes[i].checked);
+                }" 
+            >Cancelar</button>
+            <button type="button" (click)="sendReport()" data-bs-dismiss="modal" class="btn btn-primary">Mandar Reporte</button>
         </div>
         </div>
     </div>
