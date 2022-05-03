@@ -24,6 +24,7 @@ export class DashboardSqlService {
   constructor(private http: HttpClient) {};
 
   getTeams() {
+    console.log(this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams'));
     return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos}));
   }
 
@@ -102,12 +103,11 @@ export class DashboardSqlService {
         let filteredPostsList = [];
         for (let emp of emps) {
             for (let options of this.searchOption) {
-                if (options.nombre === emp.nombre) {
-                  filteredPostsList.push(emps);
+                if (options === emp) {
+                  filteredPostsList.push(emp);
                 }
             }
         }
-        console.log(filteredPostsList);
         return filteredPostsList;
   }
   

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Empleado } from '../model/empleado.model'
+import { Equipo } from '../model/equipos.model';
 
 
 @Component({
@@ -12,6 +13,9 @@ export class SearchComponent implements OnInit {
 
   emp: Empleado[]
   emps : any;
+  equipos = [];
+  arrEmpleados: string[];
+
   constructor(
     private dsqls: DashboardSqlService
   ) { }
@@ -21,10 +25,15 @@ export class SearchComponent implements OnInit {
       this.emp = empleados
       this.dsqls.empData = empleados
     });
+
+    this.dsqls.getEmployees().subscribe((res) => {
+      this.arrEmpleados = res.sort();
+    });
+
   }
   
   onSelectedOption(e) {
-    console.log(e);
+    
     this.getFilteredExpenseList();
   }
 
@@ -34,8 +43,18 @@ export class SearchComponent implements OnInit {
     else {
       this.emp = this.dsqls.empData;
     }
+    this.equipos = [];
+    this.emp.forEach(el => {
+      console.log(el);
+      this.getTeamForName(el);
+    });
+  }
 
-    console.log(this.emp)
+  getTeamForName(nom){
+    this.dsqls.getTeams().subscribe((res) => {
+      this.equipos = this.equipos.concat(res.filter(e => e.nombre === nom));
+      console.log(this.equipos);
+    }); 
   }
 
 }

@@ -50,7 +50,7 @@ export class BarComponent implements OnInit {
     }
 
     subStr = val =>(emplea) =>{
-        console.log(val);
+        
         emplea = emplea.toLowerCase();
         val = val.toLowerCase();
         if (emplea.includes(val)){
