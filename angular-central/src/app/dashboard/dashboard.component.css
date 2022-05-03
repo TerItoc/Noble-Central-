@@ -2,6 +2,15 @@
     margin: 40px;
 }
 
+.marginalize{
+    margin: 40px;
+}
+
+.graytext{
+    font-style: italic;
+    color: gray;
+}
+
 #accordionHuerfanos{
     margin: 40px;
 }

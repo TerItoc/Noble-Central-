@@ -22,6 +22,10 @@
     color: rgb(119, 119, 119);
 }
 
+.fa-circle-exclamation{
+    color: gray;
+}
+
 #botonModalAgregar{
     border-radius: 100%;
     border:  1px solid gray;
