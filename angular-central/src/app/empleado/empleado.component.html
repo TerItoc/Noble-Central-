@@ -187,12 +187,19 @@
 </ng-template>
 
 <!-- Modal -->
-<div *ngIf="evalToReport" class="modal fade" id="modalReporte" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
+<div *ngIf="evalToReport" class="modal fade" id="modalReporte" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalReporteLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="modalReporteLabel"><b>Reportar Cambio</b></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button onclick="
+                var checkboxes = document.getElementsByName('cb');
+                for (var i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked = true;
+                    console.log(checkboxes[i].checked);
+                }
+            " 
+            type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="paddy">
@@ -203,23 +210,24 @@
             <form>
                 <div class="form-group">
                   <label for="reporteInput"><h6><b>Reporte</b></h6></label>
-                  <input type="text" class="form-control" id="reporteInput" name="reporteInput" [(ngModel)]="reporteTexto" aria-describedby="reportHelp"  placeholder="Escribe tu reporte aqui..">
+                  <input type="text" class="form-control" id="reporteInput" name="reporteInput" [(ngModel)]="reporteTexto" aria-describedby="reportHelp"  placeholder="Escribe tu reporte aqui.." required>
+                  <div *ngIf="isError" class="invalid-feedback">Debes de escribir un comentario</div>
                   <small id="reportHelp" class="form-text text-muted">Ej. Nunca me toco trabajar con el</small>
                 </div>
             </form>
-    
         </div>
-
-
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" 
-            onclick="var checkboxes = document.getElementsByName('cb');
+            onclick="
+                var checkboxes = document.getElementsByName('cb');
                 for (var i = 0; i < checkboxes.length; i++) {
                     checkboxes[i].checked = true;
                     console.log(checkboxes[i].checked);
-                }" 
+                }
+            " 
             >Cancelar</button>
-            <button type="button" (click)="sendReport()" data-bs-dismiss="modal" class="btn btn-primary">Mandar Reporte</button>
+            <!-- <button type="button" (click)="sendReport()" data-bs-dismiss="modal" class="btn btn-primary">Mandar Reporte</button> -->
+            <button type="button" (click)="sendReport()" class="btn btn-primary">Mandar Reporte</button>
         </div>
         </div>
     </div>

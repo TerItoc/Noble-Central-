@@ -24,6 +24,9 @@ const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
   styleUrls: ['./empleado.component.css'],
 })
 export class EmpleadoComponent implements OnInit {
+  isError: boolean = false;
+
+  inputField;
 
   constructor(
     private dsqls: DashboardSqlService,
@@ -123,9 +126,16 @@ export class EmpleadoComponent implements OnInit {
   }
 
   sendReport(){
-    console.log(this.evalToReport, this.reporteTexto);
+    this.inputField = document.querySelector('.form-control').classList;
+    if(this.reporteTexto === undefined) {
+      this.isError = true;
+      this.inputField.add('is-invalid')
+      return;
+    }
+    this.isError = false;
     this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
       this.loading = true;
+      //this.router.navigateByUrl('empleado');
       window.location.href = 'empleado';
     });
   }
@@ -136,6 +146,7 @@ export class EmpleadoComponent implements OnInit {
     });
     this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
       this.loading = true;
+      //this.router.navigateByUrl('empleado');
       window.location.href = "empleado";
     });
   }
