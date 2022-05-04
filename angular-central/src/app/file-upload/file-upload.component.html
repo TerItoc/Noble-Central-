@@ -10,16 +10,13 @@
     </ng-template>
 </div>
 
-<div *ngIf="makingTeams" style="padding: 50px;">
-    <div class="card">
-        <div class="card-body">
-            <b>Se estan creando los equipos, por favor no salga de esta pagina</b>
+<div *ngIf="makingTeams" style="padding: 50px; width: 50">
+  <b>Se estan creando los equipos</b><br>
+  <span class="graytext">Por favor no salga de esta pagina</span>
 
-            <div style="padding : 3.5%;" id="loading-div" class="d-flex justify-content-center align-items-center">
-                <i class="fa-3x fa-solid fa-circle-notch fa-spin " style="--fa-animation-duration: 0.7s"></i>
-            </div>
-        </div>
-      </div>
+  <div class="progress progress-striped">                         
+    <div class="progress-bar indeterminate" role="progressbar" style="width: 100%"></div>
+  </div>
 </div>
 
 <!-- Modal -->
