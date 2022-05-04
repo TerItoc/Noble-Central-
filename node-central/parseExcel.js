@@ -61,7 +61,6 @@ function loadExcel(file){
 }
 
 function sumHours(arr) {
-    //console.log(arr);
     let resarr = arr.filter((element) => parseFloat(element))
     
     if (resarr.length == 0){
@@ -102,8 +101,6 @@ function reduceMatrix(matrix){
         }
 
         let hoursRow = row.slice(mn.startColumnHoursExcel,mn.endColumnHoursExcel);
-        console.log(hoursRow);
-        console.log("Length: ",hoursRow.length);
         let hours = sumHours(hoursRow);
 
         let resrow = row.slice(0,mn.employeeColumnExcel+1);
@@ -111,7 +108,6 @@ function reduceMatrix(matrix){
         res.push(resrow);
         
     }
-
     return res;
 }
 
@@ -121,7 +117,6 @@ function getProjectsAndLeaders(matrix){
 
     for (let i = 0; i < matrix.length; i++) {
         let row = matrix[i];
-        //console.log(row);
 
         //El totals define un nuevo proyecto
         if(row[mn.employeeColumnExcel] == "Totals"){
@@ -148,7 +143,6 @@ function getHoursPerEmployeePerProject(matrix){
         resrow.push(row[mn.employeeColumnExcel])
         resrow.push(Number(row.splice(-1)))
         
-        //console.log(resrow);
         res.push(resrow)
     }
 
@@ -168,7 +162,6 @@ function getEvaluationType(lider,empleadoA,empleadoB){
     }
     return mn.dbIndexForPeerToPeer
 }
-
 
 function term(str, char) {
     var xStr = str.substring(0, str.length - 1);
@@ -195,12 +188,6 @@ async function makeTeams(file){
         //Entries
         let hoursPerEmployee = getHoursPerEmployeePerProject(excelData);
 
-        //console.log(excelData);
-        //console.log(allEmployees);
-        //console.log(leaderWithProject);
-        //console.log(getLeaderForProject(leaderWithProject,"IPS - Cierre de Evaluacion"));
-        //console.log(hoursPerEmployee);
-
         await db.deleteCurrentTeams();
 
         await db.postEmployees(allEmployees);
@@ -213,11 +200,7 @@ async function makeTeams(file){
         empIds = null;
         await db.getEmployeeIDs().then((res) => {empIds = res;});
 
-        let sqlQuery = `
-            Insert Into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values
-
-        `
-
+        let sqlQuery = `Insert Into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values `
         let currQuery = ``
         let rowCounter  = 0;
 
@@ -230,7 +213,6 @@ async function makeTeams(file){
             for (let i = 0; i < arrProjectsWorkedOn.length; i++) {
 
                 let currProj = arrProjectsWorkedOn[i];
-                //console.log(empleado,currProj);
 
                 let lider = getLeaderForProject(leaderWithProject,currProj);
                 
@@ -251,7 +233,6 @@ async function makeTeams(file){
                     rowCounter++;
 
                     if(rowCounter > 990){
-                        //console.log(term((sqlQuery + currQuery),';'))
                         await db.postQuery(term((sqlQuery + currQuery),';'));
                         rowCounter = 0;
                         currQuery = ``;
