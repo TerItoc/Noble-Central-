@@ -135,7 +135,7 @@ export class EmpleadoComponent implements OnInit {
     this.isError = false;
     this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
       this.loading = true;
-      this.router.navigateByUrl("empleado");
+      window.location.reload();
     });
   }
 
@@ -145,7 +145,7 @@ export class EmpleadoComponent implements OnInit {
       return i.EvaluacionID;
     });
     this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
-      this.router.navigateByUrl("empleado");
+      window.location.reload();
     });
   }
 }
