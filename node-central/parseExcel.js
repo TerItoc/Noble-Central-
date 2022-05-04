@@ -13,12 +13,12 @@ mn = {
     employeeColumnExcel: 3,
 
     startColumnHoursExcel: 4,
-    endColumnHoursExcel: 10,
+    endColumnHoursExcel: 16,
 
     startingRowExcel : 3,
     totalsName: "Totals",
 
-    horasMinimas: 50,
+    horasMinimas: 40,
 
     dbIndexForPeerToPeer : 0,
     dbIndexForLiderEquipo : 1,
@@ -102,6 +102,8 @@ function reduceMatrix(matrix){
         }
 
         let hoursRow = row.slice(mn.startColumnHoursExcel,mn.endColumnHoursExcel);
+        console.log(hoursRow);
+        console.log("Length: ",hoursRow.length);
         let hours = sumHours(hoursRow);
 
         let resrow = row.slice(0,mn.employeeColumnExcel+1);
