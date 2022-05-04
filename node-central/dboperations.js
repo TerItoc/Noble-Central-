@@ -662,15 +662,15 @@ async function getLeader(projectName){
 async function deleteCurrentTeams(){
 
     await postQuery(`
-        delete EvaluaA
-        delete Trabaja_En
-        delete Proyecto
-        delete Reportes
-        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
-        delete Empleado
-        DBCC CHECKIDENT ('Empleado', RESEED, 0);
-        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
-        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
+    delete EvaluaA
+    delete Trabaja_En
+    delete Proyecto
+    delete Reportes
+    delete Empleado
+    DBCC CHECKIDENT ('[Proyecto]', RESEED, 0);
+    DBCC CHECKIDENT ('[Empleado]', RESEED, 0);
+    DBCC CHECKIDENT ('[EvaluaA]', RESEED, 0);
+    insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
     );
 
     console.log("Deleted current teams")

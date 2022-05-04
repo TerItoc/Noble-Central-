@@ -135,19 +135,17 @@ export class EmpleadoComponent implements OnInit {
     this.isError = false;
     this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
       this.loading = true;
-      //this.router.navigateByUrl('empleado');
-      window.location.href = 'empleado';
+      this.router.navigateByUrl("empleado");
     });
   }
 
   sendConfirmedEvals(){
+    this.loading = true;
     this.confirmEvals = this.pendingEvals.map(function(i) {
       return i.EvaluacionID;
     });
     this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
-      this.loading = true;
-      //this.router.navigateByUrl('empleado');
-      window.location.href = "empleado";
+      this.router.navigateByUrl("empleado");
     });
   }
 }
