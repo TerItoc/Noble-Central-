@@ -10,12 +10,16 @@
     </ng-template>
 </div>
 
-<div *ngIf="makingTeams" style="padding: 50px; width: 50">
-  <b>Se estan creando los equipos</b><br>
-  <span class="graytext">Por favor no salga de esta pagina</span>
+<div *ngIf="makingTeams" class="center" style="padding: 50px;">
+  <div class="row" style="padding: 15px;">
+    <b>Se estan creando los equipos</b>
+    <span class="graytext">Por favor no salga de esta pagina</span>
+  </div>
 
-  <div class="progress progress-striped">                         
-    <div class="progress-bar indeterminate" role="progressbar" style="width: 100%"></div>
+  <div class="row">
+    <div class="progress progress-striped">                         
+      <div class="progress-bar indeterminate" role="progressbar" style="width: 100%"></div>
+    </div>
   </div>
 </div>
 
