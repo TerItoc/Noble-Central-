@@ -104,11 +104,11 @@ export class DashboardComponent implements OnInit {
 
   createTeams() {
     this.loading = true;
-    this.dsqls.getIfTeam().then((res) => {
+    this.dsqls.getIfTeam().subscribe((res) => {
       this.ifTeam = res;
 
       if (this.ifTeam) {
-        this.dsqls.getValidando().then((res) => {
+        this.dsqls.getValidando().subscribe((res) => {
           this.validando = res;
         });
 
