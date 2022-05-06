@@ -15,11 +15,15 @@
 }
 
 .fa-clock{
-    color: black;
+    color: orange;
 }
 
 .fa-plus{
     color: rgb(119, 119, 119);
+}
+
+.fa-circle-exclamation{
+    color: gray;
 }
 
 #botonModalAgregar{

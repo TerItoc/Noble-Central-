@@ -20,7 +20,7 @@ export class FileUploadComponent implements OnInit {
     constructor(private toastr: ToastrService, private dsqls : DashboardSqlService, private router:Router) {};
 
     ngOnInit() {
-      this.dsqls.getValidando().then((res) => {
+      this.dsqls.getIfTeam().then((res) => {
         this.ifTeam = res;
       });
     }

@@ -24,6 +24,9 @@ const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
   styleUrls: ['./empleado.component.css'],
 })
 export class EmpleadoComponent implements OnInit {
+  isError: boolean = false;
+
+  inputField;
 
   constructor(
     private dsqls: DashboardSqlService,
@@ -100,6 +103,7 @@ export class EmpleadoComponent implements OnInit {
 
     this.dsqls.getAllEmployeeEvals(this.profile.userPrincipalName).subscribe((res) => {
       this.allEvals = res;
+      this.evalToReport = this.allEvals[0];
       this.pendingEvals = res.filter(x => x.Estatus == 0);
       
       if(this.pendingEvals.length > 0){
@@ -122,20 +126,26 @@ export class EmpleadoComponent implements OnInit {
   }
 
   sendReport(){
-    console.log(this.evalToReport, this.reporteTexto);
+    this.inputField = document.querySelector('.form-control').classList;
+    if(this.reporteTexto === undefined) {
+      this.isError = true;
+      this.inputField.add('is-invalid')
+      return;
+    }
+    this.isError = false;
     this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
       this.loading = true;
-      window.location.href = 'empleado';
+      window.location.reload();
     });
   }
 
   sendConfirmedEvals(){
+    this.loading = true;
     this.confirmEvals = this.pendingEvals.map(function(i) {
       return i.EvaluacionID;
     });
     this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
-      this.loading = true;
-      window.location.href = "empleado";
+      window.location.reload();
     });
   }
 }

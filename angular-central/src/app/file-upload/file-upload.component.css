@@ -1,3 +1,25 @@
+.progress-bar.indeterminate {
+    position: relative;
+    animation: progress-indeterminate 3s linear infinite;
+  }
+  
+@keyframes progress-indeterminate {
+    from { left: -25%; width: 25%; }
+    to { left: 100%; width: 25%;}
+}
+
+.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.graytext{
+    font-style: italic;
+    color: gray;
+}
+
 #inputFile{
     width: 25%;
 }

@@ -12,6 +12,9 @@
   </div>
 
 <ng-template #elseBlock>
+    <div *ngIf="!validando" class="graytext marginalize">
+      <h6>Esta es la propuesta de equipos, podras hacer cambios antes de publicar los equipos y los empleados validen</h6>
+    </div>
 
     <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
     <div class="accordion" id="accordionTeams">

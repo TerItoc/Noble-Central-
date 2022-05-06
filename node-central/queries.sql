@@ -207,7 +207,21 @@ Insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')
 delete Empleado WHERE EmpleadoID = 242
 
 
-INSERT into Empleado(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
+INSERT into Administradores(Nombre,Correo) values('AA Nicolas Cardenas','A01114959@tec.mx')
+delete Administradores
+
+select ProyectoID, Proyecto.Nombre, Empleado.Nombre as Lider from Proyecto left Join Empleado on Lider = Empleado.EmpleadoID
+
+
+        SELECT EmpHuerfano.Nombre AS Nombre, Proyecto.Nombre AS Proyecto, EmpLider.Nombre AS Lider
+        FROM Trabaja_En
+        JOIN Proyecto ON Trabaja_En.ProyectoID = Proyecto.ProyectoID
+        JOIN Empleado EmpHuerfano ON Trabaja_En.EmpleadoID = EmpHuerfano.EmpleadoID
+        join Empleado EmpLider ON Proyecto.Lider = EmpLider.EmpleadoID
+
+select * from EvaluaA
+select * from Trabaja_En
+
 Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,0,4,0)
 Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,1,5,0)
 Insert into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values(4,2,7,0)
@@ -219,11 +233,18 @@ select * from Reportes
 
 update Empleado SET Correo = 'A01114959@tec.mx' where EmpleadoID = 4
 
-INSERT INTO Administradores values('AA Nicolas Cardenas','A01114959@tec.mx')
+INSERT INTO Administradores values('AA Luis','A00827678@tec.mx')
 update EvaluaA set Estatus = 0
 delete Administradores where correo = 'A01114959@tec.mx'
 
+
 select * from Empleado
+
+update empleado set correo = 'A01114959@tec.mx' where empleadoid=182
+
+update EvaluaA set Estatus=0
+delete reportes
+
 
 select COUNT(*) from Administradores where Correo = 'A01114959@tec.mx'
 
@@ -240,6 +261,14 @@ select * from evalua where
 
 select * from EvaluaA 
 Join Empleado EmpB on EvaluaA.EmpleadoB
+
+update evaluaa set Estatus = 0
+
+select * from Reportes
+
+DELETE FROM Reportes WHERE EvaluacionID = (Select EvaluacionID from EvaluaA where EvaluaA.EmpleadoA = 182 AND TipoEvaluacion = 1 AND EmpleadoB = 186)
+DELETE FROM Reportes WHERE EvaluacionID = (Select EvaluacionID from EvaluaA where EvaluaA.EmpleadoA = 186 AND TipoEvaluacion = 2 AND EmpleadoB = 182)
+DELETE FROM EvaluaA WHERE (EmpleadoA = 182 AND TipoEvaluacion = 1 AND EmpleadoB = 186) OR (EmpleadoA = 186 AND TipoEvaluacion = 2 AND EmpleadoB = 182);
 
 where EmpleadoA = (select EmpleadoID from Empleado where Correo = 'A01114959@tec.mx')
 
@@ -281,8 +310,8 @@ delete EvaluaA
         delete Trabaja_En
         delete Proyecto
         delete Reportes
-        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
         delete Empleado
+        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
         DBCC CHECKIDENT ('Empleado', RESEED, 0);
         DBCC CHECKIDENT ('EvaluaA', RESEED, 0);
         insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')

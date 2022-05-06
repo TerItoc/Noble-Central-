@@ -311,7 +311,7 @@ async function isAdmin(correo){
 }
 
 async function addEvaluation(empA,TipoRelacion,empB){
-    console.log("Literally here: ",empA,TipoRelacion,empB)
+    //console.log("Literally here: ",empA,TipoRelacion,empB)
     let relacionID = getRelacionID(TipoRelacion);
 
     if(empA == empB){
@@ -513,7 +513,6 @@ async function postProjects(matrixProyectos){
     try{
         empIds = null;
         await getEmployeeIDs().then((res) => {empIds = res;});
-
         let sqlQuery = `
             insert into proyecto (nombre,Lider) values
         `
@@ -536,7 +535,7 @@ async function postProjects(matrixProyectos){
             rowCounter++;
 
             if(rowCounter > 990){
-                console.log(term((sqlQuery + currQuery),';'))
+                //console.log(term((sqlQuery + currQuery),';'))
                 await postQuery(term((sqlQuery + currQuery),';'));
                 rowCounter = 0;
                 currQuery = ``;
@@ -551,15 +550,33 @@ async function postProjects(matrixProyectos){
     }
 }
 
-async function getProjects(){
-
+function processProjects(matrix){
+    res = {}
+    for (let i = 0; i < matrix.length; i++) {
+        const row = matrix[i];
+        res[row.Nombre] = {id:row.ProyectoID,lider:row.Lider};
+    }
+    return res;
 }
+
+async function getProjectIDs(){
+    const query = `
+        select ProyectoID, Proyecto.Nombre, Empleado.Nombre as Lider from Proyecto left Join Empleado on Lider = Empleado.EmpleadoID
+    `
+    const res = await getQuery(query);
+    return processProjects(res.recordset);
+}
+
+//getProjectIds().then((res) => console.log(res));
 
 async function postHorasPorEmpleado(matrix){
 
     empIds = null;
     await getEmployeeIDs().then((res) => {empIds = res;});
 
+    projectIds = null
+    await getProjectIDs().then((res) => {projectIds = res;});
+    
     let sqlQuery = `
         insert into trabaja_en(ProyectoID,EmpleadoID,Horas) values
     `
@@ -568,33 +585,28 @@ async function postHorasPorEmpleado(matrix){
 
     for(var i = 0; i<matrix.length;i++){
         const row = matrix[i];
-        //console.log(row);
 
-        let proyectoid = null;
+        let nombreProyecto = row[0].replace("'", "")
+        let proyectoid = projectIds[nombreProyecto].id;
         empleadoid = empIds[row[1].replace("'", "")]
-
+        
         if(!empleadoid){
             empleadoid = 1;
         }
         
-        await getProjectIDByName(row[0].replace("'", "")).then((result) => {proyectoid = result});
-
         let horas = row[2];
-
-        //console.log(proyectoid,empleadoid,horas);
 
         currQuery = currQuery + `(${proyectoid},${empleadoid},${horas}),`;
         rowCounter++;
 
         if(rowCounter > 990){
-            console.log(term((sqlQuery + currQuery),';'))
+            //console.log(term((sqlQuery + currQuery),';'))
             await postQuery(term((sqlQuery + currQuery),';'));
             rowCounter = 0;
             currQuery = ``;
         }
     
     };
-
     await postQuery(term((sqlQuery + currQuery),';'));
     console.log("Inserted Employee Hours");
     
@@ -662,15 +674,15 @@ async function getLeader(projectName){
 async function deleteCurrentTeams(){
 
     await postQuery(`
-        delete EvaluaA
-        delete Trabaja_En
-        delete Proyecto
-        delete Reportes
-        DBCC CHECKIDENT ('Proyecto', RESEED, 0);
-        delete Empleado
-        DBCC CHECKIDENT ('Empleado', RESEED, 0);
-        DBCC CHECKIDENT ('EvaluaA', RESEED, 0); 
-        insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
+    delete EvaluaA
+    delete Trabaja_En
+    delete Proyecto
+    delete Reportes
+    delete Empleado
+    DBCC CHECKIDENT ('[Proyecto]', RESEED, 0);
+    DBCC CHECKIDENT ('[Empleado]', RESEED, 0);
+    DBCC CHECKIDENT ('[EvaluaA]', RESEED, 0);
+    insert into Empleado(Nombre,Correo) values('EmpleadoNoRegistrado','N/A')`
     );
 
     console.log("Deleted current teams")
@@ -690,6 +702,7 @@ module.exports = {
     getProjectByID : getProjectByID,
     getEmployeeNameById: getEmployeeNameById,
     postHorasPorEmpleado: postHorasPorEmpleado,
+    getProjectIDs : getProjectIDs,
     getEmployeesThatWorkedOnProject: getEmployeesThatWorkedOnProject,
     getLeader: getLeader,
     getEntries: getEntries,
