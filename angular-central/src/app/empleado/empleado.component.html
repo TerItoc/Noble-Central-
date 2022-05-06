@@ -160,6 +160,8 @@
                     type="button"
                     class="btn botonInvis"
                     placement="right"
+                    ngbPopover="{{evaluacion.Reporte}}"
+                    popoverTitle="{{evaluacion.TipoEvaluacion}}"
                     *ngSwitchCase="2"
                     title="{{ evaluacion.Reporte }}"
                   ><i class="fa-solid fa-flag"></i></button>
