@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, EventEmitter, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Empleado } from '../model/empleado.model';
@@ -15,14 +15,22 @@ export class BarComponent implements OnInit {
     myControl = new FormControl();
     filteredOptions: Observable<string[]>;
     allEmp: Empleado[];
-    autoCompleteList: any[]
+    autoCompleteList: any[];
+    eForm :FormGroup;
 
     @ViewChild('autocompleteInput') autocompleteInput: ElementRef;
     @Output() onSelectedOption = new EventEmitter();
 
     constructor(
         public dsqls: DashboardSqlService,
+        private fb : FormBuilder,
     ) { }
+
+    createForm(){
+        this.eForm = this.fb.group({
+            Empleado: ''
+        })
+    }
 
     ngOnInit() {
 
@@ -34,6 +42,9 @@ export class BarComponent implements OnInit {
         this.myControl.valueChanges.subscribe(userInput => {
             this.autoCompleteExpenseList(userInput);
         })
+
+        this.createForm();
+
     }
 
     private autoCompleteExpenseList(input) {
