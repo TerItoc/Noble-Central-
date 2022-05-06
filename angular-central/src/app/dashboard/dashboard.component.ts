@@ -102,6 +102,10 @@ export class DashboardComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
+  search(): void {
+    this.router.navigateByUrl('/search');
+  }
+
   createTeams() {
     this.loading = true;
     this.dsqls.getIfTeam().then((res) => {

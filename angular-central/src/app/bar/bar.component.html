@@ -7,7 +7,7 @@
         
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
-      <input #autocompleteInput type="text" formControlName="Empleado" placeholder="Busqueda" aria-label="Number" matInput [formControl]="myControl"
+      <input #autocompleteInput type="text" formControlName="Empleado" placeholder="Search Employee" aria-label="Number" matInput [formControl]="myControl"
         [matAutocomplete]="auto" [matChipInputFor]="chipList">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)">
         <mat-option *ngFor="let option of autoCompleteList" [value]="option" (onSelectionChange)="filterPostList($event)">
