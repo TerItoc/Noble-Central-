@@ -34,6 +34,7 @@ import { PublicClientApplication, InteractionType } from '@azure/msal-browser';
 import { DropdownHuerfanoComponent } from './dropdown-huerfano/dropdown-huerfano.component';
 import { SearchComponent } from './search/search.component';
 import { BarComponent } from './bar/bar.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const isIE =
   window.navigator.userAgent.indexOf('MSIE ') > -1 ||
@@ -97,6 +98,7 @@ const isIE =
       }
     ),
     BrowserAnimationsModule,
+    NgbModule,
   ],
   providers: [
     {

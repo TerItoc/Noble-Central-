@@ -22,7 +22,7 @@
       <div class="accordion-body d-flex justify-content-center">
         <table class="table" id="Teams">
           <thead>
-            <tr class="table-primary">
+            <tr class="table-primary text-center">
               <th scope="col">Evaluador</th>
               <th scope="col">Tipo de Evaluacion</th>
               <th scope="col" data-halign="center" data-align="center">
@@ -34,47 +34,45 @@
             </tr>
           </thead>
           <tbody class="border">
-            <tr *ngFor="let evaluador of evaluadores">
+            <tr class="text-center" *ngFor="let evaluador of evaluadores">
               <td scope="row">{{ evaluador.NombreEvaluador }}</td>
               <td>{{ evaluador.TipoRelacion }}</td>
               <td>
-                <span [ngSwitch]="evaluador.Estatus">
+                <span [ngSwitch]="evaluador.Estatus" class="d-flex justify-content-center">
                   <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="La validacion esta pendiente"
+                    popoverTitle="Pending"
                     *ngSwitchCase="0"
-                    class="botonInvis"
-                    data-toggle="popover"
                     title="Pending"
-                    data-content="La validacion esta pendiente"
-                  >
-                    <i class="fa-solid fa-clock"></i>
-                  </button>
+                  ><i class="fa-solid fa-clock"></i></button>
                   <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="Esta relacion ya fue validada por esta persona"
+                    popoverTitle="Validando por usuario"
                     *ngSwitchCase="1"
-                    class="botonInvis"
-                    data-toggle="popover"
-                    title="Validado por Usuario"
-                    data-content="Esta relacion ya fue validada por esta persona"
-                  >
-                    <i class="fa-solid fa-check"></i>
-                  </button>
+                    title="Validando por usuario"
+                  ><i class="fa-solid fa-check"></i></button>
                   <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="{{evaluador.Reporte}}"
+                    popoverTitle="{{'Reporte por ' + nombre}}"
                     *ngSwitchCase="2"
-                    class="botonInvis"
-                    data-toggle="popover"
-                    title="{{nombre + ' reporta:' + evaluador.Reporte}}"
-                    data-content=""
-                  >
-                    <i class="fa-solid fa-flag"></i>
-                  </button>
-
+                    title="{{'Reporte por ' + nombre}}"
+                  ><i class="fa-solid fa-flag"></i></button>
                   <i
                     *ngSwitchDefault
                     class="fa-solid fa-circle-exclamation"
                   ></i>
                 </span>
               </td>
-
-              <td>
+              <td class="d-flex justify-content-center">
                 <button
                   type="button"
                   class="btn btn-light"
@@ -102,7 +100,7 @@
           type="button"
           class="btn btn-light"
           data-bs-toggle="modal"
-          [attr.data-bs-target]="'#modalAgregar'+id"
+          [attr.data-bs-target]="'#modalAgregar' + id"
           (click)="setNombreAgregar(nombre)"
         >
           <i class="fa-solid fa-plus"></i>
