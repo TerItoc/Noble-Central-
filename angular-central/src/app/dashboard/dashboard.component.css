@@ -1,18 +1,6 @@
-#accordionTeams {
-    margin: 40px;
-}
-
-.marginalize {
-    margin: 40px;
-}
-
 .graytext {
     font-style: italic;
     color: gray;
-}
-
-#accordionHuerfanos {
-    margin: 40px;
 }
 
 h1 {
@@ -21,7 +9,7 @@ h1 {
 
 h3 {
     margin: 20px;
-    margin-left: 50px;
+    margin-left: 20px;
 }
 
 #loading-div {
@@ -58,9 +46,4 @@ h3 {
 
 .myBtn:hover {
     background-color: gray;
-}
-
-#Graphic_proof {
-    width: 20%;
-    height: 20%;
 }

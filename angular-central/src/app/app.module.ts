@@ -14,6 +14,7 @@ import { EmpleadoComponent } from './empleado/empleado.component';
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DropdownPersonaComponent } from './dropdown-persona/dropdown-persona.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import {
   MsalModule,
@@ -79,6 +80,7 @@ const isIE =
       }
     ),
     NgbModule,
+    NgxChartsModule,
   ],
   providers: [
     {

@@ -9,6 +9,8 @@ import {
   InteractionStatus,
 } from '@azure/msal-browser';
 import { filter } from 'rxjs/operators';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { single } from './DataGraph';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -40,12 +42,21 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild('Huerfanos') Huer:any;
 
+  single: any[];
+  view: [number,number] = [600, 400];
+  // options
+  gradient: boolean = false;
+  showLabels: boolean = true;
+  isDoughnut: boolean = false;
+
   constructor(
     private dsqls: DashboardSqlService,
     private msalBroadcastService: MsalBroadcastService,
     private router: Router,
     private http: HttpClient
-  ) {}
+  ) {
+    Object.assign(this, { single });
+  }
 
   ngOnInit(): void {
     this.msalBroadcastService.msalSubject$
@@ -131,6 +142,18 @@ export class DashboardComponent implements OnInit {
   }
   goTarget(el: HTMLElement){
     el.scrollIntoView();
+  }
+
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  onActivate(data): void {
+    console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
+
+  onDeactivate(data): void {
+    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
 }

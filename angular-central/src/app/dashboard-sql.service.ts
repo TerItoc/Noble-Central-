@@ -17,7 +17,11 @@ import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
 export class DashboardSqlService {
 
   constructor(private http: HttpClient) {};
-
+/*
+  getCount1(){
+    return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos.}));
+  }
+*/
   getTeams() {
     return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos}));
   }
@@ -89,7 +93,7 @@ export class DashboardSqlService {
   }
 
   postReport(evall : EmpleadoEvaluacion, report){
-    evall.Reporte = report;    
+    evall.Reporte = report;
     return this.http.post(environment.backendUrl+'/generateReport',evall);
   }
 
