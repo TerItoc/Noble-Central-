@@ -13,3 +13,11 @@
         [arrEmpleados]="arrEmpleados"
       ></app-dropdown-persona>
     </div>
+    <div class="accordion" id="accordionHuerfanos">
+      <app-dropdown-huerfano
+        *ngFor="let huerfano of huerfanos; let i = index"
+        [id]="i + equipos.length"
+        [nombreHuerfano]="huerfano.nombreHuerfano"
+        [proyectos]="huerfano.proyectos"
+      ></app-dropdown-huerfano>
+    </div>

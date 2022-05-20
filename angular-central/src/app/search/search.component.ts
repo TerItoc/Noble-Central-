@@ -14,6 +14,7 @@ export class SearchComponent implements OnInit {
   emp: Empleado[]
   emps : any;
   equipos = [];
+  huerfanos = [];
   arrEmpleados: string[];
 
   constructor(
@@ -38,22 +39,31 @@ export class SearchComponent implements OnInit {
   }
 
   getFilteredExpenseList() {
-    if (this.dsqls.searchOption.length > 0)
+    if (this.dsqls.searchOption.length > 0){
       this.emp = this.dsqls.filteredListOptions();
-    else {
+      this.emp.forEach(el => {
+        this.getTeamForName(el);
+      });
+    }else {
       this.emp = this.dsqls.empData;
     }
     this.equipos = [];
-    this.emp.forEach(el => {
-      console.log(el);
-      this.getTeamForName(el);
-    });
+    this.huerfanos = [];
   }
 
   getTeamForName(nom){
     this.dsqls.getTeams().subscribe((res) => {
+      if (res.filter(e => e.nombre === nom)){
       this.equipos = this.equipos.concat(res.filter(e => e.nombre === nom));
       console.log(this.equipos);
+      }
+    });
+
+    this.dsqls.getOrphans().subscribe((res) => {
+      if (res.filter(e => e.nombreHuerfano === nom)){
+      this.huerfanos = this.huerfanos.concat(res.filter(e => e.nombreHuerfano === nom));
+      console.log(this.huerfanos);
+      }
     }); 
   }
 
