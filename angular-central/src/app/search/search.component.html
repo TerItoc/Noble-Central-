@@ -6,7 +6,7 @@
   </div>-->
     <div class="accordion" id="accordionTeams">
       <app-dropdown-persona
-        *ngFor="let equipo of equipos; let i = index"
+        *ngFor="let equipo of equiposSearch; let i = index"
         [id]="i"
         [evaluadores]="equipo.evaluadores"
         [nombre]="equipo.nombre"
@@ -15,8 +15,8 @@
     </div>
     <div class="accordion" id="accordionHuerfanos">
       <app-dropdown-huerfano
-        *ngFor="let huerfano of huerfanos; let i = index"
-        [id]="i + equipos.length"
+        *ngFor="let huerfano of huerfanosSearch; let i = index"
+        [id]="i + equiposSearch.length"
         [nombreHuerfano]="huerfano.nombreHuerfano"
         [proyectos]="huerfano.proyectos"
       ></app-dropdown-huerfano>
