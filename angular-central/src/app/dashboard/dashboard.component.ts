@@ -3,14 +3,7 @@ import { DashboardSqlService } from '../dashboard-sql.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { MsalBroadcastService } from '@azure/msal-angular';
-import {
-  EventMessage,
-  EventType,
-  InteractionStatus,
-} from '@azure/msal-browser';
-import { filter } from 'rxjs/operators';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { single } from './DataGraph';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -28,67 +21,44 @@ type ProfileType = {
 })
 export class DashboardComponent implements OnInit {
   profile!: ProfileType;
-  isAdmin: boolean = false;
+  counter: number = 0;
 
   huerfanos = [];
   equipos = [];
-  counter: number = 0;
-  loading: boolean = true;
   arrEmpleados: string[];
 
-  validando: boolean = true;
-
+  isAdmin: boolean = false;
   ifTeam: boolean = false;
+  loading: boolean = true;
+  validando: boolean = true;
+  
+  @ViewChild('Huerfanos') Huer: any;
 
-  @ViewChild('Huerfanos') Huer:any;
-
-  single: any[];
-  view: [number,number] = [600, 400];
-  // options
-  gradient: boolean = false;
-  showLabels: boolean = true;
-  isDoughnut: boolean = false;
+  StatusArray: any;
 
   constructor(
     private dsqls: DashboardSqlService,
     private msalBroadcastService: MsalBroadcastService,
     private router: Router,
     private http: HttpClient
-  ) {
-    Object.assign(this, { single });
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
-      )
-      .subscribe((result: EventMessage) => {
-        console.log(result);
-      });
+    this.http.get(GRAPH_POINT).subscribe((profile) => {
+      this.profile = profile;
 
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None)
-      )
-      .subscribe(() => {
-        this.http.get(GRAPH_POINT).subscribe((profile) => {
-          this.profile = profile;
-
-          this.dsqls
-            .getIsAdmin(this.profile.userPrincipalName)
-            .subscribe((msg) => {
-              let value = Object.values(msg)[0];
-              if (value === 'No hay correo' || value === 'false') {
-                this.isAdmin = false;
-                this.router.navigateByUrl('empleado');
-              } else {
-                this.isAdmin = true;
-                this.createTeams();
-              }
-            });
-        });
+      this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+        let value = Object.values(msg)[0];
+        if (value === 'No hay correo' || value === 'false') {
+          this.isAdmin = false;
+          this.router.navigateByUrl('empleado');
+        } else {
+          this.isAdmin = true;
+          this.createTeams();
+          this.getStatus();
+        }
       });
+    });
   }
 
   refresh(): void {
@@ -140,11 +110,16 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-  goTarget(el: HTMLElement){
+
+  getStatus() {
+    this.StatusArray = this.dsqls.getStatusTotal()
+  }
+
+  goTarget(el: HTMLElement) {
     el.scrollIntoView();
   }
 
-  onSelect(data): void {
+/*   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
@@ -154,6 +129,5 @@ export class DashboardComponent implements OnInit {
 
   onDeactivate(data): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
-  }
-
+  } */
 }

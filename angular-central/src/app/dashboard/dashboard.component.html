@@ -13,7 +13,7 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-6">
+                <div class="col">
                     <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
                     <div class="container accordion" id="accordionTeams">
                         <app-dropdown-persona *ngFor="let equipo of equipos; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre" [arrEmpleados]="arrEmpleados"></app-dropdown-persona>
@@ -24,8 +24,18 @@
                         <app-dropdown-huerfano *ngFor="let huerfano of huerfanos; let i = index" [id]="i" [nombreHuerfano]="huerfano.nombreHuerfano" [proyectos]="huerfano.proyectos"></app-dropdown-huerfano>
                     </div>
                 </div>
-                <ngx-charts-pie-chart class="col" [view]="view" scheme="cool" [results]="single" [gradient]="gradient" [labels]="showLabels" [doughnut]="isDoughnut" (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-                </ngx-charts-pie-chart>
+                <div class="col">
+                    <ngx-charts-pie-chart 
+                        class="position-fixed"
+                        [view]="[600, 600]"
+                        scheme="cool"
+                        [results]="StatusArray | async"
+                        [gradient]="false"
+                        [labels]="true"
+                        [doughnut]="false">
+                    </ngx-charts-pie-chart>
+
+                </div>
             </div>
 
         </div>

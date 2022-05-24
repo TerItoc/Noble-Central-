@@ -17,11 +17,23 @@ import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
 export class DashboardSqlService {
 
   constructor(private http: HttpClient) {};
-/*
-  getCount1(){
-    return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos.}));
+
+  getStatusTotal() { return this.http.get(environment.backendUrl + '/getTotalStatus').pipe(map(res => {
+    let status_array = res['recordset'];
+    const map = status_array.map(e => {
+      let Status = e['Estatus'];
+      let Value = e['Total'];
+      if (Status == -1) return { name: 'Sin Publicar', value: Value};
+      else if (Status == 0) return { name: 'Pendiente', value: Value};
+      else if (Status == 1) return { name: 'Validando', value: Value};
+      else return { name: 'Reporte', value: Value};
+    });
+    return map;
+    //return res['recordsets'][0];
+
+  }))
   }
-*/
+
   getTeams() {
     return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos}));
   }
@@ -35,8 +47,7 @@ export class DashboardSqlService {
   }
 
   getValidando(){
-    return this.http.get<boolean>(environment.backendUrl+'/ifValidando').toPromise();
-  }
+    return this.http.get<boolean>(environment.backendUrl+'/ifValidando').toPromise(); }
 
   publishTeams(){
     return this.http.get<Response>(environment.backendUrl+'/publishTeams');

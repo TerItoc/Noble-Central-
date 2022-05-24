@@ -55,6 +55,10 @@ app.get("/publishTeams", async (req, res) => {
   res.send(await db.publishTeams());
 });
 
+app.get("/getTotalStatus", async (req, res) => {
+  res.json(await db.getTotalByStatus());
+})
+
 app.post("/isAdmin", async (req, res) => {
   if (!req.body.correo) {
     res.json({ isAdmin: "No hay correo" });
