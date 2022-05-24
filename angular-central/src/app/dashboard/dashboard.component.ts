@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   ifTeam: boolean = false;
   loading: boolean = true;
   validando: boolean = true;
-  
+
   @ViewChild('Huerfanos') Huer: any;
 
   StatusArray: any;
