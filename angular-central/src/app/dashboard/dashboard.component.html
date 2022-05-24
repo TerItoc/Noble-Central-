@@ -16,8 +16,26 @@
       <h6>Esta es la propuesta de equipos, podras hacer cambios antes de publicar los equipos y los empleados validen</h6>
     </div>
 
+    <div style="margin:auto; width: 70%; margin-top: 30px;">
+      <app-bar (onSelectedOption)="onSelectedOption($event)"></app-bar>
+    </div>
+    <!--<div *ngFor="let emps of emp" class="group">
+      <p><b>Nombre :</b>{{emps}}</p>
+    </div>-->
+
     <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
-    <div class="accordion" id="accordionTeams">
+
+    <div class="accordion" id="accordionTeamsSearch">
+      <app-dropdown-persona
+        *ngFor="let equipo of equiposSearch; let i = index"
+        [id]="i"
+        [evaluadores]="equipo.evaluadores"
+        [nombre]="equipo.nombre"
+        [arrEmpleados]="arrEmpleados"
+      ></app-dropdown-persona>
+    </div>
+
+    <div class="accordion" id="accordionTeams" *ngIf="!searchActive">
       <app-dropdown-persona
         *ngFor="let equipo of equipos; let i = index"
         [id]="i"
@@ -28,7 +46,17 @@
     </div>
 
     <h3 #Huerfanos><b>Huerfanos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
-    <div class="accordion" id="accordionHuerfanos">
+
+    <div class="accordion" id="accordionHuerfanosSearch">
+      <app-dropdown-huerfano
+        *ngFor="let huerfano of huerfanosSearch; let i = index"
+        [id]="i + equiposSearch.length"
+        [nombreHuerfano]="huerfano.nombreHuerfano"
+        [proyectos]="huerfano.proyectos"
+      ></app-dropdown-huerfano>
+    </div>
+
+    <div class="accordion" id="accordionHuerfanos" *ngIf="!searchActive">
       <app-dropdown-huerfano
         *ngFor="let huerfano of huerfanos; let i = index"
         [id]="i"

@@ -9,6 +9,8 @@ import {
   InteractionStatus,
 } from '@azure/msal-browser';
 import { filter } from 'rxjs/operators';
+import { Empleado } from '../model/empleado.model'
+import { Equipo } from '../model/equipos.model';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -37,6 +39,15 @@ export class DashboardComponent implements OnInit {
   validando: boolean = true;
 
   ifTeam: boolean = false;
+
+  //Search Variables Start
+  emp: Empleado[]
+  emps : any;
+  equiposSearch = [];
+  huerfanosSearch = [];
+
+  searchActive: boolean = false;
+  //SearchVariables End
 
   @ViewChild('Huerfanos') Huer:any;
 
@@ -78,6 +89,11 @@ export class DashboardComponent implements OnInit {
             });
         });
       });
+
+    this.dsqls.getEmps().subscribe(empleados => {
+      this.emp = empleados
+      this.dsqls.empData = empleados
+    });
   }
 
   refresh(): void {
@@ -136,5 +152,43 @@ export class DashboardComponent implements OnInit {
   goTarget(el: HTMLElement){
     el.scrollIntoView();
   }
+
+  //Search Functions Start
+  onSelectedOption(e) {
+    
+    this.getFilteredExpenseList();
+  }
+
+  getFilteredExpenseList() {
+    if (this.dsqls.searchOption.length > 0){
+      this.emp = this.dsqls.filteredListOptions();
+      this.emp.forEach(el => {
+      this.getTeamForName(el);
+      this.searchActive = true;
+      });
+    }else {
+      this.emp = this.dsqls.empData;
+      this.searchActive = false;
+    }
+    this.equiposSearch = [];
+    this.huerfanosSearch = [];
+  }
+
+  getTeamForName(nom){
+    this.dsqls.getTeams().subscribe((res) => {
+      if (res.filter(e => e.nombre === nom)){
+      this.equiposSearch = this.equiposSearch.concat(res.filter(e => e.nombre === nom));
+      console.log(this.equiposSearch);
+      }
+    });
+
+    this.dsqls.getOrphans().subscribe((res) => {
+      if (res.filter(e => e.nombreHuerfano === nom)){
+      this.huerfanosSearch = this.huerfanosSearch.concat(res.filter(e => e.nombreHuerfano === nom));
+      console.log(this.huerfanosSearch);
+      }
+    }); 
+  }
+  //Searc Functions End
 
 }
