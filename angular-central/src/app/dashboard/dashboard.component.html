@@ -25,7 +25,13 @@
                     </div>
                 </div>
                 <div class="col">
-                    <ngx-charts-advanced-pie-chart class="position-fixed" [view]="[1000, 650]" scheme="cool" [results]="StatusArray | async" [gradient]="false">
+                    <ngx-charts-advanced-pie-chart 
+                    class="position-fixed" 
+                    [view]="[1000, 650]" 
+                    scheme="cool" 
+                    [results]="StatusArray" 
+                    [gradient]="false"
+                    >
                     </ngx-charts-advanced-pie-chart>
 
                 </div>

@@ -112,14 +112,22 @@ export class DashboardComponent implements OnInit {
   }
 
   getStatus() {
-    this.StatusArray = this.dsqls.getStatusTotal()
+    this.dsqls.getStatusTotal().subscribe((arrStatus) => {
+      this.dsqls.getOrphans().subscribe((arrOrphan) => {
+        arrStatus.push({
+          name: 'Unassigned',
+          value: arrOrphan.length,
+        });
+        this.StatusArray = arrStatus;
+      });
+    });
   }
 
   goTarget(el: HTMLElement) {
     el.scrollIntoView();
   }
 
-/*   onSelect(data): void {
+  /*   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
