@@ -232,7 +232,7 @@ async function makeTeams(file){
                     currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", -1),";
                     rowCounter++;
 
-                    if(rowCounter > 990){
+                    if(rowCounter > 500){
                         await db.postQuery(term((sqlQuery + currQuery),';'));
                         rowCounter = 0;
                         currQuery = ``;
