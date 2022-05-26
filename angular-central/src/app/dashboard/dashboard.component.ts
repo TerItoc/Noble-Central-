@@ -47,8 +47,12 @@ export class DashboardComponent implements OnInit {
   //Search Variables Start
   emp: Empleado[]
   emps : any;
+  
   equiposSearch = [];
   huerfanosSearch = [];
+
+  equiposSearchTemp = [];
+  huerfanosSearchTemp = [];
 
   searchActive: boolean = false;
   //SearchVariables End
@@ -189,6 +193,7 @@ export class DashboardComponent implements OnInit {
     this.dsqls.getTeams().subscribe((res) => {
       if (res.filter(e => e.nombre === nom)){
       this.equiposSearch = this.equiposSearch.concat(res.filter(e => e.nombre === nom));
+      this.equiposSearchTemp = this.equiposSearchTemp.concat(res.filter(e => e.nombre === nom));
       console.log(this.equiposSearch);
       }
     });
@@ -196,7 +201,7 @@ export class DashboardComponent implements OnInit {
     this.dsqls.getOrphans().subscribe((res) => {
       if (res.filter(e => e.nombreHuerfano === nom)){
       this.huerfanosSearch = this.huerfanosSearch.concat(res.filter(e => e.nombreHuerfano === nom));
-      console.log(this.huerfanosSearch);
+      //console.log(this.huerfanosSearch);
       }
     }); 
   }
