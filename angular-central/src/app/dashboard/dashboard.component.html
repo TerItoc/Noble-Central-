@@ -1,90 +1,55 @@
 <div *ngIf="loading; else elseBlock">
-  <div
-    id="loading-div"
-    class="d-flex justify-content-center align-items-center"
-  >
-    <i
-      class="fa-3x fa-solid fa-circle-notch fa-spin"
-      style="--fa-animation-duration: 0.7s"
-    ></i>
-  </div>
+    <div id="loading-div" class="d-flex justify-content-center align-items-center">
+        <i class="fa-3x fa-solid fa-circle-notch fa-spin" style="--fa-animation-duration: 0.7s"></i>
+    </div>
 </div>
 
 <ng-template #elseBlock>
-  <div *ngIf="!validando" class="graytext">
-    <h6>
-      Esta es la propuesta de equipos, podras hacer cambios antes de publicar
-      los equipos y los empleados validen
-    </h6>
-  </div>
+    <div *ngIf="!validando" class="graytext">
+        <h6>
+            Esta es la propuesta de equipos, podras hacer cambios antes de publicar los equipos y los empleados validen
+        </h6>
+    </div>
 
-  <div style="margin: auto; width: 70%; margin-top: 30px">
-    <app-bar (onSelectedOption)="onSelectedOption($event)"></app-bar>
-  </div>
-  
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
-                    <div class="accordion" id="accordionTeamsSearch">
-                      <app-dropdown-persona
-                        *ngFor="let equipo of equiposSearch; let i = index"
-                        [id]="i"
-                        [evaluadores]="equipo.evaluadores"
-                        [nombre]="equipo.nombre"
-                        [arrEmpleados]="arrEmpleados"
-                      ></app-dropdown-persona>
-                    </div>
-                
-                    <div class="accordion" id="accordionTeams" *ngIf="!searchActive">
-                      <app-dropdown-persona
-                        *ngFor="let equipo of equipos; let i = index"
-                        [id]="i"
-                        [evaluadores]="equipo.evaluadores"
-                        [nombre]="equipo.nombre"
-                        [arrEmpleados]="arrEmpleados"
-                      ></app-dropdown-persona>
-                    </div>
+    <div style="margin: auto; width: 70%; margin-top: 30px">
+        <app-bar (onSelectedOption)="onSelectedOption($event)"></app-bar>
+    </div>
 
-                    <h3 #Huerfanos><b>Unassigned</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
-                    <div class="accordion" id="accordionHuerfanosSearch">
-                      <app-dropdown-huerfano
-                        *ngFor="let huerfano of huerfanosSearch; let i = index"
-                        [id]="i + equiposSearch.length"
-                        [nombreHuerfano]="huerfano.nombreHuerfano"
-                        [proyectos]="huerfano.proyectos"
-                      ></app-dropdown-huerfano>
-                    </div>
-                
-                    <div class="container accordion" id="accordionHuerfanos" *ngIf="!searchActive">
-                      <app-dropdown-huerfano
-                        *ngFor="let huerfano of huerfanos; let i = index"
-                        [id]="i"
-                        [nombreHuerfano]="huerfano.nombreHuerfano"
-                        [proyectos]="huerfano.proyectos"
-                      ></app-dropdown-huerfano>
-                    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h3 #Equipos><b>Equipos</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
+                <div class="accordion" id="accordionTeamsSearch">
+                    <app-dropdown-persona *ngFor="let equipo of equiposSearch; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre" [arrEmpleados]="arrEmpleados"></app-dropdown-persona>
                 </div>
-                <div class="col">
-                    <ngx-charts-advanced-pie-chart 
-                    class="position-fixed" 
-                    [view]="[700, 400]" 
-                    scheme="cool" 
-                    [results]="StatusArray" 
-                    [gradient]="false"
-                    >
-                    </ngx-charts-advanced-pie-chart>
 
+                <div class="accordion" id="accordionTeams" *ngIf="!searchActive">
+                    <app-dropdown-persona *ngFor="let equipo of equipos; let i = index" [id]="i" [evaluadores]="equipo.evaluadores" [nombre]="equipo.nombre" [arrEmpleados]="arrEmpleados"></app-dropdown-persona>
+                </div>
+
+                <h3 #Huerfanos><b>Unassigned</b><small *ngIf="!validando"> - Propuesta</small><small *ngIf="validando"> - En Proceso De Validacion</small></h3>
+                <div class="accordion" id="accordionHuerfanosSearch">
+                    <app-dropdown-huerfano *ngFor="let huerfano of huerfanosSearch; let i = index" [id]="i + equiposSearch.length" [nombreHuerfano]="huerfano.nombreHuerfano" [proyectos]="huerfano.proyectos"></app-dropdown-huerfano>
+                </div>
+
+                <div class="container accordion" id="accordionHuerfanos" *ngIf="!searchActive">
+                    <app-dropdown-huerfano *ngFor="let huerfano of huerfanos; let i = index" [id]="i" [nombreHuerfano]="huerfano.nombreHuerfano" [proyectos]="huerfano.proyectos"></app-dropdown-huerfano>
                 </div>
             </div>
+            <div class="col">
+                <ngx-charts-pie-grid class="position-fixed p-3" [view]="[600, 400]" scheme="cool" [customColors]="colorScheme" [results]="StatusArray">
+                </ngx-charts-pie-grid>
 
+            </div>
         </div>
 
-        <div class="d-flex justify-content-center mt-5">
-            <a class="btn btn-danger" [routerLink]="['/adminEV']" role="button" style="margin: 15px">Cargar Otro Archivo</a>
+    </div>
 
-            <div *ngIf="validando; else elseBlock">
-                <a class="btn btn-success" (click)="saveTeams()" role="button" style="margin: 15px">Guardar Equipos</a
+    <div class="d-flex justify-content-center mt-5">
+        <a class="btn btn-danger" [routerLink]="['/adminEV']" role="button" style="margin: 15px">Cargar Otro Archivo</a>
+
+        <div *ngIf="validando; else elseBlock">
+            <a class="btn btn-success" (click)="saveTeams()" role="button" style="margin: 15px">Guardar Equipos</a
         >
       </div>
 

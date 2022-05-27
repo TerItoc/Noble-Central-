@@ -41,9 +41,27 @@ export class DashboardComponent implements OnInit {
   validando: boolean = true;
 
   @ViewChild('Huerfanos') Huer: any;
-
+  //GRAPH
   StatusArray: any;
-
+  colorScheme = [
+    {
+      name:'Pendiente',
+      value:'#FDDA0D'
+    },
+    {
+      name:'Validando',
+      value: '#008000'
+    },
+    {
+      name:'Reporte',
+      value: '#FF0000'
+    },
+    {
+      name:'Unassigned',
+      value: '#808080'
+    }
+  ]
+  //END GRAPH
   //Search Variables Start
   emp: Empleado[]
   emps : any;
