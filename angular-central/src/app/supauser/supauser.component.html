@@ -1,1 +1,23 @@
-<p>supauser works!</p>
+<div class="container text-center">
+    <div class="col">
+        <div class="row">
+            <h2>BIENVENIDO SUPER ADMIN</h2>
+            <h5>Esta es la pagina donde se podra agregar administradores.</h5>
+        </div>
+        <br> <br> <br>
+        <div class="row text-center">
+            <form [formGroup]="adminform" (ngSubmit)="onSubmit()">
+                <label>Nombre:</label>
+                <br>
+                <input type="text" id="DataIN" formControlName="Nombre">
+                <br> <br>
+                <label>Correo:</label>
+                <br>
+                <input type="text" id="DataIN" formControlName="Correo">
+                <br> <br>
+                <button class="btn btn-primary" [disabled]="!adminform.valid">Submit</button>
+            </form>
+        </div>
+    </div>
+
+</div>

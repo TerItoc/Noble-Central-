@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-supauser',
@@ -11,5 +12,16 @@ export class SUPAUSERComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  adminform= new FormGroup({
+    Nombre: new FormControl(''),
+    Correo: new FormControl('')
+  });
+
+  onSubmit(){
+    console.warn(this.adminform.value);
+  }
+
+
 
 }
