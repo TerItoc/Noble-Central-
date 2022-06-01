@@ -31,6 +31,7 @@ export class DropdownPersonaComponent implements OnInit {
   selectedEvaluador: number = 0;
   selectedRelacion: number = 0;
 
+  
   constructor (private dsqls : DashboardSqlService) {
     
   };

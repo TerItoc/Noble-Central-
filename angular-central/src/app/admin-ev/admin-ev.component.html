@@ -1,4 +1,9 @@
 <div *ngIf="isAdmin">
+  <button *ngIf="existTeams" routerLink="/dashboard" class="btn ms-5 mt-4">
+    <i class="fa-solid fa-arrow-left">
+      Dashboard
+    </i>
+  </button>
   <div class="container text-center" style="padding-top: 5%">
     <div class="row">
       <div class="col">

@@ -16,7 +16,7 @@ import { Empleado } from './model/empleado.model';
 })
 export class DashboardSqlService {
   searchOption = [];
-  public empData: Empleado[];
+  public empData: string[];
 
   constructor(private http: HttpClient) {}
 

@@ -1,43 +1,101 @@
 <div class="d-flex justify-content-center">
+  <input
+    id="inputFile"
+    class="form-control"
+    type="file"
+    name="file"
+    accept=".xlsx"
+    (change)="handleFileInput($event)"
+  />
 
-    <input id="inputFile" class="form-control"type="file" name="file" accept=".xlsx" (change)="handleFileInput($event)" />
-    
-    <button *ngIf="makingTeams; else elseBlock" class="btn btn-secondary" type="button" (click) = "upload()" disabled> Upload </button>
+  <button
+    *ngIf="makingTeams; else elseBlock"
+    class="btn btn-secondary"
+    type="button"
+    (click)="upload()"
+    disabled
+  >
+    Upload
+  </button>
 
-    <ng-template #elseBlock>
-      <button *ngIf="ifTeam" type="button" class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalConfirmar"> Crear Equipos </button>
-      <button *ngIf="!ifTeam" type="button" class="btn btn-success" type="button" (click) = "upload()"> Crear Equipos </button>
-    </ng-template>
+  <ng-template #elseBlock>
+    <button
+      *ngIf="ifTeam"
+      type="button"
+      class="btn btn-success"
+      type="button"
+      data-bs-toggle="modal"
+      data-bs-target="#modalConfirmar"
+    >
+      Crear Equipos
+    </button>
+    <button
+      *ngIf="!ifTeam"
+      type="button"
+      class="btn btn-success"
+      type="button"
+      (click)="upload()"
+    >
+      Crear Equipos
+    </button>
+  </ng-template>
 </div>
 
-<div *ngIf="makingTeams" class="center" style="padding: 50px;">
-  <div class="row" style="padding: 15px;">
+<div *ngIf="makingTeams" class="center" style="padding: 50px">
+  <div class="row" style="padding: 15px">
     <b>Se estan creando los equipos</b>
     <span class="graytext">Por favor no salga de esta pagina</span>
   </div>
 
   <div class="row">
-    <div class="progress progress-striped">                         
-      <div class="progress-bar indeterminate" role="progressbar" style="width: 100%"></div>
+    <div class="progress progress-striped">
+      <div
+        class="progress-bar indeterminate"
+        role="progressbar"
+        style="width: 100%"
+      ></div>
     </div>
   </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalConfirmarLabel"><b>Esta seguro que quiere crear equipos?</b></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Ya se encuentran los equipos en la base de datos, esto sobre escribira los equipos que hay actualmente
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click) = "upload()" >Crear Equipos</button>
-        </div>
+<div
+  class="modal fade"
+  id="modalConfirmar"
+  tabindex="-1"
+  aria-labelledby="modalConfirmarLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConfirmarLabel">
+          <b>Esta seguro que quiere crear equipos?</b>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        Ya se encuentran los equipos en la base de datos, esto sobre escribira
+        los equipos que hay actualmente
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="upload()"
+        >
+          Crear Equipos
+        </button>
       </div>
     </div>
+  </div>
 </div>
