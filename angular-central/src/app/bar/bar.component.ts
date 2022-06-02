@@ -18,7 +18,7 @@ import { Empleado } from '../model/empleado.model';
   styleUrls: ['./bar.component.css'],
 })
 export class BarComponent implements OnInit {
-  @Input() allEmp: string[];
+  @Input() allEmp: Empleado[];
 
   myControl = new FormControl();
   filteredOptions: Observable<string[]>;
@@ -30,18 +30,16 @@ export class BarComponent implements OnInit {
 
   constructor(public dsqls: DashboardSqlService, private fb: FormBuilder) {}
 
-  createForm() {
+  /* createForm() {
     this.eForm = this.fb.group({
       Empleado: '',
     });
-  }
+  } */
 
   ngOnInit() {
     this.myControl.valueChanges.subscribe((userInput) => {
       this.autoCompleteExpenseList(userInput);
     });
-
-    this.createForm();
   }
 
   private autoCompleteExpenseList(input) {
@@ -76,10 +74,16 @@ export class BarComponent implements OnInit {
     var emps = event.source.value;
     if (!emps) {
       this.dsqls.searchOption = [];
-    } else {
-      this.dsqls.searchOption.push(emps);
-      this.onSelectedOption.emit(this.dsqls.searchOption);
+      return;
     }
+
+    if ((emps || '').trim()) {
+      if (!this.dsqls.searchOption.includes(emps.trim())) {
+        this.dsqls.searchOption.push(emps.trim());
+        this.onSelectedOption.emit(this.dsqls.searchOption);
+      }
+    }
+    
     this.focusOnPlaceInput();
   }
 
@@ -87,7 +91,6 @@ export class BarComponent implements OnInit {
     let index = this.dsqls.searchOption.indexOf(option);
     if (index >= 0) this.dsqls.searchOption.splice(index, 1);
     this.focusOnPlaceInput();
-
     this.onSelectedOption.emit(this.dsqls.searchOption);
   }
 
