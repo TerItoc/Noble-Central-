@@ -40,8 +40,10 @@
 .botonInvis {
     background: transparent;
     border: none;
-    color: transparent;
+    color: gray;
 }
+
+
 
 .relacion-picker {
     margin: 5px;

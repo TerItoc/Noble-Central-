@@ -180,6 +180,21 @@ async function generateReport(evalID, report) {
   }
 }
 
+async function changeEvalStatus(evalId,newStatus) {
+  try{
+    await postQuery(`
+          Update EvaluaA
+          SET Estatus = ${newEstatus}
+          Where EvaluacionID = ${evalId}
+        `);
+
+    return { success: true };
+
+  } catch (error) {
+    return {success: false};
+  }
+}
+
 async function confirmEvals(evalsID) {
   try {
     let stringy = "(" + evalsID.join(",") + ")";
@@ -701,4 +716,5 @@ module.exports = {
   confirmEvals: confirmEvals,
   generateReport: generateReport,
   getTotalByStatus: getTotalByStatus,
+  changeEvalStatus: changeEvalStatus,
 };

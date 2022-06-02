@@ -89,6 +89,14 @@ app.post('/confirmEvals', async(req,res) => {
   }
 })
 
+app.post("/changeEvalStatus", async (req, res) => {
+  if (!req.body.evalId || !req.body.newStatus){
+    res.send({ success: false, info: undefined })
+  } else {
+    res.send(await db.changeEvalStatus(req.body.evalId,req.body.newStatus))
+  }
+})
+
 app.post("/getEmployeeEvals", async (req, res) => {
   if (!req.body.correo || !req.body.all) {
     res.send({ success: false, info: undefined });
