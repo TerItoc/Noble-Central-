@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { MsalBroadcastService } from '@azure/msal-angular';
+import { Empleado } from '../model/empleado.model';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
 
   huerfanos = [];
   equipos = [];
-  arrEmpleados: string[];
+  arrEmpleados: Empleado[];
 
   isAdmin: boolean = false;
   ifTeam: boolean = false;
@@ -33,6 +33,7 @@ export class DashboardComponent implements OnInit {
   isHidden: boolean = false;
 
   @ViewChild('Huerfanos') Huer: any;
+
   //GRAPH
   StatusArray: any;
   colorScheme = [
@@ -56,13 +57,12 @@ export class DashboardComponent implements OnInit {
   //END GRAPH
 
   //Search Variables Start
-  emp: string[];
+  emp: Empleado[];
   emps: any;
 
   equiposSearch = [];
   huerfanosSearch = [];
 
-  equiposSearchTemp = [];
   huerfanosSearchTemp = [];
 
   searchActive: boolean = false;
@@ -70,7 +70,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dsqls: DashboardSqlService,
-    private msalBroadcastService: MsalBroadcastService,
     private router: Router,
     private http: HttpClient
   ) {}
@@ -127,10 +126,6 @@ export class DashboardComponent implements OnInit {
     window.scrollTo(0, 0);
   }
 
-  search(): void {
-    this.router.navigateByUrl('/search');
-  }
-
   createTeams() {
     this.loading = true;
     this.dsqls.getIfTeam().then((res) => {
@@ -145,7 +140,7 @@ export class DashboardComponent implements OnInit {
           this.equipos = res;
         });
 
-        this.dsqls.getEmployees().subscribe((res) => {
+        this.dsqls.getEmps().subscribe((res) => {
           this.emp = res;
           this.dsqls.empData = res;
           this.arrEmpleados = res.sort();
@@ -207,38 +202,20 @@ export class DashboardComponent implements OnInit {
   }
 
   getTeamForName(nom) {
-    /* this.dsqls.getTeams().subscribe(res => {
-      let isTeam = res.find(employee => employee.nombre === nom);
-      if(isTeam) {
-        this.equiposSearch = this.equiposSearch.concat( res.filter(e => e.nombre === nom));
-        return;
-      }
-    });
-    this.dsqls.getOrphans().subscribe(res => {
-      let isOrphan = res.find(employee => employee.nombreHuerfano === nom);
-      if(isOrphan) {
-        this.huerfanosSearch = this.huerfanosSearch.concat( res.filter(e => e.nombreHuerfano === nom));
-        return;
-      }
-    }) */
-
     this.dsqls.getTeams().subscribe((res) => {
       if (res.filter((e) => e.nombre === nom)) {
         this.equiposSearch = this.equiposSearch.concat(
           res.filter((e) => e.nombre === nom)
         );
-        this.equiposSearchTemp = this.equiposSearchTemp.concat(
-          res.filter((e) => e.nombre === nom)
-        );
+        return;
       }
-    });
-
-    this.dsqls.getOrphans().subscribe((res) => {
-      if (res.filter((e) => e.nombreHuerfano === nom)) {
-        this.huerfanosSearch = this.huerfanosSearch.concat(
-          res.filter((e) => e.nombreHuerfano === nom)
-        );
-      }
+      this.dsqls.getOrphans().subscribe((res) => {
+        if (res.filter((e) => e.nombreHuerfano === nom)) {
+          this.huerfanosSearch = this.huerfanosSearch.concat(
+            res.filter((e) => e.nombreHuerfano === nom)
+          );
+        }
+      });
     });
   }
   //Search Functions End

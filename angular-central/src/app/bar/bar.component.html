@@ -12,15 +12,12 @@
         (removed)="removeOption(option)"
       >
         <span>{{ option }}</span>
-
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
       <input
         #autocompleteInput
         type="text"
-        formControlName="Empleado"
         placeholder="Search Employee"
-        aria-label="Number"
         matInput
         [formControl]="myControl"
         [matAutocomplete]="auto"

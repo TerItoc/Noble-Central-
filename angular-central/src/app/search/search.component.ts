@@ -9,23 +9,21 @@ import { Equipo } from '../model/equipos.model';
   styleUrls: ['./search.component.css'],
 })
 export class SearchComponent implements OnInit {
-  emp: string[];
+  emp: Empleado[];
   emps: any;
   equiposSearch = [];
   huerfanosSearch = [];
-  arrEmpleados: string[];
+  arrEmpleados: Empleado[];
 
   constructor(private dsqls: DashboardSqlService) {}
 
   ngOnInit() {
-    this.dsqls.getEmployees().subscribe((empleados) => {
+    this.dsqls.getEmps().subscribe((empleados) => {
       this.emp = empleados;
       this.dsqls.empData = empleados;
+      this.arrEmpleados = empleados.sort();
     });
 
-    this.dsqls.getEmployees().subscribe((res) => {
-      this.arrEmpleados = res.sort();
-    });
   }
 
   onSelectedOption(e) {
