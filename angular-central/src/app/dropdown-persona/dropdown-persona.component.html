@@ -34,63 +34,43 @@
             </tr>
           </thead>
           <tbody class="border">
-            <tr class="text-center" *ngFor="let evaluador of evaluadores; let i = index">
+            <tr class="text-center" *ngFor="let evaluador of evaluadores">
               <td scope="row">{{ evaluador.NombreEvaluador }}</td>
               <td>{{ evaluador.TipoRelacion }}</td>
               <td>
-                <div class="{{ 'dropdown' + id + '//' + i }}">
-                    <span [ngSwitch]="evaluador.Estatus" class="d-flex justify-content-center">
-                        
-                        <button
-                          id="buttonForDropdown"
-                          type="button"
-                          class="btn botonInvis dropdown-toggle"
-                          placement="right"
-                          *ngSwitchCase="0"
-                          data-bs-toggle="dropdown" 
-                          aria-expanded="false"
-                        >
-                          <i class="fa-solid fa-clock"></i>
-                        </button>
-
-                        <button
-                          id="buttonForDropdown"
-                          type="button"
-                          class="btn botonInvis dropdown-toggle"
-                          placement="right"
-                          *ngSwitchCase="1"
-                          data-bs-toggle="dropdown" 
-                          aria-expanded="false"
-                        >
-                          <i class="fa-solid fa-check"></i>
-                        </button>
-                      
-                        <button
-                          id="{{ 'buttonForDropdown' + id + '//' + i }}"
-                          type="button"
-                          class="btn botonInvis dropdown-toggle"
-                          placement="right"
-                          *ngSwitchCase="2"
-                          attr.data-bs-toggle="{{ 'dropdown' + id + '//' + i }}" 
-                          attr.aria-expanded="false"
-                        >
-                          <i class="fa-solid fa-flag"></i>
-                        </button>
-      
-                      <i
-                        *ngSwitchDefault
-                        class="fa-solid fa-circle-exclamation "
-                      ></i>
-
-                    </span>
-
-                    <ul class="dropdown-menu" attr.aria-labelledby="{{ 'buttonForDropdown' + id + '//' + i }}">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                    
-                  </div>
+                <span [ngSwitch]="evaluador.Estatus" class="d-flex justify-content-center">
+                  <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="La validacion esta pendiente"
+                    popoverTitle="Pending"
+                    *ngSwitchCase="0"
+                    title="Pending"
+                  ><i class="fa-solid fa-clock"></i></button>
+                  <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="Esta relacion ya fue validada por esta persona"
+                    popoverTitle="Validando por usuario"
+                    *ngSwitchCase="1"
+                    title="Validando por usuario"
+                  ><i class="fa-solid fa-check"></i></button>
+                  <button
+                    type="button"
+                    class="btn botonInvis"
+                    placement="right"
+                    ngbPopover="{{evaluador.Reporte}}"
+                    popoverTitle="{{'Reporte por ' + nombre}}"
+                    *ngSwitchCase="2"
+                    title="{{'Reporte por ' + nombre}}"
+                  ><i class="fa-solid fa-flag"></i></button>
+                  <i
+                    *ngSwitchDefault
+                    class="fa-solid fa-circle-exclamation"
+                  ></i>
+                </span>
               </td>
               <td class="d-flex justify-content-center">
                 <button

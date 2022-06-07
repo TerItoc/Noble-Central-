@@ -117,6 +117,10 @@ export class DashboardSqlService {
     return this.http.post(environment.backendUrl + '/addEvaluation', formData);
   }
 
+  addAdmin(){
+    
+  }
+
   delEval(empA, relacion, empB) {
     var relABorrar: Relacion = {
       empA: empA,
