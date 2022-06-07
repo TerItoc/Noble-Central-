@@ -50,6 +50,10 @@ app.get("/ifValidando", async (req, res) => {
   res.send(await db.ifValidando());
 });
 
+app.get("/getTeamsMatrix", async(req,res) => {
+  res.send(await db.getTeamsMatrix());
+})
+
 app.get("/publishTeams", async (req, res) => {
   res.send(await db.publishTeams());
 });
@@ -127,6 +131,7 @@ app.post("/insertAdmin", async (req,res) => {
   }
 
 })
+
 
 // POST File
 app.post("/makeTeams", async (req, res) => {

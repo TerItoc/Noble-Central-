@@ -710,9 +710,32 @@ async function getTotalByStatus() {
   );
 }
 
+function processTeamsMatrix(recordset) {
+  let resMatrix = []
+  for (let i = 0; i < recordset.length; i++) {
+    const jsonn = recordset[i];
+    let row = []
+    row.push(jsonn.EmpleadoA);
+    row.push(jsonn.TipoEvaluacion);
+    row.push(jsonn.EmpleadoB);
+    row.push(jsonn.Estatus);
+    row.push(jsonn.Reporte);
+    resMatrix.push(row);
+  }
+  return resMatrix;
+}
+
+async function getTeamsMatrix() {
+  const res = await getQuery(
+    `select * from AllInfo`
+  );
+  return processTeamsMatrix(res.recordset)
+}
+
 //getEmployeeTeamByName('Alfredo Martinez').then(result => {console.log(result)})
 
 module.exports = {
+  getTeamsMatrix: getTeamsMatrix,
   insertAdmin: insertAdmin,
   getEmployees: getEmployees,
   postEmployees: postEmployees,

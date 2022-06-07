@@ -163,6 +163,10 @@ export class DashboardSqlService {
     return this.http.post(environment.backendUrl + '/confirmEvals', evals);
   }
 
+  getTeamsMatrix() {
+    return this.http.get(environment.backendUrl + '/getTeamsMatrix');
+  }
+
   insertAdmin(json) {
     console.log(json);
     return this.http.post(environment.backendUrl + '/insertAdmin', json);

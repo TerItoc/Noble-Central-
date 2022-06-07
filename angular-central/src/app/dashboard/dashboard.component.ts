@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Empleado } from '../model/empleado.model';
+import { Toast } from 'ngx-toastr';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -77,6 +79,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dsqls: DashboardSqlService,
+    private toastr: ToastrService,
     private router: Router,
     private http: HttpClient
   ) {}
@@ -125,7 +128,41 @@ ngOnInit(): void {
     });
   }
 
-  saveTeams() {}
+  saveTeams() {
+    try {
+      this.dsqls.getTeamsMatrix().subscribe((res) => {
+
+        var csvContent = "data:text/csv;charset=utf-8,";
+
+        for (let i = 0; i < res['length']; i++) {
+          const infoArray = res[i].map( x => {
+            if(x == null){
+              return "N/A"
+            } else {
+              return x.toString().replace(',','');
+            }
+
+          });
+
+          const dataString = infoArray.join(",");
+          csvContent += dataString + "\n";
+        }
+    
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Evaluaciones360.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      
+      });
+      this.toastr.success('', "Se creo el archivo correctamente");
+      
+    } catch (error) {
+      this.toastr.error('', "Hubo un error al crear archivo");
+    }
+  }
 
   goBottom() {
     window.scrollTo(0, document.body.scrollHeight);
