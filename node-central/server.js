@@ -42,9 +42,7 @@ app.post("/addEvaluation", async (req, res) => {
 app.post("/deleteEvaluation", async (req, res) => {
   const { empA, relacion, empB } = req.body;
 
-  await db.deleteEvaluation(empA, relacion, empB);
-
-  res.send({ success: true });
+  res.send(await db.deleteEvaluation(empA, relacion, empB));
 });
 
 app.get("/ifValidando", async (req, res) => {
