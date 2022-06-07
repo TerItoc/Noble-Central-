@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -31,8 +31,15 @@ export class DashboardComponent implements OnInit {
   loading: boolean = true;
   validando: boolean = true;
   isHidden: boolean = false;
+  innerWidth: number;
+  innerHeight: number;
 
   @ViewChild('Huerfanos') Huer: any;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = event.target.innerWidth;
+    this.innerHeight = event.target.innerHeight;
+  }
 
   //GRAPH
   StatusArray: any;
@@ -74,8 +81,10 @@ export class DashboardComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  ngOnInit(): void {
-    this.createTeams();
+ngOnInit(): void {
+  this.createTeams();
+  this.innerWidth = window.innerWidth;
+  this.innerHeight = window.innerHeight;
 
     /*this.dsqls.getEmployees().subscribe(empleados => {
       this.emp = empleados;

@@ -11,7 +11,7 @@
 </div>
 
 <ng-template #elseBlock>
-  <div *ngIf="!validando" class="graytext">
+  <div *ngIf="!validando" class="graytext" style="padding: 20px;">
     <h6>
       Esta es la propuesta de equipos, podras hacer cambios antes de publicar
       los equipos y los empleados validen
@@ -78,10 +78,11 @@
           ></app-dropdown-huerfano>
         </div>
       </div>
-      <div *ngIf="!isHidden" class="col">
-        <ngx-charts-pie-grid
+      <div *ngIf="!isHidden" class="col" style="padding-top: 5%;">
+        <ngx-charts-pie-grid 
+          style="border-radius: 30px; border: solid 2px; border-color:rgb(227, 227, 227)"
           class="position-fixed p-3"
-          [view]="[600, 400]"
+          [view]="[innerWidth/3*1.33, innerHeight/3]"
           scheme="cool"
           [customColors]="colorScheme"
           [results]="StatusArray"

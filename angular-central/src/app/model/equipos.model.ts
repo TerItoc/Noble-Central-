@@ -12,4 +12,5 @@ export interface Evaluacion {
     TipoRelacion: string;
     Estatus: number;
     Reporte? : string;
+    EvalId: number;
 }

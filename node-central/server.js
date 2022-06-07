@@ -42,9 +42,7 @@ app.post("/addEvaluation", async (req, res) => {
 app.post("/deleteEvaluation", async (req, res) => {
   const { empA, relacion, empB } = req.body;
 
-  await db.deleteEvaluation(empA, relacion, empB);
-
-  res.send({ success: true });
+  res.send(await db.deleteEvaluation(empA, relacion, empB));
 });
 
 app.get("/ifValidando", async (req, res) => {
@@ -86,6 +84,14 @@ app.post('/confirmEvals', async(req,res) => {
 
   } catch (error) {
     res.send({error : error});
+  }
+})
+
+app.post("/changeEvalStatus", async (req, res) => {
+  if (!req.body.evalId || !req.body.newStatus){
+    res.send({ success: false, info: undefined })
+  } else {
+    res.send(await db.changeEvalStatus(req.body.evalId,req.body.newStatus))
   }
 })
 

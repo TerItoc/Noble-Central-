@@ -1,5 +1,6 @@
 var config = require("./dbconfig");
 const sql = require("mssql");
+const { get } = require("express/lib/request");
 
 var pool;
 
@@ -57,51 +58,64 @@ function getRelacionID(relacion) {
 }
 
 async function deleteEvaluation(empA, relacion, empB) {
-  let relacionID = getRelacionID(relacion);
+  try {
+    let relacionID = getRelacionID(relacion);
+  
+    let idEmpA = null;
+    await getEmployeeIdByName(empA).then((res) => {
+      idEmpA = res;
+    });
+    let idEmpB = null;
+    await getEmployeeIdByName(empB).then((res) => {
+      idEmpB = res;
+    });
+  
+    //console.log(idEmpA,relacionID,idEmpB);
+    var query;
+  
+    switch (relacionID) {
+      case 0:
+        query = `
+                  SELECT * FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 0 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 0 AND EmpleadoB = ${idEmpA});
+              `;
+        break;
+  
+      case 1:
+        query = `
+                  SELECT * FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 1 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 2 AND EmpleadoB = ${idEmpA});
+              `;
+        break;
+  
+      case 2:
+        query = `
+                  SELECT * FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 2 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 1 AND EmpleadoB = ${idEmpA});
+              `;
+        break;
+  
+      default:
+        -1;
+    }
+  
+    const res = await getQuery(query);
+  
+    for (let i = 0; i < res.recordset.length; i++) {
+      const row = res.recordset[i];
+      await postQuery(`
+        DELETE FROM Reportes WHERE EvaluacionId = ${row.EvaluacionID}
+        DELETE FROM EvaluaA WHERE EvaluacionId = ${row.EvaluacionID} 
+      `)
+      console.log(`Deleted : ${row.EvaluacionID}`)
+    }
+    return {success:true}
 
-  let idEmpA = null;
-  await getEmployeeIdByName(empA).then((res) => {
-    idEmpA = res;
-  });
-  let idEmpB = null;
-  await getEmployeeIdByName(empB).then((res) => {
-    idEmpB = res;
-  });
-
-  //console.log(idEmpA,relacionID,idEmpB);
-  var query;
-
-  switch (relacionID) {
-    case 0:
-      query = `
-                DELETE FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 0 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 0 AND EmpleadoB = ${idEmpA});
-            `;
-      break;
-
-    case 1:
-      query = `
-                DELETE FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 1 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 2 AND EmpleadoB = ${idEmpA});
-            `;
-      break;
-
-    case 2:
-      query = `
-                DELETE FROM EvaluaA WHERE (EmpleadoA = ${idEmpA} AND TipoEvaluacion = 2 AND EmpleadoB = ${idEmpB}) OR (EmpleadoA = ${idEmpB} AND TipoEvaluacion = 1 AND EmpleadoB = ${idEmpA});
-            `;
-      break;
-
-    default:
-      -1;
+  } catch(error) {
+    console.log(error.message);
+    return {success: false, message: error.message}
   }
-
-  console.log("Deleted Evaluation", empA, relacion, empB, "y su viceversa");
-  await postQuery(query);
 }
 
 function processOrphans(recordset) {
   huerfanos = {};
-
-  //console.log(recordset);
 
   for (let i = 0; i < recordset.length; i++) {
     let row = recordset[i];
@@ -180,6 +194,21 @@ async function generateReport(evalID, report) {
   }
 }
 
+async function changeEvalStatus(evalId,newStatus) {
+  try{
+    await postQuery(`
+          Update EvaluaA
+          SET Estatus = ${newEstatus}
+          Where EvaluacionID = ${evalId}
+        `);
+
+    return { success: true };
+
+  } catch (error) {
+    return {success: false};
+  }
+}
+
 async function confirmEvals(evalsID) {
   try {
     let stringy = "(" + evalsID.join(",") + ")";
@@ -231,6 +260,7 @@ function processTeams(recordset) {
       NombreEvaluador: row.Nombre,
       TipoRelacion: row.EvaluacionNombre,
       Estatus: row.estatus,
+      EvalId: row.EvalId,
     };
 
     if (row.Reporte) {
@@ -259,12 +289,12 @@ function processTeams(recordset) {
 
 async function getTeams() {
   let teams = await getQuery(`
-        SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus, Rep.Reporte from EvaluaA
-        JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
-        JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
-        LEFT JOIN Reportes Rep ON EvaluaA.EvaluacionID = Rep.EvaluacionID
-        JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
-    `);
+    SELECT DISTINCT EmpA.nombre, EvaluacionNombre, EmpB.Nombre, estatus, Rep.Reporte, EvaluaA.EvaluacionID as EvalId from EvaluaA
+    JOIN Empleado EmpA ON EvaluaA.EmpleadoA  = EmpA.EmpleadoID
+    JOIN Empleado EmpB ON EvaluaA.EmpleadoB  = EmpB.EmpleadoID
+    LEFT JOIN Reportes Rep ON EvaluaA.EvaluacionID = Rep.EvaluacionID
+    JOIN Evaluacion ON EvaluaA.TipoEvaluacion = Evaluacion.TipoEvaluacion
+  `);
   return processTeams(teams.recordset);
 }
 
@@ -701,4 +731,5 @@ module.exports = {
   confirmEvals: confirmEvals,
   generateReport: generateReport,
   getTotalByStatus: getTotalByStatus,
+  changeEvalStatus: changeEvalStatus,
 };
