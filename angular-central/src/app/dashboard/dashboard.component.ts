@@ -1,14 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { MsalBroadcastService } from '@azure/msal-angular';
-import {
-  EventMessage,
-  EventType,
-  InteractionStatus,
-} from '@azure/msal-browser';
-import { filter } from 'rxjs/operators';
+import { Empleado } from '../model/empleado.model';
+import { Toast } from 'ngx-toastr';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -26,58 +22,98 @@ type ProfileType = {
 })
 export class DashboardComponent implements OnInit {
   profile!: ProfileType;
-  isAdmin: boolean = false;
+  counter: number = 0;
 
   huerfanos = [];
   equipos = [];
-  counter: number = 0;
-  loading: boolean = true;
-  arrEmpleados: string[];
+  arrEmpleados: Empleado[];
 
-  validando: boolean = true;
-
+  isAdmin: boolean = false;
   ifTeam: boolean = false;
+  loading: boolean = true;
+  validando: boolean = true;
+  isHidden: boolean = false;
+  innerWidth: number;
+  innerHeight: number;
 
-  @ViewChild('Huerfanos') Huer:any;
+  @ViewChild('Huerfanos') Huer: any;
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = event.target.innerWidth;
+    this.innerHeight = event.target.innerHeight;
+  }
+
+  //GRAPH
+  StatusArray: any;
+  colorScheme = [
+    {
+      name: 'Pendiente',
+      value: '#FDDA0D',
+    },
+    {
+      name: 'Validando',
+      value: '#008000',
+    },
+    {
+      name: 'Reporte',
+      value: '#FF0000',
+    },
+    {
+      name: 'Unassigned',
+      value: '#808080',
+    },
+  ];
+  //END GRAPH
+
+  //Search Variables Start
+  emp: Empleado[];
+  emps: any;
+
+  equiposSearch = [];
+  huerfanosSearch = [];
+
+  huerfanosSearchTemp = [];
+
+  searchActive: boolean = false;
+  //SearchVariables End
 
   constructor(
     private dsqls: DashboardSqlService,
-    private msalBroadcastService: MsalBroadcastService,
+    private toastr: ToastrService,
     private router: Router,
     private http: HttpClient
   ) {}
 
-  ngOnInit(): void {
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS)
-      )
-      .subscribe((result: EventMessage) => {
-        console.log(result);
+ngOnInit(): void {
+  this.createTeams();
+  this.innerWidth = window.innerWidth;
+  this.innerHeight = window.innerHeight;
+
+    /*this.dsqls.getEmployees().subscribe(empleados => {
+      this.emp = empleados;
+      this.dsqls.empData = empleados;
+    })*/
+    //this.getStatus();
+    /* this.http.get(GRAPH_POINT).subscribe((profile) => {
+      this.profile = profile;
+
+      this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+        let value = Object.values(msg)[0];
+        if (value === 'No hay correo' || value === 'false') {
+          this.isAdmin = false;
+          this.router.navigateByUrl('empleado');
+        } else {
+          this.isAdmin = true;
+          this.createTeams();
+          this.getStatus();
+        }
       });
 
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None)
-      )
-      .subscribe(() => {
-        this.http.get(GRAPH_POINT).subscribe((profile) => {
-          this.profile = profile;
-
-          this.dsqls
-            .getIsAdmin(this.profile.userPrincipalName)
-            .subscribe((msg) => {
-              let value = Object.values(msg)[0];
-              if (value === 'No hay correo' || value === 'false') {
-                this.isAdmin = false;
-                this.router.navigateByUrl('empleado');
-              } else {
-                this.isAdmin = true;
-                this.createTeams();
-              }
-            });
-        });
+      this.dsqls.getEmps().subscribe((empleados) => {
+        this.emp = empleados;
+        this.dsqls.empData = empleados;
       });
+    }); */
   }
 
   refresh(): void {
@@ -92,7 +128,41 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  saveTeams() {}
+  saveTeams() {
+    try {
+      this.dsqls.getTeamsMatrix().subscribe((res) => {
+
+        var csvContent = "data:text/csv;charset=utf-8,";
+
+        for (let i = 0; i < res['length']; i++) {
+          const infoArray = res[i].map( x => {
+            if(x == null){
+              return "N/A"
+            } else {
+              return x.toString().replace(',','');
+            }
+
+          });
+
+          const dataString = infoArray.join(",");
+          csvContent += dataString + "\n";
+        }
+    
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Evaluaciones360.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      
+      });
+      this.toastr.success('', "Se creo el archivo correctamente");
+      
+    } catch (error) {
+      this.toastr.error('', "Hubo un error al crear archivo");
+    }
+  }
 
   goBottom() {
     window.scrollTo(0, document.body.scrollHeight);
@@ -116,21 +186,83 @@ export class DashboardComponent implements OnInit {
           this.equipos = res;
         });
 
-        this.dsqls.getEmployees().subscribe((res) => {
+        this.dsqls.getEmps().subscribe((res) => {
+          this.emp = res;
+          this.dsqls.empData = res;
           this.arrEmpleados = res.sort();
         });
 
-        this.dsqls.getOrphans().subscribe((res) => {
-          this.huerfanos = res;
-          this.loading = false;
+        this.dsqls.getStatusTotal().subscribe(async (arrStatus) => {
+          this.dsqls.getOrphans().subscribe(async (res) => {
+            arrStatus.push({
+              name: 'Unassigned',
+              value: res.length,
+            });
+            this.StatusArray = arrStatus;
+            this.huerfanos = res;
+            this.loading = false;
+          });
         });
       } else {
         this.router.navigateByUrl('adminEV');
       }
     });
   }
-  goTarget(el: HTMLElement){
+
+  getStatus() {
+    this.dsqls.getStatusTotal().subscribe((arrStatus) => {
+      this.dsqls.getOrphans().subscribe((arrOrphan) => {
+        arrStatus.push({
+          name: 'Unassigned',
+          value: arrOrphan.length,
+        });
+        this.StatusArray = arrStatus;
+      });
+    });
+  }
+
+  goTarget(el: HTMLElement) {
     el.scrollIntoView();
   }
 
+  //Search Functions Start
+  onSelectedOption(e) {
+    this.getFilteredExpenseList();
+  }
+
+  getFilteredExpenseList() {
+    if (this.dsqls.searchOption.length > 0) {
+      this.emp = this.dsqls.filteredListOptions();
+      this.emp.forEach((el) => {
+        this.getTeamForName(el);
+        this.searchActive = true;
+        this.isHidden = true;
+      });
+    } else {
+      this.emp = this.dsqls.empData;
+      this.searchActive = false;
+      this.isHidden = false;
+    }
+    this.equiposSearch = [];
+    this.huerfanosSearch = [];
+  }
+
+  getTeamForName(nom) {
+    this.dsqls.getTeams().subscribe((res) => {
+      if (res.filter((e) => e.nombre === nom)) {
+        this.equiposSearch = this.equiposSearch.concat(
+          res.filter((e) => e.nombre === nom)
+        );
+        return;
+      }
+      this.dsqls.getOrphans().subscribe((res) => {
+        if (res.filter((e) => e.nombreHuerfano === nom)) {
+          this.huerfanosSearch = this.huerfanosSearch.concat(
+            res.filter((e) => e.nombreHuerfano === nom)
+          );
+        }
+      });
+    });
+  }
+  //Search Functions End
 }

@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const db = require("./dboperations");
 const mt = require("./parseExcel");
+const dboperations = require("./dboperations");
 
 db.startConnection();
 
@@ -42,18 +43,24 @@ app.post("/addEvaluation", async (req, res) => {
 app.post("/deleteEvaluation", async (req, res) => {
   const { empA, relacion, empB } = req.body;
 
-  await db.deleteEvaluation(empA, relacion, empB);
-
-  res.send({ success: true });
+  res.send(await db.deleteEvaluation(empA, relacion, empB));
 });
 
 app.get("/ifValidando", async (req, res) => {
   res.send(await db.ifValidando());
 });
 
+app.get("/getTeamsMatrix", async(req,res) => {
+  res.send(await db.getTeamsMatrix());
+})
+
 app.get("/publishTeams", async (req, res) => {
   res.send(await db.publishTeams());
 });
+
+app.get("/getTotalStatus", async (req, res) => {
+  res.json(await db.getTotalByStatus());
+})
 
 app.post("/isAdmin", async (req, res) => {
   if (!req.body.correo) {
@@ -85,6 +92,14 @@ app.post('/confirmEvals', async(req,res) => {
   }
 })
 
+app.post("/changeEvalStatus", async (req, res) => {
+  if (!req.body.evalId || !req.body.newStatus){
+    res.send({ success: false, info: undefined })
+  } else {
+    res.send(await db.changeEvalStatus(req.body.evalId,req.body.newStatus))
+  }
+})
+
 app.post("/getEmployeeEvals", async (req, res) => {
   if (!req.body.correo || !req.body.all) {
     res.send({ success: false, info: undefined });
@@ -101,6 +116,22 @@ app.post("/getEmployeeEvals", async (req, res) => {
     res.send({ success: false, info: undefined });
   }
 });
+
+app.post("/insertAdmin", async (req,res) => {
+  console.log(req.body);
+  if (!req.body) {
+    console.log("Wrong format insert super user");
+    return res.send({ success: false, message: "Wrong format insert super use" });
+  } else {
+    if(req.body.nombre && req.body.correo){
+      res.send(await db.insertAdmin(req.body.nombre,req.body.correo))
+    } else {
+      res.send({success : false })
+    }
+  }
+
+})
+
 
 // POST File
 app.post("/makeTeams", async (req, res) => {

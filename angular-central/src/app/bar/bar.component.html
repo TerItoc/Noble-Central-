@@ -1,0 +1,40 @@
+<form class="example-form">
+  <mat-form-field
+    class="example-full-width"
+    style="width: 100%"
+    appearance="standard"
+    mat-app-background="black"
+  >
+    <mat-chip-list #chipList>
+      <mat-chip
+        style="margin-top: 0.4em"
+        *ngFor="let option of this.dsqls.searchOption"
+        (removed)="removeOption(option)"
+      >
+        <span>{{ option }}</span>
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+      <input
+        #autocompleteInput
+        type="text"
+        placeholder="Search Employee"
+        matInput
+        [formControl]="myControl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayFn.bind(this)"
+      >
+        <mat-option
+          *ngFor="let option of autoCompleteList"
+          [value]="option"
+          (onSelectionChange)="filterPostList($event)"
+        >
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-chip-list>
+  </mat-form-field>
+</form>

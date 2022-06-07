@@ -1,33 +1,33 @@
-<div class="accordion-god pb-3"  >
+<div class="accordion-god pb-3">
     <div class="accordion-item">
         <h2 class="accordion-header" id='{{"heading"+id}}'>
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" attr.data-bs-target='{{"#collapse"+id}}' aria-expanded="false" attr.aria-controls='{{"collapse"+id}}'>
-                <b>{{nombreHuerfano}}</b><small class="text-muted"> - Huerfano </small>
+                <b>{{nombreHuerfano}}</b><small class="text-muted"> - Unassigned </small>
             </button>
         </h2>
-  
+
         <div id='{{"collapse"+id}}' class="accordion-collapse collapse" attr.aria-labelledby='{{"heading"+id}}' data-bs-parent="#accordionHuerfanos">
-              <div class="accordion-body d-flex justify-content-center">
-  
-  
-                    <table class="table" id="Huerfanos">
-                        <thead>
-                            <tr class="table-danger">
+            <div class="accordion-body d-flex justify-content-center">
+
+
+                <table class="table" id="Huerfanos">
+                    <thead>
+                        <tr class="table-danger">
                             <th scope="col">Proyecto (Insf. Horas)</th>
                             <th scope="col">Lider Proyecto</th>
-                            </tr>
-                        </thead>
-                        <tbody class="border">
-                            <tr *ngFor="let proyecto of proyectos">
+                        </tr>
+                    </thead>
+                    <tbody class="border">
+                        <tr *ngFor="let proyecto of proyectos">
                             <td scope="row">{{proyecto.Proyecto}}</td>
                             <td>{{proyecto.Lider}}</td>
                         </tr>
-                            
-                        </tbody>
-                        </table>
-                        
-              </div>
-              
+
+                    </tbody>
+                </table>
+
+            </div>
+
         </div>
     </div>
-  </div>
+</div>

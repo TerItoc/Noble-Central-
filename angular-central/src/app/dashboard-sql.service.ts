@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ResultadoEquipos, Equipo } from './model/equipos.model';
 import { ResultadoHuerfano, Huerfano } from './model/orphan.model';
 import { ResultadoMakeTeams } from './model/response.model';
@@ -8,95 +9,166 @@ import { Relacion } from './model/evaluacion.model';
 import { environment } from 'src/environments/environment';
 import { EmpleadoEvaluacion } from './model/empleadoEvaluacion.model';
 import { EvaluacionAEnviar } from './model/evaluacionEnviada.model';
-
+import { Empleado } from './model/empleado.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class DashboardSqlService {
+  searchOption = [];
+  public empData: Empleado[];
 
-  constructor(private http: HttpClient) {};
+  constructor(private http: HttpClient) {}
+
+  getStatusTotal() {
+    return this.http.get(environment.backendUrl + '/getTotalStatus').pipe(
+      map((res) => {
+        let status_array = res['recordset'];
+        const map = status_array.map((e) => {
+          let Status = e['Estatus'];
+          let Value = e['Total'];
+          if (Status == -1) return { name: 'Sin Publicar', value: Value };
+          else if (Status == 0) return { name: 'Pendiente', value: Value };
+          else if (Status == 1) return { name: 'Validando', value: Value };
+          else return { name: 'Reporte', value: Value };
+        });
+        return map;
+      })
+    );
+  }
 
   getTeams() {
-    return this.http.get<ResultadoEquipos>(environment.backendUrl+'/getTeams').pipe(map((res) => {return res.equipos}));
+    return this.http
+      .get<ResultadoEquipos>(environment.backendUrl + '/getTeams')
+      .pipe(
+        map((res) => {
+          return res.equipos;
+        })
+      );
   }
 
   getOrphans() {
-    return this.http.get<ResultadoHuerfano>(environment.backendUrl+'/getOrphans').pipe(map((res) => {return res.huerfanos}));
+    return this.http
+      .get<ResultadoHuerfano>(environment.backendUrl + '/getOrphans')
+      .pipe(
+        map((res) => {
+          return res.huerfanos;
+        })
+      );
   }
 
-  getIfTeam(){
-    return this.http.get<boolean>(environment.backendUrl+'/ifTeam').toPromise();
+  getIfTeam() {
+    return this.http
+      .get<boolean>(environment.backendUrl + '/ifTeam')
+      .toPromise();
   }
 
-  getValidando(){
-    return this.http.get<boolean>(environment.backendUrl+'/ifValidando').toPromise();
+  getValidando() {
+    return this.http
+      .get<boolean>(environment.backendUrl + '/ifValidando')
+      .toPromise();
   }
 
-  publishTeams(){
-    return this.http.get<Response>(environment.backendUrl+'/publishTeams');
+  publishTeams() {
+    return this.http.get<Response>(environment.backendUrl + '/publishTeams');
   }
 
-  getPendingEmployeeEvals(correo:string){
-    let formData:FormData = new FormData();
+  getPendingEmployeeEvals(correo: string) {
+    let formData: FormData = new FormData();
     formData.append('correo', correo);
-    formData.append('all', "false");
+    formData.append('all', 'false');
 
-    return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
+    return this.http.post<EmpleadoEvaluacion[]>(
+      environment.backendUrl + '/getEmployeeEvals',
+      formData
+    );
   }
 
-  getAllEmployeeEvals(correo : string){
-    let formData:FormData = new FormData();
+  getAllEmployeeEvals(correo: string) {
+    let formData: FormData = new FormData();
     formData.append('correo', correo);
-    formData.append('all', "true");
+    formData.append('all', 'true');
 
-    return this.http.post<EmpleadoEvaluacion[]>(environment.backendUrl+'/getEmployeeEvals',formData);
+    return this.http.post<EmpleadoEvaluacion[]>(
+      environment.backendUrl + '/getEmployeeEvals',
+      formData
+    );
   }
 
-  getEmployees(){
-    return this.http.get<string[]>(environment.backendUrl+'/getEmployees');
+  getEmployees() {
+    return this.http.get<string[]>(environment.backendUrl + '/getEmployees');
   }
 
-  postFile(file : File){
-    let formData:FormData = new FormData();
+  postFile(file: File) {
+    let formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    return this.http.post<ResultadoMakeTeams>(environment.backendUrl+'/makeTeams', formData);
+    return this.http.post<ResultadoMakeTeams>(
+      environment.backendUrl + '/makeTeams',
+      formData
+    );
   }
 
-  addEval(empA,relacion,empB){
-    let formData:FormData = new FormData();
+  addEval(empA, relacion, empB) {
+    let formData: FormData = new FormData();
     formData.append('empA', empA);
     formData.append('relacion', relacion);
     formData.append('empB', empB);
 
-    return this.http.post(environment.backendUrl+'/addEvaluation', formData);
+    return this.http.post(environment.backendUrl + '/addEvaluation', formData);
   }
 
-  delEval(empA,relacion,empB){
-    var relABorrar : Relacion = {
-      empA : empA,
+  delEval(empA, relacion, empB) {
+    var relABorrar: Relacion = {
+      empA: empA,
       relacion: relacion,
       empB: empB,
     };
-    return this.http.post(environment.backendUrl+'/deleteEvaluation', relABorrar);
+    return this.http.post(
+      environment.backendUrl + '/deleteEvaluation',
+      relABorrar
+    );
   }
 
   getIsAdmin(correo: string) {
-    let emailData : FormData = new FormData();
+    let emailData: FormData = new FormData();
     emailData.append('correo', correo);
-    return this.http.post(environment.backendUrl+'/isAdmin', emailData);
+    return this.http.post(environment.backendUrl + '/isAdmin', emailData);
   }
 
-  postReport(evall : EmpleadoEvaluacion, report){
-    evall.Reporte = report;    
-    return this.http.post(environment.backendUrl+'/generateReport',evall);
+  getEmps(): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(environment.backendUrl + '/getEmployees');
   }
 
-  postConfirmEvals(evals){
-    let formData:FormData = new FormData();
-    formData.append("evals",evals);
-    return this.http.post(environment.backendUrl+'/confirmEvals',evals);
+  filteredListOptions() {
+    let emps = this.empData;
+    let filteredPostsList = [];
+    for (let emp of emps) {
+      for (let options of this.searchOption) {
+        if (options === emp) {
+          filteredPostsList.push(emp);
+        }
+      }
+    }
+    return filteredPostsList;
   }
 
+  postReport(evall: EmpleadoEvaluacion, report) {
+    evall.Reporte = report;
+    return this.http.post(environment.backendUrl + '/generateReport', evall);
+  }
+
+  postConfirmEvals(evals) {
+    let formData: FormData = new FormData();
+    formData.append('evals', evals);
+    return this.http.post(environment.backendUrl + '/confirmEvals', evals);
+  }
+
+  getTeamsMatrix() {
+    return this.http.get(environment.backendUrl + '/getTeamsMatrix');
+  }
+
+  insertAdmin(json) {
+    console.log(json);
+    return this.http.post(environment.backendUrl + '/insertAdmin', json);
+  }
 }

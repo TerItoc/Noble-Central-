@@ -1,0 +1,23 @@
+<div style="margin:auto; width: 70%; margin-top: 30px;">
+    <app-bar (onSelectedOption)="onSelectedOption($event)"></app-bar>
+</div>
+  <!--<div *ngFor="let emps of emp" class="group">
+    <p><b>Nombre :</b>{{emps}}</p>
+  </div>-->
+    <div class="accordion" id="accordionTeams">
+      <app-dropdown-persona
+        *ngFor="let equipo of equiposSearch; let i = index"
+        [id]="i"
+        [evaluadores]="equipo.evaluadores"
+        [nombre]="equipo.nombre"
+        [arrEmpleados]="arrEmpleados"
+      ></app-dropdown-persona>
+    </div>
+    <div class="accordion" id="accordionHuerfanos">
+      <app-dropdown-huerfano
+        *ngFor="let huerfano of huerfanosSearch; let i = index"
+        [id]="i + equiposSearch.length"
+        [nombreHuerfano]="huerfano.nombreHuerfano"
+        [proyectos]="huerfano.proyectos"
+      ></app-dropdown-huerfano>
+    </div>

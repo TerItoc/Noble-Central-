@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Evaluacion } from '../model/equipos.model';
 import { DashboardSqlService } from '../dashboard-sql.service';
+import { Empleado } from '../model/empleado.model';
 
 @Component({
   selector: 'app-dropdown-persona',
@@ -13,7 +14,7 @@ export class DropdownPersonaComponent implements OnInit {
   @Input() nombre : string;
   @Input() evaluadores : Evaluacion[];
   @Input() id : number;
-  @Input() arrEmpleados : string[];
+  @Input() arrEmpleados : Empleado[];
 
   arrRelaciones: string[] = ["Peer to Peer","Lider a Equipo","Equipo a Lider"]; 
 
@@ -31,6 +32,7 @@ export class DropdownPersonaComponent implements OnInit {
   selectedEvaluador: number = 0;
   selectedRelacion: number = 0;
 
+  
   constructor (private dsqls : DashboardSqlService) {
     
   };

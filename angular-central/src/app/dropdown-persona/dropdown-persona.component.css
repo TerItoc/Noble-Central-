@@ -1,63 +1,70 @@
 #Teams {
-    width: 60%
+    width: 100%
 }
 
-.fa-check{
+#table {
+    width: 150%;
+    height: 150%;
+}
+
+.fa-check {
     color: limegreen;
 }
 
-.fa-flag{
+.fa-flag {
     color: red;
 }
 
-.fa-x{
+.fa-x {
     color: black;
 }
 
-.fa-clock{
+.fa-clock {
     color: orange;
 }
 
-.fa-plus{
+.fa-plus {
     color: rgb(119, 119, 119);
 }
 
-.fa-circle-exclamation{
+.fa-circle-exclamation {
     color: gray;
 }
 
-#botonModalAgregar{
+#botonModalAgregar {
     border-radius: 100%;
-    border:  1px solid gray;
+    border: 1px solid gray;
     margin-bottom: 20px;
 }
 
-.botonInvis{
-    background:transparent; 
-    border:none; 
-    color:transparent;
+.botonInvis {
+    background: transparent;
+    border: none;
+    color: gray;
 }
-.relacion-picker{
+
+
+
+.relacion-picker {
     margin: 5px;
 }
 
-.empleado-picker{
+.empleado-picker {
     margin: 5px;
 }
 
-#saveButton{
+#saveButton {
     margin: 15px;
     margin-right: 0;
 }
 
-.greytext{
+.greytext {
     color: gray;
     font-style: italic;
     font-size: small;
 }
 
-
-@media screen and (max-width: 650px){
+@media screen and (max-width: 650px) {
     #Teams {
         width: 100%;
     }
