@@ -5,6 +5,7 @@ const cors = require("cors");
 
 const db = require("./dboperations");
 const mt = require("./parseExcel");
+const dboperations = require("./dboperations");
 
 db.startConnection();
 
@@ -111,6 +112,21 @@ app.post("/getEmployeeEvals", async (req, res) => {
     res.send({ success: false, info: undefined });
   }
 });
+
+app.post("/insertAdmin", async (req,res) => {
+  console.log(req.body);
+  if (!req.body) {
+    console.log("Wrong format insert super user");
+    return res.send({ success: false, message: "Wrong format insert super use" });
+  } else {
+    if(req.body.nombre && req.body.correo){
+      res.send(await db.insertAdmin(req.body.nombre,req.body.correo))
+    } else {
+      res.send({success : false })
+    }
+  }
+
+})
 
 // POST File
 app.post("/makeTeams", async (req, res) => {

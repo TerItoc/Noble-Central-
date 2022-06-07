@@ -117,10 +117,6 @@ export class DashboardSqlService {
     return this.http.post(environment.backendUrl + '/addEvaluation', formData);
   }
 
-  addAdmin(){
-    
-  }
-
   delEval(empA, relacion, empB) {
     var relABorrar: Relacion = {
       empA: empA,
@@ -165,5 +161,10 @@ export class DashboardSqlService {
     let formData: FormData = new FormData();
     formData.append('evals', evals);
     return this.http.post(environment.backendUrl + '/confirmEvals', evals);
+  }
+
+  insertAdmin(json) {
+    console.log(json);
+    return this.http.post(environment.backendUrl + '/insertAdmin', json);
   }
 }

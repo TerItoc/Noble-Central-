@@ -114,6 +114,20 @@ async function deleteEvaluation(empA, relacion, empB) {
   }
 }
 
+async function insertAdmin(nombre,correo) {
+  try{
+    const query = `
+      INSERT INTO Administradores VALUES ('${nombre}','${correo}')
+    `
+    await postQuery(query);
+    return {success : true}
+  } catch (error) {
+
+    console.log(error.message)
+    return {success : false}
+  }
+}
+
 function processOrphans(recordset) {
   huerfanos = {};
 
@@ -699,6 +713,7 @@ async function getTotalByStatus() {
 //getEmployeeTeamByName('Alfredo Martinez').then(result => {console.log(result)})
 
 module.exports = {
+  insertAdmin: insertAdmin,
   getEmployees: getEmployees,
   postEmployees: postEmployees,
   getEmployeeIdByName: getEmployeeIdByName,
