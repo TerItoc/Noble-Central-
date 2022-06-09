@@ -86,29 +86,18 @@ export class DashboardComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-ngOnInit(): void {
-  this.createTeams();
-  this.innerWidth = window.innerWidth;
-  this.innerHeight = window.innerHeight;
+  ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
 
-  this.dsqls.getTeams().subscribe((res) => {this.equiposList = res});
-  this.dsqls.getOrphans().subscribe((res) => {this.huerfanosList = res});
-
-    /*this.dsqls.getEmployees().subscribe(empleados => {
-      this.emp = empleados;
-      this.dsqls.empData = empleados;
-    })*/
-    //this.getStatus();
-    /* this.http.get(GRAPH_POINT).subscribe((profile) => {
+    this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 
       this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
-          this.isAdmin = false;
           this.router.navigateByUrl('empleado');
         } else {
-          this.isAdmin = true;
           this.createTeams();
           this.getStatus();
         }
@@ -118,7 +107,7 @@ ngOnInit(): void {
         this.emp = empleados;
         this.dsqls.empData = empleados;
       });
-    }); */
+    });
   }
 
   refresh(): void {
@@ -136,36 +125,32 @@ ngOnInit(): void {
   saveTeams() {
     try {
       this.dsqls.getTeamsMatrix().subscribe((res) => {
-
-        var csvContent = "data:text/csv;charset=utf-8,";
+        var csvContent = 'data:text/csv;charset=utf-8,';
 
         for (let i = 0; i < res['length']; i++) {
-          const infoArray = res[i].map( x => {
-            if(x == null){
-              return "N/A"
+          const infoArray = res[i].map((x) => {
+            if (x == null) {
+              return 'N/A';
             } else {
-              return x.toString().replace(',','');
+              return x.toString().replace(',', '');
             }
-
           });
 
-          const dataString = infoArray.join(",");
-          csvContent += dataString + "\n";
+          const dataString = infoArray.join(',');
+          csvContent += dataString + '\n';
         }
-    
+
         var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Evaluaciones360.csv");
+        var link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'Evaluaciones360.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      
       });
-      this.toastr.success('', "Se creo el archivo correctamente");
-      
+      this.toastr.success('', 'Se creo el archivo correctamente');
     } catch (error) {
-      this.toastr.error('', "Hubo un error al crear archivo");
+      this.toastr.error('', 'Hubo un error al crear archivo');
     }
   }
 
@@ -240,13 +225,12 @@ ngOnInit(): void {
       this.emp = this.dsqls.filteredListOptions();
 
       this.dsqls.getEmployees().subscribe((res) => {
-      this.emp.forEach((el) => {
-        this.getTeamForName(el);
-        this.searchActive = true;
-        this.isHidden = true;
+        this.emp.forEach((el) => {
+          this.getTeamForName(el);
+          this.searchActive = true;
+          this.isHidden = true;
+        });
       });
-    });
-
     } else {
       this.emp = this.dsqls.empData;
       this.searchActive = false;
@@ -255,17 +239,19 @@ ngOnInit(): void {
 
     this.equiposSearch = [];
     this.huerfanosSearch = [];
-
   }
 
   getTeamForName(nom) {
-      if(this.equiposList.filter((e) => e.nombre === nom)){
-        this.equiposSearch = this.equiposSearch.concat(this.equiposList.filter((e) => e.nombre === nom));
-      };
-      if(this.huerfanosList.filter((e) => e.nombre === nom)){
-        this.huerfanosSearch = this.huerfanosSearch.concat(this.huerfanosList.filter((e) => e.nombreHuerfano === nom))
-      };
-
+    if (this.equiposList.filter((e) => e.nombre === nom)) {
+      this.equiposSearch = this.equiposSearch.concat(
+        this.equiposList.filter((e) => e.nombre === nom)
+      );
+    }
+    if (this.huerfanosList.filter((e) => e.nombre === nom)) {
+      this.huerfanosSearch = this.huerfanosSearch.concat(
+        this.huerfanosList.filter((e) => e.nombreHuerfano === nom)
+      );
+    }
   }
   //Search Functions End
 }

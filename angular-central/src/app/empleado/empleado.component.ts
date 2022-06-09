@@ -2,9 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
-import {
-  InteractionStatus,
-} from '@azure/msal-browser';
+import { InteractionStatus } from '@azure/msal-browser';
 import { filter } from 'rxjs';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { EmpleadoEvaluacion } from '../model/empleadoEvaluacion.model';
@@ -44,56 +42,50 @@ export class EmpleadoComponent implements OnInit {
 
   validando: boolean;
 
-  reporteTexto : string;
-  confirmEvals : number[];
+  reporteTexto: string;
+  confirmEvals: number[];
 
-  allEvals : EmpleadoEvaluacion[];
-  confirmedEvals : EmpleadoEvaluacion[];
-  reportedEvals : EmpleadoEvaluacion[];
-  pendingEvals : EmpleadoEvaluacion[];
+  allEvals: EmpleadoEvaluacion[];
+  confirmedEvals: EmpleadoEvaluacion[];
+  reportedEvals: EmpleadoEvaluacion[];
+  pendingEvals: EmpleadoEvaluacion[];
 
-  nombreEmpleado : string = "NO HAY EMPLEADO";
+  nombreEmpleado: string = 'NO HAY EMPLEADO';
 
-  allChecked : boolean = true;
-  isChecked : boolean = true;
+  allChecked: boolean = true;
+  isChecked: boolean = true;
 
-  evalToReport : EmpleadoEvaluacion;
+  evalToReport: EmpleadoEvaluacion;
   checkboxEvalReport;
 
-  Uncheck(isChecked){
-    if(isChecked==false){
-      return this.allChecked=false;
-    }
-    else{
-      return this.allChecked=true;
+  Uncheck(isChecked) {
+    if (isChecked == false) {
+      return (this.allChecked = false);
+    } else {
+      return (this.allChecked = true);
     }
   }
 
   ngOnInit(): void {
     this.loading = true;
 
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None)
-      )
-      .subscribe(() => {
-        this.http.get(GRAPH_POINT).subscribe((profile) => {
-          this.profile = profile;
-
-          this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+    this.http.get(GRAPH_POINT).subscribe((profile) => {
+      this.profile = profile;
+      this.getTeam();
+      /* this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
             let value = Object.values(msg)[0];
             this.profile = profile
 
             if (value === 'No hay correo' || value === 'false') {
-              this.isAdmin = false;
+              //this.isAdmin = false;
               this.getTeam();
             } else {
-              this.isAdmin = true;
+              //this.isAdmin = true;
               this.router.navigateByUrl('dashboard');
             }
           });
-        });
-      });
+        }); */
+    });
   }
 
   getTeam() {
@@ -101,50 +93,54 @@ export class EmpleadoComponent implements OnInit {
       this.validando = res;
     });
 
-    this.dsqls.getAllEmployeeEvals(this.profile.userPrincipalName).subscribe((res) => {
-      this.allEvals = res;
-      this.evalToReport = this.allEvals[0];
-      this.pendingEvals = res.filter(x => x.Estatus == 0);
-      
-      if(this.pendingEvals.length > 0){
-        this.router.navigateByUrl('empleado');
-      }
-      
-      this.confirmedEvals = res.filter(x => x.Estatus == 1);
-      this.reportedEvals = res.filter(x => x.Estatus == 2);
+    this.dsqls
+      .getAllEmployeeEvals(this.profile.userPrincipalName)
+      .subscribe((res) => {
+        this.allEvals = res;
+        this.evalToReport = this.allEvals[0];
+        this.pendingEvals = res.filter((x) => x.Estatus == 0);
 
-      this.loading = false;
-    });
+        if (this.pendingEvals.length > 0) {
+          this.router.navigateByUrl('empleado');
+        }
+
+        this.confirmedEvals = res.filter((x) => x.Estatus == 1);
+        this.reportedEvals = res.filter((x) => x.Estatus == 2);
+
+        this.loading = false;
+      });
   }
 
-  setReporteTexto(texto){
-    this.reporteTexto = texto; 
+  setReporteTexto(texto) {
+    this.reporteTexto = texto;
   }
 
-  setReport(empleadoEvaluacion){
+  setReport(empleadoEvaluacion) {
     this.evalToReport = empleadoEvaluacion;
   }
 
-  sendReport(){
+  sendReport() {
     this.inputField = document.querySelector('.form-control').classList;
-    if(this.reporteTexto === undefined) {
+    if (this.reporteTexto === undefined) {
       this.isError = true;
-      this.inputField.add('is-invalid')
+      this.inputField.add('is-invalid');
       return;
     }
     this.isError = false;
-    this.dsqls.postReport(this.evalToReport, this.reporteTexto).subscribe((res)=>{
-      this.loading = true;
-      window.location.reload();
-    });
+    this.dsqls
+      .postReport(this.evalToReport, this.reporteTexto)
+      .subscribe((res) => {
+        this.loading = true;
+        window.location.reload();
+      });
   }
 
-  sendConfirmedEvals(){
+  sendConfirmedEvals() {
     this.loading = true;
-    this.confirmEvals = this.pendingEvals.map(function(i) {
+    this.confirmEvals = this.pendingEvals.map(function (i) {
       return i.EvaluacionID;
     });
-    this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res)=>{
+    this.dsqls.postConfirmEvals(this.confirmEvals).subscribe((res) => {
       window.location.reload();
     });
   }

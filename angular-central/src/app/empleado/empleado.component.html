@@ -1,14 +1,12 @@
-<div *ngIf="!isAdmin">
-  <div *ngIf="loading; else notAdmin">
-    <div
-      id="loading-div"
-      class="d-flex justify-content-center align-items-center"
-    >
-      <i
-        class="fa-3x fa-solid fa-circle-notch fa-spin"
-        style="--fa-animation-duration: 0.7s"
-      ></i>
-    </div>
+<div *ngIf="loading; else notAdmin">
+  <div
+    id="loading-div"
+    class="d-flex justify-content-center align-items-center"
+  >
+    <i
+      class="fa-3x fa-solid fa-circle-notch fa-spin"
+      style="--fa-animation-duration: 0.7s"
+    ></i>
   </div>
 </div>
 
@@ -157,14 +155,16 @@
                 <i *ngSwitchCase="0" class="fa-solid fa-clock"></i>
                 <i *ngSwitchCase="1" class="fa-solid fa-check"></i>
                 <button
-                    type="button"
-                    class="btn botonInvis"
-                    placement="right"
-                    ngbPopover="{{evaluacion.Reporte}}"
-                    popoverTitle="{{evaluacion.TipoEvaluacion}}"
-                    *ngSwitchCase="2"
-                    title="{{ evaluacion.Reporte }}"
-                  ><i class="fa-solid fa-flag"></i></button>
+                  type="button"
+                  class="btn botonInvis"
+                  placement="right"
+                  ngbPopover="{{ evaluacion.Reporte }}"
+                  popoverTitle="{{ evaluacion.TipoEvaluacion }}"
+                  *ngSwitchCase="2"
+                  title="{{ evaluacion.Reporte }}"
+                >
+                  <i class="fa-solid fa-flag"></i>
+                </button>
                 <i *ngSwitchDefault class="fa-solid fa-circle-exclamation"></i>
               </span>
             </td>
