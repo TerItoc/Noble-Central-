@@ -32,8 +32,8 @@
           <b>Equipos</b><small *ngIf="!validando"> - Propuesta</small
           ><small *ngIf="validando"> - En Proceso De Validacion</small>
         </h3>
-        <div class="accordion" id="accordionTeamsSearch">
-          <app-dropdown-persona
+        <div class="accordion" id="accordionTeamsSearch" >
+          <app-dropdown-persona 
             *ngFor="let equipo of equiposSearch; let i = index"
             [id]="i"
             [evaluadores]="equipo.evaluadores"

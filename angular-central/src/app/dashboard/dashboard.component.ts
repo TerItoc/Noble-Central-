@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Empleado } from '../model/empleado.model';
 import { Toast } from 'ngx-toastr';
+import { subscribeOn } from 'rxjs';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -72,7 +73,8 @@ export class DashboardComponent implements OnInit {
   equiposSearch = [];
   huerfanosSearch = [];
 
-  huerfanosSearchTemp = [];
+  equiposList = [];
+  huerfanosList = [];
 
   searchActive: boolean = false;
   //SearchVariables End
@@ -88,6 +90,9 @@ ngOnInit(): void {
   this.createTeams();
   this.innerWidth = window.innerWidth;
   this.innerHeight = window.innerHeight;
+
+  this.dsqls.getTeams().subscribe((res) => {this.equiposList = res});
+  this.dsqls.getOrphans().subscribe((res) => {this.huerfanosList = res});
 
     /*this.dsqls.getEmployees().subscribe(empleados => {
       this.emp = empleados;
@@ -233,36 +238,34 @@ ngOnInit(): void {
   getFilteredExpenseList() {
     if (this.dsqls.searchOption.length > 0) {
       this.emp = this.dsqls.filteredListOptions();
+
+      this.dsqls.getEmployees().subscribe((res) => {
       this.emp.forEach((el) => {
         this.getTeamForName(el);
         this.searchActive = true;
         this.isHidden = true;
       });
+    });
+
     } else {
       this.emp = this.dsqls.empData;
       this.searchActive = false;
       this.isHidden = false;
     }
+
     this.equiposSearch = [];
     this.huerfanosSearch = [];
+
   }
 
   getTeamForName(nom) {
-    this.dsqls.getTeams().subscribe((res) => {
-      if (res.filter((e) => e.nombre === nom)) {
-        this.equiposSearch = this.equiposSearch.concat(
-          res.filter((e) => e.nombre === nom)
-        );
-        return;
-      }
-      this.dsqls.getOrphans().subscribe((res) => {
-        if (res.filter((e) => e.nombreHuerfano === nom)) {
-          this.huerfanosSearch = this.huerfanosSearch.concat(
-            res.filter((e) => e.nombreHuerfano === nom)
-          );
-        }
-      });
-    });
+      if(this.equiposList.filter((e) => e.nombre === nom)){
+        this.equiposSearch = this.equiposSearch.concat(this.equiposList.filter((e) => e.nombre === nom));
+      };
+      if(this.huerfanosList.filter((e) => e.nombre === nom)){
+        this.huerfanosSearch = this.huerfanosSearch.concat(this.huerfanosList.filter((e) => e.nombreHuerfano === nom))
+      };
+
   }
   //Search Functions End
 }
