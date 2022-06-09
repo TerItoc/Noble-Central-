@@ -203,6 +203,7 @@ async function makeTeams(file){
         let sqlQuery = `Insert Into EvaluaA(EmpleadoA,TipoEvaluacion,EmpleadoB,Estatus) values `
         let currQuery = ``
         let rowCounter  = 0;
+        let storedEvals = {}
 
         for (let idx = 0; idx < allEmployees.length; idx++) {
 
@@ -227,11 +228,17 @@ async function makeTeams(file){
                     
                     if(rel == -1){
                         continue
-                    }               
+                    }
+                    let cQ = "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", -1),"               
                     
-                    currQuery = currQuery + "("+empIds[empleado]+","+rel+","+empIds[empleadoB]+", -1),";
-                    rowCounter++;
-
+                    if(storedEvals[cQ] == 1) {
+                        continue;
+                    } else {
+                        currQuery = currQuery + cQ;
+                        rowCounter++;
+                        storedEvals[cQ] = 1;
+                    }
+                    
                     if(rowCounter > 500){
                         await db.postQuery(term((sqlQuery + currQuery),';'));
                         rowCounter = 0;
@@ -244,6 +251,7 @@ async function makeTeams(file){
         }
 
         await db.postQuery(term((sqlQuery + currQuery),';'));
+        await db.postQuery('')
         
         console.log("Finished Teams")
 
