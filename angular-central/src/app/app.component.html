@@ -23,12 +23,12 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
+        <ul *ngIf="isAdmin" class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link" routerLink="/dashboard">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/empleado">Mi equipo</a>
+            <a class="nav-link" routerLink="/empleado">Evaluaciones</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/superadmin">Admin</a>
