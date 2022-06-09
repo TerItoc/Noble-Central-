@@ -90,6 +90,9 @@ export class DashboardComponent implements OnInit {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
+    this.dsqls.getTeams().subscribe((res) => {this.equiposList = res});
+    this.dsqls.getOrphans().subscribe((res) => {this.huerfanosList = res});
+
     this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 
