@@ -21,6 +21,7 @@ type ProfileType = {
 })
 export class SUPAUSERComponent implements OnInit {
   profile!: ProfileType;
+  isAdmin = false;
   constructor(
     private dsqls: DashboardSqlService,
     private toastr: ToastrService,
@@ -35,8 +36,11 @@ export class SUPAUSERComponent implements OnInit {
       this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
+          this.isAdmin = false;
           this.router.navigateByUrl('empleado');
+          return;
         }
+        this.isAdmin = true;
       });
     });
   }

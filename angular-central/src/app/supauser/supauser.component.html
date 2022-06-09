@@ -1,23 +1,30 @@
-<div class="container text-center">
+<div *ngIf="isAdmin">
+  <div class="container text-center">
     <div class="col">
-        <div class="row">
-            <h2 style="padding: 5%;">BIENVENIDO SUPER ADMIN</h2>
-            <h5>Esta es la pagina donde se podra agregar administradores.</h5>
-        </div>
-        <br> <br> <br>
-        <div class="row text-center">
-            <form [formGroup]="adminform" (ngSubmit)="onSubmit()">
-                <label>Nombre:</label>
-                <br>
-                <input type="text" id="DataIN" formControlName="nombre">
-                <br> <br>
-                <label>Correo:</label>
-                <br>
-                <input type="text" id="DataIN" formControlName="correo">
-                <br> <br>
-                <button class="btn btn-primary" [disabled]="!adminform.valid">Submit</button>
-            </form>
-        </div>
+      <div class="row">
+        <h2 style="padding: 5%">BIENVENIDO SUPER ADMIN</h2>
+        <h5>Esta es la pagina donde se podra agregar administradores.</h5>
+      </div>
+      <br />
+      <br />
+      <br />
+      <div class="row text-center">
+        <form [formGroup]="adminform" (ngSubmit)="onSubmit()">
+          <label>Nombre:</label>
+          <br />
+          <input type="text" id="DataIN" formControlName="nombre" />
+          <br />
+          <br />
+          <label>Correo:</label>
+          <br />
+          <input type="text" id="DataIN" formControlName="correo" />
+          <br />
+          <br />
+          <button class="btn btn-primary" [disabled]="!adminform.valid">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
-
+  </div>
 </div>
