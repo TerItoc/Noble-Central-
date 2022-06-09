@@ -55,9 +55,9 @@ export class AppComponent implements OnInit {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
           this.isAdmin = false;
-          return;
+        } else {
+          this.isAdmin = true;
         }
-        this.isAdmin = true;
       });
     });
   }
