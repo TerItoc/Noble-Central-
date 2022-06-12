@@ -6,6 +6,7 @@ import { InteractionStatus } from '@azure/msal-browser';
 import { filter } from 'rxjs';
 import { DashboardSqlService } from '../dashboard-sql.service';
 import { EmpleadoEvaluacion } from '../model/empleadoEvaluacion.model';
+import { TeamSqlService } from '../team-sql.service';
 
 type ProfileType = {
   givenName?: string;
@@ -28,8 +29,7 @@ export class EmpleadoComponent implements OnInit {
 
   constructor(
     private dsqls: DashboardSqlService,
-    private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService,
+    private teamSql: TeamSqlService,
     private http: HttpClient,
     private router: Router
   ) {}
@@ -89,7 +89,7 @@ export class EmpleadoComponent implements OnInit {
   }
 
   getTeam() {
-    this.dsqls.getValidando().then((res) => {
+    this.teamSql.getValidando().then((res) => {
       this.validando = res;
     });
 

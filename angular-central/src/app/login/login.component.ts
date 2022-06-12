@@ -10,7 +10,7 @@ import {
 } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
-import { DashboardSqlService } from '../dashboard-sql.service';
+import { AdminSqlService } from '../admin-sql.service';
 
 type ProfileType = {
   givenName?: string;
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private broadcastService: MsalBroadcastService,
     private authService: MsalService,
     private router: Router,
-    private dsqls: DashboardSqlService,
+    private adminSql: AdminSqlService,
     private http: HttpClient
   ) {}
 
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             .get('https://graph.microsoft.com/v1.0/me')
             .subscribe((profile) => {
               this.profile = profile;
-              this.dsqls
+              this.adminSql
                 .getIsAdmin(this.profile.userPrincipalName)
                 .subscribe((msg) => {
                   let value = Object.values(msg)[0];

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DashboardSqlService } from '../dashboard-sql.service';
+import { EmpleadoSqlService } from '../empleado-sql.service';
 import { Empleado } from '../model/empleado.model';
 import { Equipo } from '../model/equipos.model';
+import { TeamSqlService } from '../team-sql.service';
 
 @Component({
   selector: 'app-search',
@@ -15,10 +17,14 @@ export class SearchComponent implements OnInit {
   huerfanosSearch = [];
   arrEmpleados: Empleado[];
 
-  constructor(private dsqls: DashboardSqlService) {}
+  constructor(
+    private employeeSql: EmpleadoSqlService,
+    private dsqls: DashboardSqlService,
+    private teamSql: TeamSqlService
+  ) {}
 
   ngOnInit() {
-    this.dsqls.getEmps().subscribe((empleados) => {
+    this.employeeSql.getEmps().subscribe((empleados) => {
       this.emp = empleados;
       this.dsqls.empData = empleados;
       this.arrEmpleados = empleados.sort();
@@ -48,7 +54,7 @@ export class SearchComponent implements OnInit {
   }
 
   async getTeamForName(nom) {
-    this.dsqls.getTeams().subscribe((res) => {
+    this.teamSql.getTeams().subscribe((res) => {
       console.log(res.filter((e) => e.nombre === nom))
       if (res.filter((e) => e.nombre === nom)) {
         this.equiposSearch = this.equiposSearch.concat(
@@ -56,7 +62,7 @@ export class SearchComponent implements OnInit {
         );
         return;
       } else {
-        this.dsqls.getOrphans().subscribe((res) => {
+        this.teamSql.getOrphans().subscribe((res) => {
           if (res.filter((e) => e.nombreHuerfano === nom)) {
             this.huerfanosSearch = this.huerfanosSearch.concat(
               res.filter((e) => e.nombreHuerfano === nom)

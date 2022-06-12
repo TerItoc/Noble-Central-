@@ -4,6 +4,7 @@ import { DashboardSqlService } from '../dashboard-sql.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AdminSqlService } from '../admin-sql.service';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -24,6 +25,7 @@ export class SUPAUSERComponent implements OnInit {
   isAdmin = false;
   constructor(
     private dsqls: DashboardSqlService,
+    private adminSql: AdminSqlService,
     private toastr: ToastrService,
     private http: HttpClient,
     private router: Router
@@ -33,7 +35,7 @@ export class SUPAUSERComponent implements OnInit {
     this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 
-      this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+      this.adminSql.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
           this.isAdmin = false;
@@ -53,7 +55,7 @@ export class SUPAUSERComponent implements OnInit {
   });
 
   onSubmit() {
-    this.dsqls.insertAdmin(this.adminform.value).subscribe((res) => {
+    this.adminSql.insertAdmin(this.adminform.value).subscribe((res) => {
       this.success = res['success'];
       console.log(res);
 
