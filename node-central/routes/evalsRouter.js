@@ -11,6 +11,22 @@ router.post("/changeEvalStatus", async (req, res) => {
   }
 });
 
+router.post("/getEmployeeEvals", async (req, res) => {
+  if (!req.body.correo || !req.body.all) {
+    res.send({ success: false, info: undefined });
+  }
+
+  try {
+    if (req.body.all == "false") {
+      res.send(await evalsController.getEvaluationsForEmail(req.body.correo, false));
+    } else {
+      res.send(await evalsController.getEvaluationsForEmail(req.body.correo, true));
+    }
+  } catch (error) {
+    res.send({ success: false, info: undefined });
+  }
+});
+
 router.post("/confirmEvals", async (req, res) => {
   try {
     await evalsController.confirmEvals(req.body);

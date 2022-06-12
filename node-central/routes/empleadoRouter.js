@@ -12,22 +12,6 @@ router.post("/isAdmin", async (req, res) => {
   }
 });
 
-router.post("/getEmployeeEvals", async (req, res) => {
-  if (!req.body.correo || !req.body.all) {
-    res.send({ success: false, info: undefined });
-  }
-
-  try {
-    if (req.body.all == "false") {
-      res.send(await empleadoController.getEvaluationsForEmail(req.body.correo, false));
-    } else {
-      res.send(await empleadoController.getEvaluationsForEmail(req.body.correo, true));
-    }
-  } catch (error) {
-    res.send({ success: false, info: undefined });
-  }
-});
-
 router.get("/getEmployees", async (req, res) => {
   return res.send(await empleadoController.getEmployees());
 });

@@ -117,10 +117,8 @@ function getProjectsAndLeaders(matrix) {
     let row = matrix[i];
     //El totals define un nuevo proyecto
     if (row[xlConfig.employeeColumnExcel] == xlConfig.totalsName) {
-      console.log(row);
       let resrow = [row[xlConfig.projectColumnExcel]];
       resrow.push(row[xlConfig.leaderColumnExcel]);
-      console.log(resrow);
       res.push(resrow);
     }
   }
@@ -182,9 +180,7 @@ async function makeTeams(file) {
     let hoursPerEmployee = getHoursPerEmployeePerProject(excelData);
 
     await teamsController.deleteCurrentTeams();
-
     await empController.postEmployees(allEmployees);
-    console.log(leaderWithProject);
     await projectController.postProjects(leaderWithProject);
     await horasController.postHorasPorEmpleado(hoursPerEmployee);
 

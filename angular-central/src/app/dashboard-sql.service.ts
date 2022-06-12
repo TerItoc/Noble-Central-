@@ -79,7 +79,7 @@ export class DashboardSqlService {
     formData.append('all', 'false');
 
     return this.http.post<EmpleadoEvaluacion[]>(
-      environment.backendUrl + environment.empleadoRoute + '/getEmployeeEvals',
+      environment.backendUrl + environment.evaluacionesRoute + '/getEmployeeEvals',
       formData
     );
   }
@@ -90,7 +90,7 @@ export class DashboardSqlService {
     formData.append('all', 'true');
 
     return this.http.post<EmpleadoEvaluacion[]>(
-      environment.backendUrl + environment.empleadoRoute + '/getEmployeeEvals',
+      environment.backendUrl + environment.evaluacionesRoute + '/getEmployeeEvals',
       formData
     );
   }

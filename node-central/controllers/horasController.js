@@ -1,6 +1,7 @@
 const dsql = require('../services/sqlFunctions');
 const empController = require('../controllers/empleadoController');
 const projectController = require('../controllers/projectController');
+const formatUtil = require('../services/formatting');
 
 async function postHorasPorEmpleado(matrix) {
   empIds = null;
@@ -37,12 +38,12 @@ async function postHorasPorEmpleado(matrix) {
 
     if (rowCounter > 990) {
       //console.log(term((sqlQuery + currQuery),';'))
-      await dsql.postQuery(term(sqlQuery + currQuery, ";"));
+      await dsql.postQuery(formatUtil.term(sqlQuery + currQuery, ";"));
       rowCounter = 0;
       currQuery = ``;
     }
   }
-  await dsql.postQuery(term(sqlQuery + currQuery, ";"));
+  await dsql.postQuery(formatUtil.term(sqlQuery + currQuery, ";"));
   console.log("Inserted Employee Hours");
 }
 
