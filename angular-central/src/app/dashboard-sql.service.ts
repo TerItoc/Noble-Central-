@@ -21,7 +21,7 @@ export class DashboardSqlService {
   constructor(private http: HttpClient) {}
 
   getStatusTotal() {
-    return this.http.get(environment.backendUrl + '/getTotalStatus').pipe(
+    return this.http.get(environment.backendUrl + environment.evaluacionesRoute + '/getTotalStatus').pipe(
       map((res) => {
         let status_array = res['recordset'];
         const map = status_array.map((e) => {
@@ -39,7 +39,7 @@ export class DashboardSqlService {
 
   getTeams() {
     return this.http
-      .get<ResultadoEquipos>(environment.backendUrl + '/getTeams')
+      .get<ResultadoEquipos>(environment.backendUrl + environment.teamsRoute + '/getTeams')
       .pipe(
         map((res) => {
           return res.equipos;
@@ -49,7 +49,7 @@ export class DashboardSqlService {
 
   getOrphans() {
     return this.http
-      .get<ResultadoHuerfano>(environment.backendUrl + '/getOrphans')
+      .get<ResultadoHuerfano>(environment.backendUrl + environment.teamsRoute + '/getOrphans')
       .pipe(
         map((res) => {
           return res.huerfanos;
@@ -59,18 +59,18 @@ export class DashboardSqlService {
 
   getIfTeam() {
     return this.http
-      .get<boolean>(environment.backendUrl + '/ifTeam')
+      .get<boolean>(environment.backendUrl + environment.teamsRoute + '/ifTeam')
       .toPromise();
   }
 
   getValidando() {
     return this.http
-      .get<boolean>(environment.backendUrl + '/ifValidando')
+      .get<boolean>(environment.backendUrl + environment.teamsRoute + '/ifValidando')
       .toPromise();
   }
 
   publishTeams() {
-    return this.http.get<Response>(environment.backendUrl + '/publishTeams');
+    return this.http.get<Response>(environment.backendUrl + environment.teamsRoute + '/publishTeams');
   }
 
   getPendingEmployeeEvals(correo: string) {
@@ -79,7 +79,7 @@ export class DashboardSqlService {
     formData.append('all', 'false');
 
     return this.http.post<EmpleadoEvaluacion[]>(
-      environment.backendUrl + '/getEmployeeEvals',
+      environment.backendUrl + environment.empleadoRoute + '/getEmployeeEvals',
       formData
     );
   }
@@ -90,20 +90,20 @@ export class DashboardSqlService {
     formData.append('all', 'true');
 
     return this.http.post<EmpleadoEvaluacion[]>(
-      environment.backendUrl + '/getEmployeeEvals',
+      environment.backendUrl + environment.empleadoRoute + '/getEmployeeEvals',
       formData
     );
   }
 
   getEmployees() {
-    return this.http.get<string[]>(environment.backendUrl + '/getEmployees');
+    return this.http.get<string[]>(environment.backendUrl + environment.empleadoRoute + '/getEmployees');
   }
 
   postFile(file: File) {
     let formData: FormData = new FormData();
     formData.append('file', file, file.name);
     return this.http.post<ResultadoMakeTeams>(
-      environment.backendUrl + '/makeTeams',
+      environment.backendUrl + environment.teamsRoute + '/makeTeams',
       formData
     );
   }
@@ -114,7 +114,7 @@ export class DashboardSqlService {
     formData.append('relacion', relacion);
     formData.append('empB', empB);
 
-    return this.http.post(environment.backendUrl + '/addEvaluation', formData);
+    return this.http.post(environment.backendUrl + environment.evaluacionesRoute + '/addEvaluation', formData);
   }
 
   delEval(empA, relacion, empB) {
@@ -124,7 +124,7 @@ export class DashboardSqlService {
       empB: empB,
     };
     return this.http.post(
-      environment.backendUrl + '/deleteEvaluation',
+      environment.backendUrl + environment.evaluacionesRoute + '/deleteEvaluation',
       relABorrar
     );
   }
@@ -132,11 +132,11 @@ export class DashboardSqlService {
   getIsAdmin(correo: string) {
     let emailData: FormData = new FormData();
     emailData.append('correo', correo);
-    return this.http.post(environment.backendUrl + '/isAdmin', emailData);
+    return this.http.post(environment.backendUrl + environment.empleadoRoute + '/isAdmin', emailData);
   }
 
   getEmps(): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(environment.backendUrl + '/getEmployees');
+    return this.http.get<Empleado[]>(environment.backendUrl + environment.empleadoRoute + '/getEmployees');
   }
 
   filteredListOptions() {
@@ -154,21 +154,21 @@ export class DashboardSqlService {
 
   postReport(evall: EmpleadoEvaluacion, report) {
     evall.Reporte = report;
-    return this.http.post(environment.backendUrl + '/generateReport', evall);
+    return this.http.post(environment.backendUrl + environment.evaluacionesRoute + '/generateReport', evall);
   }
 
   postConfirmEvals(evals) {
     let formData: FormData = new FormData();
     formData.append('evals', evals);
-    return this.http.post(environment.backendUrl + '/confirmEvals', evals);
+    return this.http.post(environment.backendUrl + environment.evaluacionesRoute + '/confirmEvals', evals);
   }
 
   getTeamsMatrix() {
-    return this.http.get(environment.backendUrl + '/getTeamsMatrix');
+    return this.http.get(environment.backendUrl + environment.teamsRoute + '/getTeamsMatrix');
   }
 
   insertAdmin(json) {
     console.log(json);
-    return this.http.post(environment.backendUrl + '/insertAdmin', json);
+    return this.http.post(environment.backendUrl + environment.adminRoute + '/insertAdmin', json);
   }
 }

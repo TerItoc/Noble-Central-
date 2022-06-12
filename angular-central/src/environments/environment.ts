@@ -5,6 +5,10 @@
 export const environment = {
   production: false,
   backendUrl: "http://localhost:3000",
+  teamsRoute: "/teams",
+  empleadoRoute: "/empleado",
+  evaluacionesRoute: "/evals",
+  adminRoute: "/admin",
 };
 
 /*
