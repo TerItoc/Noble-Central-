@@ -95,9 +95,6 @@ export class DashboardComponent implements OnInit {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
-    this.teamSql.getTeams().subscribe((res) => {this.equiposList = res});
-    this.teamSql.getOrphans().subscribe((res) => {this.huerfanosList = res});
-
     this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 

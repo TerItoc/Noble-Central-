@@ -220,6 +220,9 @@
           <div *ngIf="isSamePerson" style="color: red">
             No pueden ser la misma persona
           </div>
+          <div *ngIf="isMember" style="color: red">
+            Ya existe esta evaluacion
+          </div>
 
           <div class="d-flex justify-content-center">
             <button id="saveButton" type="submit" class="btn btn-success">
