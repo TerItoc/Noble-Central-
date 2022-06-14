@@ -72,7 +72,7 @@
         >
           <app-dropdown-huerfano
             *ngFor="let huerfano of huerfanos; let i = index"
-            [id]="i"
+            [id]="i+equipos.length"
             [nombreHuerfano]="huerfano.nombreHuerfano"
             [proyectos]="huerfano.proyectos"
           ></app-dropdown-huerfano>

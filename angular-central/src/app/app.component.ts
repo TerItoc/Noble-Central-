@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
+import { AdminSqlService } from './admin-sql.service';
 import { DashboardSqlService } from './dashboard-sql.service';
 
 type ProfileType = {
@@ -34,7 +35,7 @@ export class AppComponent implements OnInit {
     private broadcastService: MsalBroadcastService,
     private authService: MsalService,
     private http: HttpClient,
-    private dsqls: DashboardSqlService
+    private adminSql: AdminSqlService 
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +52,7 @@ export class AppComponent implements OnInit {
     this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 
-      this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+      this.adminSql.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
           this.isAdmin = false;

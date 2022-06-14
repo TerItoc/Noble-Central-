@@ -6,6 +6,9 @@ import { HttpClient } from '@angular/common/http';
 import { Empleado } from '../model/empleado.model';
 import { Toast } from 'ngx-toastr';
 import { subscribeOn } from 'rxjs';
+import { TeamSqlService } from '../team-sql.service';
+import { AdminSqlService } from '../admin-sql.service';
+import { EmpleadoSqlService } from '../empleado-sql.service';
 
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
@@ -64,7 +67,6 @@ export class DashboardComponent implements OnInit {
       value: '#808080',
     },
   ];
-  //END GRAPH
 
   //Search Variables Start
   emp: Empleado[];
@@ -80,7 +82,10 @@ export class DashboardComponent implements OnInit {
   //SearchVariables End
 
   constructor(
-    private dsqls: DashboardSqlService,
+    private dashboardSql: DashboardSqlService,
+    private teamSql: TeamSqlService,
+    private adminSql: AdminSqlService,
+    private employeeSql: EmpleadoSqlService,
     private toastr: ToastrService,
     private router: Router,
     private http: HttpClient
@@ -90,13 +95,10 @@ export class DashboardComponent implements OnInit {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
-    this.dsqls.getTeams().subscribe((res) => {this.equiposList = res});
-    this.dsqls.getOrphans().subscribe((res) => {this.huerfanosList = res});
-
     this.http.get(GRAPH_POINT).subscribe((profile) => {
       this.profile = profile;
 
-      this.dsqls.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
+      this.adminSql.getIsAdmin(this.profile.userPrincipalName).subscribe((msg) => {
         let value = Object.values(msg)[0];
         if (value === 'No hay correo' || value === 'false') {
           this.router.navigateByUrl('empleado');
@@ -106,9 +108,9 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-      this.dsqls.getEmps().subscribe((empleados) => {
+      this.employeeSql.getEmps().subscribe((empleados) => {
         this.emp = empleados;
-        this.dsqls.empData = empleados;
+        this.dashboardSql.empData = empleados;
       });
     });
   }
@@ -119,7 +121,7 @@ export class DashboardComponent implements OnInit {
 
   publishTeams() {
     this.loading = true;
-    this.dsqls.publishTeams().subscribe((res) => {
+    this.teamSql.publishTeams().subscribe((res) => {
       this.loading = false;
       this.refresh();
     });
@@ -127,7 +129,7 @@ export class DashboardComponent implements OnInit {
 
   saveTeams() {
     try {
-      this.dsqls.getTeamsMatrix().subscribe((res) => {
+      this.teamSql.getTeamsMatrix().subscribe((res) => {
         var csvContent = 'data:text/csv;charset=utf-8,';
 
         for (let i = 0; i < res['length']; i++) {
@@ -167,26 +169,26 @@ export class DashboardComponent implements OnInit {
 
   createTeams() {
     this.loading = true;
-    this.dsqls.getIfTeam().then((res) => {
+    this.teamSql.getIfTeam().then((res) => {
       this.ifTeam = res;
 
       if (this.ifTeam) {
-        this.dsqls.getValidando().then((res) => {
+        this.teamSql.getValidando().then((res) => {
           this.validando = res;
         });
 
-        this.dsqls.getTeams().subscribe((res) => {
+        this.teamSql.getTeams().subscribe((res) => {
           this.equipos = res;
         });
 
-        this.dsqls.getEmps().subscribe((res) => {
+        this.employeeSql.getEmps().subscribe((res) => {
           this.emp = res;
-          this.dsqls.empData = res;
+          this.dashboardSql.empData = res;
           this.arrEmpleados = res.sort();
         });
 
-        this.dsqls.getStatusTotal().subscribe(async (arrStatus) => {
-          this.dsqls.getOrphans().subscribe(async (res) => {
+        this.dashboardSql.getStatusTotal().subscribe(async (arrStatus) => {
+          this.teamSql.getOrphans().subscribe(async (res) => {
             arrStatus.push({
               name: 'Unassigned',
               value: res.length,
@@ -203,8 +205,8 @@ export class DashboardComponent implements OnInit {
   }
 
   getStatus() {
-    this.dsqls.getStatusTotal().subscribe((arrStatus) => {
-      this.dsqls.getOrphans().subscribe((arrOrphan) => {
+    this.dashboardSql.getStatusTotal().subscribe((arrStatus) => {
+      this.teamSql.getOrphans().subscribe((arrOrphan) => {
         arrStatus.push({
           name: 'Unassigned',
           value: arrOrphan.length,
@@ -224,10 +226,10 @@ export class DashboardComponent implements OnInit {
   }
 
   getFilteredExpenseList() {
-    if (this.dsqls.searchOption.length > 0) {
-      this.emp = this.dsqls.filteredListOptions();
+    if (this.dashboardSql.searchOption.length > 0) {
+      this.emp = this.dashboardSql.filteredListOptions();
 
-      this.dsqls.getEmployees().subscribe((res) => {
+      this.employeeSql.getEmployees().subscribe((res) => {
         this.emp.forEach((el) => {
           this.getTeamForName(el);
           this.searchActive = true;
@@ -235,7 +237,7 @@ export class DashboardComponent implements OnInit {
         });
       });
     } else {
-      this.emp = this.dsqls.empData;
+      this.emp = this.dashboardSql.empData;
       this.searchActive = false;
       this.isHidden = false;
     }
