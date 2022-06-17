@@ -10,6 +10,9 @@ import { TeamSqlService } from '../team-sql.service';
 import { AdminSqlService } from '../admin-sql.service';
 import { EmpleadoSqlService } from '../empleado-sql.service';
 
+import { Evaluacion } from '../model/equipos.model';
+import { Equipo } from '../model/equipos.model';
+
 const GRAPH_POINT = 'https://graph.microsoft.com/v1.0/me';
 
 type ProfileType = {
@@ -32,11 +35,16 @@ export class DashboardComponent implements OnInit {
   equipos = [];
   arrEmpleados: Empleado[];
 
+  evaluadores: Evaluacion[];
+  evals = [];
+  equiposMod: Equipo[];
+
   isAdmin: boolean = false;
   ifTeam: boolean = false;
   loading: boolean = true;
   validando: boolean = true;
   isHidden: boolean = false;
+  isHidden2: boolean = false;
   innerWidth: number;
   innerHeight: number;
 
@@ -78,6 +86,10 @@ export class DashboardComponent implements OnInit {
   equiposList = [];
   huerfanosList = [];
 
+  pendingTeams = [];
+  validTeams = [];
+  reportTeams = [];
+
   searchActive: boolean = false;
   //SearchVariables End
 
@@ -116,6 +128,7 @@ export class DashboardComponent implements OnInit {
 
     this.teamSql.getTeams().subscribe((res) => {
       this.equiposList = res;
+      this.equiposMod = res;
     });
 
     this.teamSql.getOrphans().subscribe((res) => {
@@ -211,6 +224,7 @@ export class DashboardComponent implements OnInit {
         this.router.navigateByUrl('adminEV');
       }
     });
+    this.pending();
   }
 
   getStatus() {
@@ -267,5 +281,102 @@ export class DashboardComponent implements OnInit {
       );
     }
   }
+
+  pending(){
+    this.equiposMod.forEach(element1 => {
+      element1.evaluadores.forEach(element2 => {
+        if(0 === element2.Estatus){
+          this.pendingTeams.push(element1.nombre);
+        }
+      });
+    });
+    
+    this.equiposMod.forEach(element1 => {
+      element1.evaluadores.forEach(element2 => {
+        if(1 === element2.Estatus){
+          this.validTeams.push(element1.nombre);
+        }
+      });
+    });
+
+    this.equiposMod.forEach(element1 => {
+      element1.evaluadores.forEach(element2 => {
+        if(2 === element2.Estatus){
+          this.reportTeams.push(element1.nombre);
+        }
+      });
+    });
+
+    this.pendingTeams = this.pendingTeams.filter(function(elem, index, self) {
+      return index === self.indexOf(elem);
+    })
+    this.validTeams = this.validTeams.filter(function(elem, index, self) {
+      return index === self.indexOf(elem);
+    })
+    this.reportTeams = this.reportTeams.filter(function(elem, index, self) {
+      return index === self.indexOf(elem);
+    })
+  }
+
+  noFilter(){
+    this.teamSql.getTeams().subscribe((res) => {
+      this.equipos = res;
+      this.isHidden2 = false;
+      this.teamSql.getOrphans().subscribe(async (res) => {
+        this.huerfanos = res;
+      });
+    });
+  }
+
+  pendingDisplay(){
+
+    this.isHidden2 = true;
+
+    this.equipos = [];
+    this.huerfanos = [];
+
+    this.employeeSql.getEmployees().subscribe((res) => {
+      this.pendingTeams.forEach(element => {
+        this.getTeamForName2(element);
+      });
+    });
+  }
+
+  validDisplay(){
+    
+    this.isHidden2 = true;
+    
+    this.equipos = [];
+    this.huerfanos = [];
+    
+    this.employeeSql.getEmployees().subscribe((res) => {
+      this.validTeams.forEach(element => {
+        this.getTeamForName2(element);
+      });
+    });
+  }
+
+  reportDisplay(){
+    
+    this.isHidden2 = true;
+    
+    this.equipos = [];
+    this.huerfanos = [];
+    
+    this.employeeSql.getEmployees().subscribe((res) => {
+      this.reportTeams.forEach(element => {
+        this.getTeamForName2(element);
+      });
+    });
+  }
+
+  getTeamForName2(nom) {
+    if (this.equiposList.filter((e) => e.nombre === nom)) {
+      this.equipos = this.equipos.concat(
+        this.equiposList.filter((e) => e.nombre === nom)
+      );
+    }
+  }
+
   //Search Functions End
 }

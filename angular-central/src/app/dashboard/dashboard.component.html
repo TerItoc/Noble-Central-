@@ -78,7 +78,7 @@
           ></app-dropdown-huerfano>
         </div>
       </div>
-      <div *ngIf="!isHidden" class="col" style="padding-top: 5%;">
+      <div *ngIf="!isHidden && !isHidden2" class="col" style="padding-top: 5%;">
         <ngx-charts-pie-grid 
           style="border-radius: 30px; border: solid 2px; border-color:rgb(227, 227, 227)"
           class="position-fixed p-3"
@@ -124,6 +124,23 @@
     </div>
   </div>
 
+
+  <div class="container" id="contButtonsFilter">
+    <div class="row">
+      <button (click)="noFilter()" class="refreshBtn myBtn" title="Refresh">
+        <i class="fa-solid fa-filter-circle-xmark"></i>
+      </button>
+      <button (click)="pendingDisplay()" class="pendingBtn myBtn" title="FilterPending">
+        <i class="fa-solid fa-question"></i>
+      </button>
+      <button (click)="validDisplay()" class="validBtn myBtn" title="FilterValid">
+        <i class="fa-solid fa-check"></i>
+      </button>
+      <button (click)="reportDisplay()" class="reportBtn myBtn" title="FilterReport">
+        <i class="fa-solid fa-flag"></i>
+      </button>
+    </div></div>
+
   <div class="container" id="contButtons">
     <div class="row">
       <button (click)="refresh()" class="refreshBtn myBtn" title="Refresh">
@@ -149,5 +166,5 @@
       <button (click)="goBottom()" class="goDownBtn myBtn" title="Go to bottom">
         <i class="fa-solid fa-down-long"></i>
       </button>
-    </div></div
-></ng-template>
+    </div></div>
+  </ng-template>
